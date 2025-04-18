@@ -1,79 +1,62 @@
 export const SITE = {
-    website: "https://simple-portfolio.vicbox.dev", // replace this with your deployed domain
-    title: "Simple Portfolio",
-    description: "A simple but beautiful portfolio created with Astro",
-    tags: ["portfolio", "Resume cv", "Astro"],
-    ogImage: "/og-image.webp",
-    logo: "logo",
-    logoText: "Portfolio",
-    lang: "en",
-    favicon: "/favicon.png",
-    repository: "https://github.com/vito8916/simple-portfolio.git",
-    author: "Victor Alvarado",
-    profile: "https://victoralvarado.dev/",
-}
+  website: "https://whoisulisesgomez.com", // replace this with your deployed domain
+  title: "Ulises Gómez | Portfolio",
+  description: "A simple but beautiful portfolio created with Astro",
+  tags: ["portfolio", "Resume cv", "Astro"],
+  ogImage: "/og-image.webp",
+  logo: "logo",
+  logoText: "whoisulisesgomez",
+  lang: "en",
+  favicon: "/favicon.png",
+  repository: "https://github.com/vito8916/simple-portfolio.git",
+  author: "Victor Alvarado",
+  profile: "https://victoralvarado.dev/",
+};
 
 export const ME = {
-    name: "VicBox Dot Dev",
-    profession: "Software Engineer | Full Stack Developer",
-    profileImage: "pp2.png",
-    profileFacts: [
-        {
-            value: 10,
-            description: "Years of Experience"
-        },
-        {
-            value: 5,
-            description: "Completed Projects"
-        },
-        {
-            value: 4,
-            description: "Satisfied Clients"
-        }
-    ],
-    contactInfo: {
-        email: "vicbox.dev@vicbox.dev",
-        linkedin: "https://www.linkedin.com/in/victor-alvaradohn",
-        resumeDoc: "resume.pdf",
+  name: "Ulises S. Gomez P.",
+  profession: "Frontend Developer Javascript | React & Next.js",
+  profileImage: "avatar.png",
+  profileFacts: [
+    {
+      value: 2,
+      description: "Years of Experience",
     },
-    aboutMe: "I am a software engineer with a passion for web development. I have experience in building web " + "applications using modern technologies. I am a self-taught developer who enjoys learning new things and " + "sharing knowledge with others.",
-}
+    {
+      value: 10,
+      description: "Completed Projects",
+    },
+    {
+      value: 5,
+      description: "Frontend Dev Certifications",
+    },
+  ],
+  contactInfo: {
+    email: "ugomez@streamtech.com.co",
+    linkedin: "https://www.linkedin.com/in/whoisulisesgomez/",
+    resumeDoc: "cv-2025.pdf",
+  },
+  aboutMe:
+    "I build websites that are simple, fast, and easy to use. I'm a frontend developer who loves to turn ideas into digital experiences. I work with tools like React, Next.js, and Tailwind CSS to create websites that help people and businesses connect. I’m always learning, trying new things, and improving a little every day. I enjoy challenges and believe that the best products are made with empathy and curiosity.",
+};
 
 export const SOCIALS = [
-    {
-        name: "Twitter",
-        url: "https://twitter.com/vicbox.dev",
-        icon: "twitter-x-fill",
-        show: true
-    },
-    {
-        name: "Facebook",
-        url: "https://www.facebook.com/vicbox.dev",
-        icon: "facebook-fill",
-        show: false
-    },
-    {
-        name: "Instagram",
-        url: "https://www.instagram.com/vicbox.dev",
-        icon: "instagram-fill",
-        show: true
-    },
-    {
-        name: "Youtube",
-        url: "https://www.youtube.com/vicbox.dev",
-        icon: "youtube-fill",
-        show: true
-    },
-    {
-        name: "TikTok",
-        url: "https://tiktok.com/vicbox.dev",
-        icon: "tik-fill",
-        show: false
-    },
-    {
-        name: "GitHub",
-        url: "https://github.com/vicbox.dev",
-        icon: "github-fill",
-        show: true
-    }
-]
+  {
+    name: "Instagram",
+    url: "https://www.instagram.com/whoisulisesgomez/",
+    icon: "instagram-fill",
+    show: true,
+  },
+  {
+    name: "Youtube",
+    url: "https://www.youtube.com/@whoisulisesgomez",
+    icon: "youtube-fill",
+    show: true,
+  },
+  {
+    name: "GitHub",
+    url: "https://github.com/ulisesgopa",
+    icon: "github-fill",
+    show: true,
+  },
+];

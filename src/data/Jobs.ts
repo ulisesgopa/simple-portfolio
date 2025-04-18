@@ -42,33 +42,47 @@ interface WorkExperience {
  * @property {Array<string>} goals - A list of goals or achievements within the job.
  * @property {boolean} currentJob - A flag indicating if the job is the current one.
  */
-const workExperience:WorkExperience[] = [
-    {
-        title: "Frontend Developer",
-        startDate: "2020-03-10",
-        company: "Google Inc",
-        location: "United States",
-        description: "Developed and maintained web applications using React, NextJs, and Tailwind CSS.",
-        goals: [
-            "Developed and maintained web applications using React, NodeJs, and MongoDB.",
-            "Worked with the team to develop and maintain web applications using React, NodeJs, and MongoDB.",
-            "Created and maintained web applications using React, NodeJs, and MongoDB.",
-        ],
-        currentJob: true,
-    },
-    {
-        title: "Software Engineer",
-        startDate: "2018-03-10",
-        endDate: "2020-03-10",
-        company: "Company Name",
-        location: "United States",
-        description: "Developed and maintained web applications using React, NodeJs, and MongoDB.",
-        goals: [
-            "Developed and maintained web applications using React, NodeJs, and MongoDB.",
-            "Worked with the team to develop and maintain web applications using React, NodeJs, and MongoDB.",
-            "Created and maintained web applications using React, NodeJs, and MongoDB.",
-        ],
-        currentJob: false,
-    },
+const workExperience: WorkExperience[] = [
+  {
+    title: "Founder & CEO",
+    startDate: "2024-02-14",
+    company: "Stream Tech S.A.S.",
+    location: "Bogotá & Medellín, CO",
+    description:
+      "Stream Tech S.A.S. is a company that provides technology solutions to the Colombian market.",
+    goals: [
+      "Started Stream Tech to simplify how media organizations manage livestreams and virtual events through smart automation and user-friendly tools.",
+      "Participated in Ruta de Emprendimiento 2024, a startup program that helped refine our product and business model with the support of mentors and peers.",
+    ],
+    currentJob: true,
+  },
+  {
+    title: "Frontend Developer",
+    startDate: "2023-12-10",
+    endDate: "2024-02-10",
+    company: "TBS Wireless Services S.A.S.",
+    location: "Bogotá, CO",
+    description:
+      "TBS Wireless Services S.A.S. is a company that provides technology solutions to the Colombian market.",
+    goals: [
+      "Created a modern, responsive landing page using React, Next JS, and Tailwind CSS, ensuring smooth user experience across devices.",
+      "Collaborated with designers to align brand and design requirements.",
+    ],
+    currentJob: false,
+  },
+  {
+    title: "Frontend Developer",
+    startDate: "2023-01-10",
+    endDate: "2023-12-10",
+    company: "Freelance Projects",
+    location: "Bogotá, CO",
+    description:
+      "Freelance projects for various clients, focusing on web development and design.",
+    goals: [
+      "Delivered custom-built web platforms for clients like Negocios Uno, Iwie Drones, Fundación Embajadores Comunitarios.",
+      "Built user-centric interfaces and ensured responsive performance across devices",
+    ],
+    currentJob: false,
+  },
 ];
 export default workExperience;

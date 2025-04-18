@@ -4,22 +4,22 @@ interface SoftSkill {
 }
 
 const softSkills: SoftSkill[] = [
-    {
-        name: "Solving Problems",
-        icon: "tools-fill"
-    },
-    {
-        name: "Teamwork",
-        icon: "group-fill"
-    },
-    {
-        name: "Communication",
-        icon: "message-2-fill"
-    },
-    {
-        name: "Time Management",
-        icon: "time-fill"
-    }
+  {
+    name: "Problem Solver who enjoys thinking creatively",
+    icon: "tools-fill",
+  },
+  {
+    name: "Collaborative team player with strong communication",
+    icon: "group-fill",
+  },
+  {
+    name: "Passionate about continuous learning and growth",
+    icon: "message-2-fill",
+  },
+  {
+    name: "Organized and focused on managing time effectively",
+    icon: "time-fill",
+  },
 ];
 
 export default softSkills;

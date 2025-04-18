@@ -8,34 +8,27 @@ interface Education {
     currentUni: boolean;
 }
 
-const  education: Education[] = [
-    {
-        title: "General English",
-        startDate: "2024-09-01",
-        endDate: "",
-        school: "University Name",
-        location: "United States",
-        description: "Developed and maintained web applications using React, NodeJs, and MongoDB.",
-        currentUni: true,
-    },
-    {
-        title: "Bachelor of Science in Computer Science",
-        startDate: "2014-09-01",
-        endDate: "2018-06-30",
-        school: "University Name",
-        location: "United States",
-        description: "Developed and maintained web applications using React, NodeJs, and MongoDB.",
-        currentUni: false,
-    },
-    {
-        title: "Bachelor of Science in Computer Science",
-        startDate: "2012-09-01",
-        endDate: "2013-06-30",
-        school: "University Name",
-        location: "United States",
-        description: "Developed and maintained web applications using React, NodeJs, and MongoDB.",
-        currentUni: false,
-    },
+const education: Education[] = [
+  {
+    title: "Frontend Developer",
+    startDate: "2022-09-01",
+    endDate: "2023-09-01",
+    school: "Platzi Web Development School",
+    location: "Remote",
+    description:
+      "Certifications in Frontend Development and Programming Fundamentals. Relevant Coursework: HTML, CSS, JavaScript, Git & GitHub, Mobile First Design, Algorithms.",
+    currentUni: false,
+  },
+  {
+    title: "English for Beginners & Intermediate",
+    startDate: "2022-01-02",
+    endDate: "2022-06-02",
+    school: "Platzi English Academy",
+    location: "United States",
+    description:
+      "Built essential English skills to better communicate in global tech environments.",
+    currentUni: false,
+  },
 ];
 
 export default education;
