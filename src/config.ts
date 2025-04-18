@@ -37,7 +37,7 @@ export const ME = {
     resumeDoc: "cv-2025.pdf",
   },
   aboutMe:
-    "I build websites that are simple, fast, and easy to use. I'm a frontend developer who loves to turn ideas into digital experiences. I work with tools like React, Next.js, and Tailwind CSS to create websites that help people and businesses connect. I’m always learning, trying new things, and improving a little every day. I enjoy challenges and believe that the best products are made with empathy and curiosity.",
+    "I build websites that are simple, fast, and easy to use. I work with tools like React, Next.js, and Tailwind CSS to create websites that help people and businesses connect with their audience. I’m always learning, trying new things, and improving a little every day.",
 };
 
 export const SOCIALS = [
