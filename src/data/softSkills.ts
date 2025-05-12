@@ -16,10 +16,6 @@ const softSkills: SoftSkill[] = [
     name: "Passionate about continuous learning and growth",
     icon: "message-2-fill",
   },
-  {
-    name: "Organized and focused on managing time effectively",
-    icon: "time-fill",
-  },
 ];
 
 export default softSkills;

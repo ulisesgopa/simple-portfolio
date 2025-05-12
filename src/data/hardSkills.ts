@@ -12,22 +12,16 @@ const hardSkills: HardSkill[] = [
     icon: "react",
   },
   {
-    name: "Tailwind CSS",
-    description:
-      "A utility-first framework I use to build clean, responsive designs efficiently",
-    icon: "tailwind",
-  },
-  {
     name: "NextJs",
     description:
       "My favorite React framework for building scalable and SEO-friendly web apps",
     icon: "nextjs_icon_dark",
   },
   {
-    name: "Vite",
+    name: "Tailwind CSS",
     description:
-      "My preferred build tool for fast and modern frontend development",
-    icon: "vite",
+      "A utility-first framework I use to build clean, responsive designs efficiently",
+    icon: "tailwind",
   },
 ];
 

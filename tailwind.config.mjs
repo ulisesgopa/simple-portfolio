@@ -19,23 +19,23 @@ export default {
     			md: 'calc(var(--radius) - 2px)',
     			sm: 'calc(var(--radius) - 4px)'
     		},
-			colors: {
-				// Light mode colors
-				'light-theme': '#E9EBEC',
-				'primary-light': '#FBD144',
-				'primary-hover-light': '#FFE071',
+				colors: {
+					// Light mode colors (reemplazando amarillos con azules)
+					'light-theme': '#E9EBEC',
+					'primary-light': '#1E88E5',       // Un azul vibrante para el primario en claro
+					'primary-hover-light': '#1565C0',   // Un azul más oscuro para el hover en claro
 
-				// Dark mode colors
-				'dark-theme': '#0C151D',
-				'primary-dark': '#FFE071',
-				'primary-hover-dark': '#FBD144',
+					// Dark mode colors (reemplazando amarillos con azules que contrasten con el fondo oscuro)
+					'dark-theme': '#0C151D',
+					'primary-dark': '#82B1FF',        // Un azul más claro y llamativo para el primario en oscuro
+					'primary-hover-dark': '#448AFF',    // Un azul aún más claro para el hover en oscuro
 
-				// Neutrals
-				'n200': '#d7d9da',
-				'n900': '#222222',
-				'n700': '#171F26',
-				'n500': '#555555',
-			},
+					// Neutrals (se mantienen igual)
+					'n200': '#d7d9da',
+					'n900': '#222222',
+					'n700': '#171F26',
+					'n500': '#555555',
+				},
     	}
     },
 	plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],

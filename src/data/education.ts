@@ -24,7 +24,7 @@ const education: Education[] = [
     startDate: "2022-01-02",
     endDate: "2022-06-02",
     school: "Platzi English Academy",
-    location: "United States",
+    location: "Remote",
     description:
       "Built essential English skills to better communicate in global tech environments.",
     currentUni: false,
