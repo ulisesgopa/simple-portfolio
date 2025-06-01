@@ -8,9 +8,9 @@ export const SITE = {
   logoText: "whoisulisesgomez",
   lang: "en",
   favicon: "/favicon.png",
-  repository: "https://github.com/vito8916/simple-portfolio.git",
-  author: "Victor Alvarado",
-  profile: "https://victoralvarado.dev/",
+  repository: "https://github.com/ulisesgopa/simple-portfolio",
+  author: "Ulises Gomez",
+  profile: "https://whoisulisesgomez.com",
 };
 
 export const ME = {
