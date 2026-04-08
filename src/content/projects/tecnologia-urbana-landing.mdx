@@ -1,92 +1,74 @@
 ---
 title: Tecnología Urbana Landing Page
-summary: Tecnología Urbana is a startup that focuses on building innovative digital solutions for urban planning and government services. As CIO, I was responsible for designing and building landing pages, as well as providing support and expertise in IT for other projects.
+summary: Corporate landing page for Tecnología Urbana, a govtech startup building digital tools for urban management and government services. Built with Next.js, the site serves as the umbrella brand presence for a product suite including Fiscalizador Digital and SAI.
 tags:
   - Next.js
   - TailwindCSS
 startDate: 2024-01-01
 endDate: 2024-03-20
 author: Ulises Gómez
-url: https://www.tecnologiaurbana.com/
-cover: './images/portada-tecnologiaurbana.webp'
-ogImage: './images/budget-wise/og-finance_app.webp'
----
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Role](#role)
-3. [Challenge](#challenge)
-4. [Goal](#goal)
-5. [Solution](#solution)
-- [Tech Stack](#tech-stack)
-- [Key Features](#key-features)
-- [User Flow](#user-flow)
-6. [Challenges and Learnings](#challenges-and-learnings)
-7. [Final Thoughts](#final-thoughts)
-
+url: https://tecnologiaurbana.vercel.app/
+cover: './images/tecnologiaurbana.webp'
+ogImage: './images/tecnologiaurbana.webp'
 ---
 
 ## Overview
-**Tecnología Urbana** is a startup focused on creating digital solutions that improve urban planning, government management, and public services. As the **Chief Information Officer (CIO)**, I was responsible for designing and building landing pages for our projects, including **Fiscalizador Digital** and **SAI - Sistema de Administración de Incidencias**. Additionally, I provided support and IT expertise to help ensure the success of other projects.
 
-One of the standout products is **Fiscalizador Digital**, a mobile app for security officers to manage traffic violations efficiently. We also developed **SAI - Sistema de Administración de Incidencias**, a powerful tool that allows governments to process, confirm, appeal, update, manage, charge, and notify traffic violations from **Fiscalizador Digital** and other systems like speed cameras or breathalyzers.
+**Tecnología Urbana** is a startup focused on digital solutions for urban government operations — traffic management, incident tracking, and public services. The landing page functions as the company's corporate presence and entry point for government clients evaluating the product suite.
 
----
-
-## 👨‍💻 Role
-**Chief Information Officer (CIO)**
-As CIO, I led the design and development of landing pages for our projects and provided support and expertise in IT for other solutions. My role focused on ensuring that our digital presence was aligned with the needs of urban governments and businesses.
+The company's main products are **Fiscalizador Digital** (mobile violation management for officers) and **SAI** (Sistema de Administración de Incidencias — a back-office platform for governments to process, manage, and follow up on violations from multiple sources).
 
 ---
 
-## ❓ Challenge
-Tecnología Urbana needed to:
-1. Develop a comprehensive platform to streamline urban services, including traffic management.
-2. Create systems for processing and managing traffic violations efficiently.
-3. Provide digital tools that integrate seamlessly with existing government infrastructures.
+## Role
+
+**Frontend Developer** — responsible for building and delivering the corporate landing page.
 
 ---
 
-## 🎯 Goal
-1. Build innovative, scalable solutions for urban management.
-2. Create a digital infrastructure to handle traffic violations and urban planning more efficiently.
-3. Deliver high-quality solutions with a strong focus on user experience and performance.
+## The Problem
 
-![Landing Tecnología Urbana](./images/budget-wise/finance1.webp)
+Tecnología Urbana needed a single site that positioned the company — not just a specific product — to government decision-makers. The challenge is that "govtech startup" needs to look established and trustworthy before a government agency will take a meeting.
 
----
-
-## ✨ Solution
-
-### Tech Stack
-- **Next.js:** For fast, SEO-friendly rendering and smooth navigation.
-- **TailwindCSS:** To create a clean, modern design that works across devices.
-- **Mobile-First Design:** Ensuring excellent performance on smartphones, tablets, and desktops.
-
-### Key Features
-1. **Fiscalizador Digital:** A mobile app that allows security officers to capture, report, and notify traffic violations in real-time.
-2. **SAI - Sistema de Administración de Incidencias:** A comprehensive platform that enables governments to process and manage traffic violations, confirm reports, handle appeals, and send notifications.
-3. **Seamless Integration:** The system integrates data from various sources like **Fiscalizador Digital**, radar systems, and breathalyzers to centralize all violation data.
-4. **Government Dashboard:** A robust tool for authorities to manage, update, and track violations and payments.
-
-### User Flow
-1. **Traffic Violation Reporting:** Officers use **Fiscalizador Digital** to capture and report violations.
-2. **Data Integration:** Data from various sources (cameras, radar, etc.) is integrated into the **SAI - Sistema de Administración de Incidencias**.
-3. **Violation Processing:** Government agencies can process, confirm, and manage violations through a simple interface.
-4. **Notifications and Appeals:** Offenders receive notifications, and the system allows them to appeal violations.
+The landing had to present the company's mission, the product ecosystem, and a clear contact path — without overwhelming visitors with product details that belong on individual product pages.
 
 ---
 
-## ⚙️ Challenges and Learnings
-1. **Data Integration Across Systems:** Integrating data from multiple sources, such as mobile apps and radar systems, into a unified platform was a technical challenge.
-2. **User-Friendly Design:** Ensuring the system was easy for both officers and government staff to use while processing complex data.
-3. **Performance:** Optimizing the system for large volumes of data to ensure fast, reliable performance.
+## Technical Decisions
+
+**Why Next.js for a corporate landing?**
+
+Government agencies frequently access external sites from institutional networks with proxy configurations that can affect SPA load behavior. Server-side rendering with Next.js ensures the page delivers fully-rendered HTML on first request, avoiding blank screen states that would undermine the credibility objective.
+
+**Brand consistency across a product suite:**
+
+The site needed to visually connect to Fiscalizador Digital's landing page while maintaining a distinct corporate identity. Building both with the same stack (Next.js + TailwindCSS) and a shared design token system in Tailwind config made that possible without code duplication.
 
 ---
 
-## ✨ Final Thoughts
-1. **Innovation in Urban Solutions:** **Tecnología Urbana** is helping to modernize city management through technology, with solutions that are both practical and scalable.
-2. **Focus on User Experience:** By developing intuitive platforms, we’re enabling government employees and officers to work more efficiently.
-3. **Scalable Systems:** The solutions we’re building are designed to grow with the needs of cities and governments.
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js |
+| Styling | TailwindCSS |
+| Deployment | Vercel |
 
 ---
+
+## What I Built
+
+- Company overview and mission section for institutional buyers
+- Product suite presentation (Fiscalizador Digital + SAI)
+- Use case scenarios for government agencies
+- Team and credibility section
+- Contact and demo request flow
+- Consistent mobile-first layout
+
+---
+
+## What I'd Improve Now
+
+- Add a dedicated product comparison table (Fiscalizador Digital vs SAI vs combined)
+- Implement a blog/resources section — govtech buyers research extensively before committing
+- Improve performance with image optimization (Astro or Next.js `<Image>` component)

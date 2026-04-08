@@ -1,17 +1,3 @@
-/**
- * Interface representing work experience details.
- *
- * @property {string} title - The job title of the position.
- * @property {string} startDate - The start date of the position in the format YYYY-MM-DD.
- * @property {string} [endDate] - The end date of the position in the format YYYY-MM-DD.
- *                                Optional, can be omitted if the position is current.
- * @property {string} company - The name of the company where the position was held.
- * @property {string} location - The geographic location of the company (e.g., city, state, country).
- * @property {string} description - A brief description of the roles and responsibilities
- *                                   associated with the position.
- * @property {string[]} goals - A list of professional goals achieved or targeted during the position.
- * @property {boolean} currentJob - Indicates whether the position is the current job.
- */
 interface WorkExperience {
     title: string;
     startDate: string;
@@ -23,36 +9,20 @@ interface WorkExperience {
     currentJob: boolean;
 }
 
-/**
- * Represents an array of work experiences.
- *
- * Each work experience object contains details about
- * a job position including the title, start and end dates,
- * company name, job location, description of the role,
- * a list of goals or achievements, and a flag indicating
- * if it is the current job.
- *
- * @type {Array<Object>}
- * @property {string} title - The job title.
- * @property {string} startDate - The start date of the job in YYYY-MM-DD format.
- * @property {string} [endDate] - The end date of the job in YYYY-MM-DD format. Optional for current jobs.
- * @property {string} company - The name of the company.
- * @property {string} location - The location of the job.
- * @property {string} description - A brief description of the job responsibilities.
- * @property {Array<string>} goals - A list of goals or achievements within the job.
- * @property {boolean} currentJob - A flag indicating if the job is the current one.
- */
 const workExperience: WorkExperience[] = [
   {
-    title: "Founder & CEO",
+    title: "Frontend Developer & Technical Operations",
     startDate: "2024-02-14",
     company: "Stream Tech S.A.S.",
-    location: "Bogotá & Medellín, CO",
+    location: "Remote | Buenos Aires, AR",
     description:
-      "Stream Tech S.A.S. is a company that provides technology solutions to the Colombian market.",
+      "Built and maintained frontend interfaces for SaaS and streaming services, while managing cloud infrastructure and production operations.",
     goals: [
-      "Started Stream Tech to simplify how media organizations manage livestreams and virtual events through smart automation and user-friendly tools.",
-      "Participated in Ruta de Emprendimiento 2024, a startup program that helped refine our product and business model with the support of mentors and peers.",
+      "Developed internal dashboards and frontend interfaces for TV and radio streaming operations using React, Next.js, and Tailwind CSS.",
+      "Managed cloud deployments and production services across Linode, AWS, GCP, and Vercel.",
+      "Configured domains, DNS records, SSL layers, and traffic routing with Cloudflare.",
+      "Supported service continuity and technical troubleshooting for live digital delivery.",
+      "Participated in Ruta de Emprendimiento 2024, a startup acceleration program focused on product and business model refinement.",
     ],
     currentJob: true,
   },
@@ -61,28 +31,47 @@ const workExperience: WorkExperience[] = [
     startDate: "2023-12-10",
     endDate: "2024-02-10",
     company: "TBS Wireless Services S.A.S.",
-    location: "Bogotá, CO",
+    location: "Remote | Bogotá, CO",
     description:
-      "TBS Wireless Services S.A.S. is a company that provides technology solutions to the Colombian market.",
+      "Implemented modern web experiences for a technology services company.",
     goals: [
-      "Created a modern, responsive landing page using React, Next JS, and Tailwind CSS, ensuring smooth user experience across devices.",
-      "Collaborated with designers to align brand and design requirements.",
+      "Built a responsive landing page using React, Next.js, and Tailwind CSS, ensuring cross-device consistency.",
+      "Collaborated with designers to align brand identity with frontend implementation.",
+      "Improved responsiveness and frontend performance across all target devices.",
     ],
     currentJob: false,
   },
   {
     title: "Frontend Developer",
-    startDate: "2023-01-10",
-    endDate: "2023-12-10",
-    company: "Freelance Projects",
-    location: "Bogotá, CO",
+    startDate: "2024-01-10",
+    endDate: "2026-01-10",
+    company: "Freelance",
+    location: "Remote",
     description:
-      "Freelance projects for various clients, focusing on web development and design.",
+      "Delivered full-stack and frontend solutions for startups, SMEs, and organizations across payments, retail, media, and pet services.",
     goals: [
-      "Delivered custom-built web platforms for clients like Negocios Uno, Iwie Drones, Fundación Embajadores Comunitarios.",
-      "Built user-centric interfaces and ensured responsive performance across devices",
+      "Built Octopay landing page with Next.js 15, React 19, and Framer Motion for a digital payments platform.",
+      "Developed Tienda Patitas — landing, backend, and POS dashboard — as a coordinated monorepo for a pet products retailer.",
+      "Built Santo Código landing page with React and Vite, focused on fast delivery and mobile-first design.",
+      "Delivered responsive web presences for Negocios Uno, Iwie Agro, Fundación Embajadores Comunitarios, and others.",
+    ],
+    currentJob: false,
+  },
+  {
+    title: "Technical Support & Microelectronics Specialist",
+    startDate: "2016-01-01",
+    endDate: "2023-01-01",
+    company: "Independent",
+    location: "Venezuela",
+    description:
+      "7 years diagnosing and repairing mobile devices at board level, developing systematic troubleshooting methodologies applied today to frontend debugging.",
+    goals: [
+      "Diagnosed hardware failures in mobile devices and performed board-level component repair.",
+      "Applied systematic root-cause analysis methodologies to resolve complex technical issues.",
+      "Managed direct customer support and technical service documentation.",
     ],
     currentJob: false,
   },
 ];
+
 export default workExperience;

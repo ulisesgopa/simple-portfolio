@@ -1,0 +1,97 @@
+---
+title: PeludoTag
+summary: A lost pet recovery platform where every registered pet gets a unique QR code. When someone scans it, the owner receives an instant notification with the finder's location. Built with Next.js and Supabase.
+tags:
+  - Next.js
+  - Supabase
+  - TypeScript
+  - Tailwind CSS
+startDate: 2024-09-01
+endDate: 2025-06-01
+author: Ulises Gómez
+url: https://peludotag.escuelaperritos.com.ar/
+cover: './images/peludotag.png'
+ogImage: './images/peludotag.png'
+---
+
+## Overview
+
+**PeludoTag** solves a real and urgent problem: when a pet gets lost, the owner has no fast, direct way to connect with whoever finds it. Phone numbers written on collars wear off. Flyers take time. Social media posts get buried.
+
+PeludoTag replaces all of that with a **QR code on the collar**. Anyone with a phone can scan it, see the pet's profile, and notify the owner — no app required on the finder's side.
+
+---
+
+## Role
+**Solo Developer** — product design, frontend, backend (Supabase), QR generation, email notifications, production deployment.
+
+---
+
+## The Problem
+
+Traditional lost pet solutions require:
+- The finder to have the owner's phone number
+- The owner to proactively post and monitor social media
+- No real-time location sharing
+- No way to confirm the pet was found until direct contact
+
+---
+
+## Solution
+
+A web platform where:
+1. Owner registers their pet with name, photo, breed, medical notes, and contact info
+2. System generates a unique QR code per pet
+3. Owner prints and attaches QR to collar or tag
+4. Finder scans QR → sees public pet profile
+5. Finder optionally shares their GPS location
+6. Owner receives instant email notification via Resend
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js (App Router) |
+| Database & Auth | Supabase (PostgreSQL + Row Level Security) |
+| Email notifications | Resend API |
+| QR generation | qrcode + qrcode.react |
+| Animations | Framer Motion |
+| Error tracking | Sentry |
+| Analytics | Vercel Analytics |
+| Styling | TailwindCSS 4 |
+
+### Key Features
+
+1. **Pet registration** — Full profile with photo upload to Supabase Storage
+2. **QR code generation** — Unique per pet, downloadable as PNG
+3. **Public pet profile** — Accessible without login, no app needed
+4. **Location sharing** — Geolocation API on finder's browser
+5. **Email alerts** — Instant notification to owner via Resend
+6. **Dashboard** — Owner manages all pets, views scan history
+
+---
+
+## Technical Decisions Worth Explaining
+
+**Why Supabase over a custom backend?**
+Row Level Security (RLS) in Supabase means each user can only access their own pets' data — enforced at the database level, not just in application code. This removes an entire category of authorization bugs. Supabase Auth also handles JWT session management out of the box.
+
+**Why Next.js App Router?**
+The public pet profile pages (`/m/[id]`) are static-friendly and benefit from Next.js's static generation with dynamic params. The dashboard is fully client-side. The API routes handle the notification logic server-side so Resend API keys are never exposed to the client.
+
+**Why Sentry?**
+In a production app where the QR scanning flow is the critical path, any error that breaks that flow means a pet doesn't get found. Sentry captures runtime errors in production with full stack traces, so issues can be diagnosed and fixed quickly.
+
+---
+
+## Challenges
+
+1. **QR code + public page reliability** — The QR must always resolve to a working URL. Handling deleted or deactivated pets required a graceful fallback page rather than a 404.
+2. **Geolocation permissions** — Browsers require explicit user permission. The UX needed to handle denied permission without breaking the notification flow.
+3. **Email deliverability** — Configuring Resend with proper SPF/DKIM records to avoid spam folders for critical lost-pet alerts.
+
+---
+
+## Final Thoughts
+
+PeludoTag is a full-stack product with a clear real-world use case, production-level error handling (Sentry), real analytics, and a well-reasoned backend choice (Supabase). It shows the ability to take a feature from user problem → architecture decision → shipped product.

@@ -6,40 +6,52 @@ interface HardSkill {
 
 const hardSkills: HardSkill[] = [
   {
-    name: "Git",
+    name: "JavaScript ES6+",
     description:
-      "A version control system I use to manage code changes and collaborate with others",
-    icon: "git",
-  },
-  {
-    name: "Github",
-    description:
-      "My preferred platform for hosting and sharing code repositories",
-    icon: "github",
-  },
-  {
-    name: "Javascript",
-    description:
-      "My primary programming language for building interactive web applications",
+      "My primary language — async/await, destructuring, modules, and modern DOM patterns",
     icon: "javascript",
   },
   {
     name: "React",
     description:
-      "My go-to library for building dynamic and reactive user interfaces",
+      "Component architecture, hooks (useState, useEffect, useRef), and React patterns for dynamic UIs",
     icon: "react",
   },
   {
-    name: "NextJs",
+    name: "Next.js",
     description:
-      "My favorite React framework for building scalable and SEO-friendly web apps",
+      "My go-to React framework for scalable, SEO-friendly web applications",
     icon: "nextjs_icon_dark",
+  },
+  {
+    name: "TypeScript",
+    description:
+      "Type-safe development — interfaces, generics, and Zod schema validation",
+    icon: "typescript",
   },
   {
     name: "Tailwind CSS",
     description:
-      "A utility-first framework I use to build clean, responsive designs efficiently",
+      "Utility-first styling, responsive design systems, and custom theme configuration",
     icon: "tailwind",
+  },
+  {
+    name: "Vite",
+    description:
+      "Fast build tooling for modern frontend projects and local development",
+    icon: "vite",
+  },
+  {
+    name: "Astro",
+    description:
+      "Static site generation with island architecture — this portfolio is built with it",
+    icon: "astro_dark",
+  },
+  {
+    name: "Git & GitHub",
+    description:
+      "Version control, feature branches, pull requests, and collaborative workflows",
+    icon: "git",
   },
 ];
 

@@ -1,8 +1,8 @@
 export const SITE = {
-  website: "https://whoisulisesgomez.com", // replace this with your deployed domain
-  title: "Ulises Gómez | Portfolio",
-  description: "A simple but beautiful portfolio created with Astro",
-  tags: ["portfolio", "Resume cv", "Astro"],
+  website: "https://whoisulisesgomez.com",
+  title: "Ulises Gómez | Frontend Developer",
+  description: "Portfolio of Ulises Gomez — Frontend Developer specializing in React, Next.js, and TypeScript. Building fast, responsive web applications for SaaS platforms and modern businesses.",
+  tags: ["portfolio", "frontend developer", "React", "Next.js", "TypeScript"],
   ogImage: "/og-image.webp",
   logo: "logo",
   logoText: "whoisulisesgomez",
@@ -15,11 +15,11 @@ export const SITE = {
 
 export const ME = {
   name: "Ulises S. Gomez P.",
-  profession: "Frontend Developer Javascript | React & Next.js",
+  profession: "Frontend Developer | React · Next.js · TypeScript",
   profileImage: "avatar.png",
   profileFacts: [
     {
-      value: 2,
+      value: 3,
       description: "Years of Experience",
     },
     {
@@ -32,12 +32,12 @@ export const ME = {
     },
   ],
   contactInfo: {
-    email: "ugomez@streamtech.com.co",
+    email: "ulisesgoparg@gmail.com",
     linkedin: "https://www.linkedin.com/in/whoisulisesgomez/",
-    resumeDoc: "cv-2025.pdf",
+    resumeDoc: "CV 2026.pdf",
   },
   aboutMe:
-    "I build websites that are simple, fast, and easy to use. I work with tools like React, Next.js, and Tailwind CSS to create websites that help people and businesses connect with their audience. I’m always learning, trying new things, and improving a little every day.",
+    "Frontend Developer with 3+ years building SaaS platforms, landing pages, and streaming solutions using React, Next.js, and Tailwind CSS. Experience deploying and maintaining production services on Vercel, AWS, and Cloudflare. Background in technical operations and 7 years in hardware diagnostics — I bring a systematic, problem-first mindset to every frontend challenge. Currently based in Buenos Aires, open to remote opportunities.",
 };
 
 export const SOCIALS = [

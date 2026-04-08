@@ -1,0 +1,109 @@
+---
+title: POS Colombia
+summary: A full-stack point-of-sale system for the Colombian market with electronic invoicing integration (DIAN/Factus). Built with a Bun + TypeScript REST API backend and a React + Zustand admin dashboard, covering sales, cash register management, and fiscal compliance.
+tags:
+  - React
+  - TypeScript
+  - Bun
+  - Prisma
+  - PostgreSQL
+startDate: 2025-02-01
+endDate: 2026-03-01
+author: Ulises Gómez
+url: https://cloud-pos-one.vercel.app/
+cover: './images/pos.png'
+ogImage: './images/pos.png'
+---
+
+## Overview
+
+**POS Colombia** is a point-of-sale system designed for small and medium businesses in Colombia that need to comply with DIAN's mandatory electronic invoicing requirements. Most existing POS software is either too expensive, too complex, or not integrated with the Colombian fiscal ecosystem.
+
+This project covers the full stack: a REST API backend and a web admin dashboard, built to be deployed to production infrastructure.
+
+---
+
+## Role
+**Solo Developer** — backend architecture, database schema, REST API, admin frontend, electronic invoicing integration, and production deployment.
+
+---
+
+## The Problem
+
+Colombian SMEs face a specific challenge:
+- DIAN (Colombia's tax authority) requires electronic invoicing for all registered businesses
+- Most affordable POS systems either lack this integration or require expensive monthly plans
+- Businesses need: product management, sales tracking, cash register sessions, and legal invoices — all in one system
+
+---
+
+## Solution
+
+A self-hostable POS system with two separate parts:
+
+### Backend — REST API
+
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Bun 1.2+ |
+| Language | TypeScript (ES Modules) |
+| Database | PostgreSQL 15 |
+| ORM | Prisma with Accelerate extension |
+| Auth | JWT (access token 15min + refresh token 7d) |
+| API Docs | OpenAPI + Swagger UI at `/docs` |
+| Deployment | Railway / Docker |
+
+**API Modules:**
+- `/auth` — JWT login with role-based guards (admin / cashier)
+- `/products` — CRUD with category filtering
+- `/categories` — Product taxonomy
+- `/customers` — Customer database
+- `/sales` — Create, list, and view sale details
+- `/cash` — Open/close cash register sessions, session history
+- `/business` — Business profile and fiscal settings
+- `/billing/electronic-invoicing` — Factus integration config
+- `/billing/factus/catalogs` — Sync DIAN catalogs (municipalities, measurement units, tributes, numbering ranges)
+
+### Frontend — Admin Dashboard
+
+| Layer | Technology |
+|-------|-----------|
+| Build tool | Vite |
+| Framework | React 18 + TypeScript |
+| State | Zustand 5 |
+| Server state | TanStack Query (React Query) 5 |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts |
+| UI | shadcn/ui + Radix UI |
+| Styling | TailwindCSS 3.4 |
+| Testing | Vitest |
+
+---
+
+## Technical Decisions Worth Explaining
+
+**Why Bun instead of Node.js?**
+Bun runs TypeScript natively without a build step in development, starts significantly faster than Node, and has built-in test runner and bundler. For a backend that needs fast iteration cycles and minimal configuration, Bun reduces friction without sacrificing production stability.
+
+**Why Prisma with Accelerate?**
+Prisma's typed query builder prevents SQL injection and provides compile-time guarantees on query shape. Accelerate adds connection pooling and query caching for PostgreSQL — important in serverless/edge deployments where connection limits are a constraint.
+
+**Why Zustand + React Query instead of just one state library?**
+They solve different problems. Zustand manages UI state (active session, current cashier, sidebar state). React Query manages server state (products cache, sales list, customer data) with built-in cache invalidation, background refetch, and loading/error states. Using one for both would either over-engineer local UI state or under-serve the API caching needs.
+
+**Why JWT with short-lived access tokens?**
+Cash register systems need security controls. A 15-minute access token limits the window of exposure if a token is intercepted. The refresh token rotation pattern means users stay logged in during a shift without re-authenticating.
+
+---
+
+## Challenges
+
+1. **DIAN/Factus integration** — The Colombian electronic invoicing API has specific catalog requirements (municipalities, measurement units, tax tributes, numbering ranges) that must be synced and cached locally to avoid repeated API calls during invoice generation.
+2. **Cash register session model** — Modeling open/close cycles with historical audit trails required careful database schema design to support business reporting without data loss.
+3. **Role-based access** — Admin and cashier roles need different views and API access levels. Implementing role guards consistently across both the API (JWT claims) and the frontend (route protection) without duplication.
+
+---
+
+## Final Thoughts
+
+POS Colombia is the most technically complete project in this portfolio. It demonstrates full-stack architecture decisions, a production-ready backend with documented API, real business domain knowledge (Colombian fiscal compliance), and a data-rich admin frontend with charts, forms, and role management.

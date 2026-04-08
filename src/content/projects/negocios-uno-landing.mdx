@@ -1,91 +1,82 @@
 ---
 title: Negocios Uno Landing Page
-summary: I built the landing page for Negocios Uno, a platform that offers business management solutions for small and medium enterprises. The site presents the product's features in a clean, responsive, and professional design.
+summary: First paid freelance project. Built the marketing landing page for Negocios Uno, a business management platform for SMEs. Delivered with Astro for performance and Tailwind for rapid iteration under a short client deadline.
 tags:
   - Astro
   - TailwindCSS
 startDate: 2024-03-10
 endDate: 2024-03-20
 author: Ulises Gómez
-url: https://negociosuno-landing.vercel.app/
-cover: './images/portada-negociosuno.webp'
-ogImage: './images/budget-wise/og-finance_app.webp'
----
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Role](#role)
-3. [Challenge](#challenge)
-4. [Goal](#goal)
-5. [Solution](#solution)
-- [Tech Stack](#tech-stack)
-- [Key Features](#key-features)
-- [User Flow](#user-flow)
-6. [Challenges and Learnings](#challenges-and-learnings)
-7. [Final Thoughts](#final-thoughts)
-
+url: https://www.negociosuno.com/
+cover: './images/negociosuno.png'
+ogImage: './images/portada-negociosuno.webp'
 ---
 
 ## Overview
-**Negocios Uno** is a platform that helps small and medium businesses manage their operations more efficiently.
 
-For its online presence, I developed the **official landing page**, focusing on presenting the main features of the platform with a modern and easy-to-navigate design. The site was built using **Astro** and **TailwindCSS**, optimized for performance and responsive on all devices.
+**Negocios Uno** is a platform that helps small and medium businesses manage their day-to-day operations. The client needed a professional landing page to generate leads and communicate the product's value to business owners who aren't necessarily tech-savvy.
 
----
-
-## 👨‍💻 Role
-**Frontend Developer**
-In charge of the full development of the **landing page** and adapting the design for web.
+This was my first paid freelance web project.
 
 ---
 
-## ❓ Challenge
-Negocios Uno needed:
-1. A professional site to introduce their business management tool.
-2. A simple, mobile-friendly page.
-3. A clear structure to highlight features and call to action.
+## Role
+
+**Freelance Frontend Developer** — requirements gathering, design implementation, development, and delivery.
 
 ---
 
-## 🎯 Goal
-1. Build a clean and responsive landing page.
-2. Help Negocios Uno reach more businesses online.
-3. Use a fast and lightweight stack to ensure speed and efficiency.
+## The Problem
 
-![Landing Negocios Uno](./images/budget-wise/finance1.webp)
+The client had a working product but no web presence. Potential users were landing on nothing after seeing the product mentioned on social media. The brief was clear: build a fast, professional site that converts visitors into contacts, with a two-week deadline.
 
 ---
 
-## ✨ Solution
+## Technical Decisions
 
-### Tech Stack
-- **Astro:** For fast and optimized static site generation.
-- **TailwindCSS:** For a clean and responsive design.
-- **Mobile-First Approach:** Designed to work well on phones, tablets, and desktops.
+**Why Astro?**
 
-### Key Features
-1. **Clear Sections:** Easy to read and navigate.
-2. **Responsive Design:** Good experience on any screen size.
-3. **Smooth Animations:** Enhancing user interaction without slowing down.
-4. **Fast Loading:** Optimized code with Astro for performance.
+The site is entirely marketing content — no login, no dynamic data, no interactivity beyond a contact CTA. Astro's static output means the page loads as raw HTML — no JavaScript parse time, no hydration overhead. For a landing page where every second of load time affects conversion, this was the right choice.
 
-### User Flow
-1. **Landing:** Users see the platform's mission.
-2. **Features:** Discover how Negocios Uno can help their business.
-3. **Call to Action:** Buttons to get started or contact the team.
+**Constraint-driven stack selection:**
+
+Two weeks, solo developer, client with non-technical feedback cycles. Astro's file-based routing and component model made the project easy to reason about, easy to iterate on, and easy to hand off.
 
 ---
 
-## ⚙️ Challenges and Learnings
-1. **Page Speed:** Ensuring fast loading with Astro.
-2. **Mobile Responsiveness:** Testing across different screen sizes.
-3. **Simple Structure:** Keeping content clear and easy to follow.
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Astro |
+| Styling | TailwindCSS |
+| Deployment | Vercel |
 
 ---
 
-## ✨ Final Thoughts
-1. **Simple Works Best:** Clear and responsive landing pages perform well.
-2. **Astro + Tailwind:** A powerful combo for static sites.
-3. **Focus on Users:** Designing for easy reading and quick action was key.
+## What I Built
+
+- Hero section with primary value proposition and CTA
+- Features breakdown for SME decision-makers
+- Testimonials section
+- Contact section
+- Mobile-first responsive layout
+- SEO metadata (title, description, Open Graph)
 
 ---
+
+## What This Project Taught Me
+
+Working with a real client for the first time taught me things no tutorial covers:
+
+- **Requirements change mid-build** — building with components made pivoting painless
+- **Non-technical feedback is specific but described visually** — "make it feel more serious" means adjusting font weight, spacing, and color contrast, not the layout
+- **Delivery means deployed and working** — not just running locally
+
+---
+
+## What I'd Improve Now
+
+- Add a working contact form with email delivery (Resend or Formspree)
+- Implement analytics to track CTA clicks
+- Add `rel="noopener noreferrer"` to all external links

@@ -18,12 +18,12 @@ const allProjects = (await getCollection('projects'))
     .sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
 ---
 
-<Layout title="Ulises Gómez | Portfolio | My Projects" description="A list of my best projects" scrollSmooth={false}>
+<Layout title="Ulises Gómez | Projects" description="A selection of frontend projects — landing pages, SaaS dashboards, full-stack apps, and a cross-platform mobile app." scrollSmooth={false}>
     <>
         <!--Projects Section-->
         <section class="border-bottom">
             <div class="mb-4">
-                <h2 class="text-3xl font-bold mb-8">All My Projects</h2>
+                <h2 class="text-3xl font-bold mb-8">Projects</h2>
             </div>
         </section>
         <!--Projects List-->

@@ -1,92 +1,82 @@
 ---
 title: IWIE Agro Landing Page
-summary: I developed the official landing page for IWIE Agro, a platform focused on digital solutions for agriculture. The site presents the benefits and features of the system with a modern, responsive design.
+summary: Landing page for IWIE Agro, a platform digitizing agricultural management for farmers in Latin America. Built with React and Vite, the site communicates a technical product to a non-technical rural audience — a UX challenge that shaped every content and layout decision.
 tags:
   - React
   - Vite
   - TailwindCSS
 startDate: 2024-02-01
-endDate: 2024-02-15
+endDate: 2024-02-20
 author: Ulises Gómez
 url: https://iwie-agro.vercel.app/
 cover: './images/portada-iwieagro.webp'
-ogImage: './images/budget-wise/og-finance_app.webp'
----
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Role](#role)
-3. [Challenge](#challenge)
-4. [Goal](#goal)
-5. [Solution](#solution)
-- [Tech Stack](#tech-stack)
-- [Key Features](#key-features)
-- [User Flow](#user-flow)
-6. [Challenges and Learnings](#challenges-and-learnings)
-7. [Final Thoughts](#final-thoughts)
-
+ogImage: './images/portada-iwieagro.webp'
 ---
 
 ## Overview
-**IWIE Agro** is a platform that helps farmers improve and modernize their agricultural processes.
 
-For its launch, I built the **official landing page**, designed to highlight the platform's value and attract new users and partners. The site was built using **React**, **Vite**, and **TailwindCSS**, ensuring fast performance and full mobile compatibility.
+**IWIE Agro** is a platform that helps farmers in Latin America manage agricultural processes digitally — crop cycles, inputs, harvests, and field records. The product sits in an interesting space: technically sophisticated but aimed at users with limited digital experience.
 
----
-
-## 👨‍💻 Role
-**Frontend Developer**
-Responsible for the full development of the **landing page** and implementation of the design.
+The landing page had to make that gap disappear. It needed to look modern and credible for investors while being immediately understandable for its actual end users.
 
 ---
 
-## ❓ Challenge
-IWIE Agro needed:
-1. A professional website to present their solution.
-2. A fast, mobile-friendly site.
-3. A clear way to showcase features and benefits.
+## Role
+
+**Freelance Frontend Developer** — design implementation, component architecture, and deployment.
 
 ---
 
-## 🎯 Goal
-1. Design and build a modern, responsive landing page.
-2. Create a strong online presence for IWIE Agro.
-3. Use a simple but powerful tech stack to deliver quickly.
+## The Problem
 
-![Landing IWIE Agro](./images/budget-wise/finance1.webp)
+Agro-tech platforms face a specific communication challenge: the people who approve the budget (investors, cooperatives) and the people who use the product daily (farmers, field technicians) have different expectations from the same site.
 
----
-
-## ✨ Solution
-
-### Tech Stack
-- **React + Vite:** For a fast and smooth development.
-- **TailwindCSS:** For clean and responsive design.
-- **Mobile-First Approach:** Optimized for phones, tablets, and desktops.
-
-### Key Features
-1. **Modern Design:** Clean sections, fresh colors, and easy-to-read text.
-2. **Fully Responsive:** Great experience on mobile and desktop.
-3. **Smooth Animations:** Subtle effects to improve user flow.
-4. **Fast Loading:** Thanks to optimized code and Vite.
-
-### User Flow
-1. **First Visit:** Users learn about IWIE Agro's mission.
-2. **Explore Features:** Clear presentation of benefits.
-3. **Call to Action:** Buttons to get in touch or learn more.
+Too technical and you lose the farmers. Too simple and you lose investor credibility.
 
 ---
 
-## ⚙️ Challenges and Learnings
-1. **Performance Optimization:** Making sure the site loads fast.
-2. **Consistent Visuals:** Keeping the brand identity clear across the site.
-3. **Responsive Testing:** Checking that everything works on all devices.
+## Technical Decisions
+
+**Why React + Vite over Astro?**
+
+At the project's start I was already working in a React environment and the client expected future feature additions — a video demo, an interactive calculator. A SPA setup with Vite gave flexibility for those additions without needing to migrate the framework later. The tradeoff versus Astro's static output was acceptable given the roadmap.
+
+**Mobile-first from the real target user:**
+
+The primary end user is a farmer in a rural area, likely on a mid-range Android device on a 4G or 3G connection. That's not a theoretical constraint — it determined image compression choices, layout simplicity, and font size minimums.
 
 ---
 
-## ✨ Final Thoughts
-1. **First Impressions Matter:** A strong landing page helps build trust.
-2. **Lightweight Stack, Strong Results:** React, Vite, and Tailwind are great for modern sites.
-3. **Adaptability:** Balancing speed and design details was key to success.
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 18 |
+| Build tool | Vite |
+| Styling | TailwindCSS |
+| Deployment | Vercel |
 
 ---
+
+## What I Built
+
+- Hero with product value proposition for dual audience
+- Feature grid targeting pain points familiar to farmers (record keeping, input tracking)
+- How-it-works section with simplified step flow
+- Social proof section
+- CTA section with contact and download links
+- Responsive layout optimized for mid-range mobile devices
+
+---
+
+## What This Project Taught Me
+
+This was my first project where I had to design content strategy alongside the UI. "What should this section say?" was as important as "how should this section look?" — and answering it required understanding the end user, not just the client.
+
+---
+
+## What I'd Improve Now
+
+- Replace placeholder images with real product screenshots
+- Add lazy loading for below-fold images
+- Implement a Spanish-first copy strategy — the current version underserves native Spanish-speaking users

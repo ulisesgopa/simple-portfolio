@@ -1,91 +1,87 @@
 ---
 title: Stream Tech Landing Page
-summary: As CEO and frontend developer, I built the landing page for Stream Tech, a company offering streaming and audiovisual solutions. The site highlights the company's services and showcases its participation in Medellín's entrepreneurship programs.
+summary: I built and deployed the official marketing site for Stream Tech, a company I founded for livestream and virtual event automation. Built with Astro for zero-JS static output — a deliberate performance decision for a marketing site that needed fast SEO-indexed load times.
 tags:
   - Astro
   - TailwindCSS
+  - TypeScript
 startDate: 2024-01-15
-endDate: 2024-01-30
+endDate: 2024-02-10
 author: Ulises Gómez
-url: https://www.streamtech.com.co/
-cover: './images/budget-wise/finance_app_concept.webp'
-ogImage: './images/budget-wise/og-finance_app.webp'
----
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Role](#role)
-3. [Challenge](#challenge)
-4. [Goal](#goal)
-5. [Solution](#solution)
-- [Tech Stack](#tech-stack)
-- [Key Features](#key-features)
-- [User Flow](#user-flow)
-6. [Challenges and Learnings](#challenges-and-learnings)
-7. [Final Thoughts](#final-thoughts)
-
+url: https://streamtech-landing-astrowind.vercel.app/
+cover: './images/streamtech.png'
+ogImage: './images/streamtech.png'
 ---
 
 ## Overview
-**Stream Tech** is a company specialized in streaming services and audiovisual solutions for businesses and events.
 
-As part of its growth, I led the development of the **official landing page**, designed to showcase its services, solutions, and participation in the **Ruta de Emprendimiento** program in Medellín, Colombia. Built with **Astro** and **TailwindCSS**, the site offers speed, clarity, and mobile responsiveness.
+**Stream Tech** provides automation solutions for livestreams, TV channels, and virtual events. For a startup in an early growth stage, the marketing site is the first — and often only — impression with potential clients and investors.
 
----
-
-## 👨‍💻 Role
-**CEO & Frontend Developer**
-Responsible for the site's design, development, and presentation of the brand online.
+I was the person who wrote the code and the one responsible for the business outcome at the same time. That dual perspective shaped every technical decision.
 
 ---
 
-## ❓ Challenge
-Stream Tech needed:
-1. A professional site to present its streaming and AV services.
-2. A clear way to highlight its experience and success stories.
-3. An optimized site ready for both clients and entrepreneurship partners.
+## Role
+
+**CEO & Frontend Developer** — sole responsible for design direction, code, deployment, and production maintenance.
 
 ---
 
-## 🎯 Goal
-1. Build a modern, responsive landing page.
-2. Increase visibility and credibility for Stream Tech.
-3. Support the company’s participation in Medellín's entrepreneurial ecosystem.
+## The Problem
 
-![Landing Stream Tech](./images/budget-wise/finance1.webp)
+A new company in the media technology space has two audiences reading the same site with completely different questions:
 
----
+- **Potential clients** want to understand what the service does and whether to contact us
+- **Startup program evaluators** (Ruta de Emprendimiento 2024) want to see a credible, professional digital presence
 
-## ✨ Solution
-
-### Tech Stack
-- **Astro:** For static site generation and fast performance.
-- **TailwindCSS:** For clean, responsive design.
-- **Mobile-First Approach:** Great user experience across all devices.
-
-### Key Features
-1. **Modern Design:** Clear sections and professional look.
-2. **Responsive Layout:** Mobile and desktop ready.
-3. **Program Highlight:** Showcasing participation in Medellín's Ruta de Emprendimiento.
-4. **Fast Loading:** Optimized build with Astro and TailwindCSS.
-
-### User Flow
-1. **First Visit:** Users discover Stream Tech's mission and services.
-2. **Explore Solutions:** Learn about streaming and audiovisual offerings.
-3. **Call to Action:** Contact forms and links for potential clients and partners.
+A slow or poorly designed site fails both.
 
 ---
 
-## ⚙️ Challenges and Learnings
-1. **Content Clarity:** Balancing technical services with approachable language.
-2. **Visual Identity:** Aligning the site design with Stream Tech's brand.
-3. **Performance Optimization:** Ensuring fast load times across devices.
+## Technical Decisions
+
+**Why Astro over Next.js?**
+
+Stream Tech's landing is static content — services, case studies, contact info. There is no user authentication, no real-time data, no client-side state. Next.js would send React's runtime JavaScript to every visitor for a page that never uses it.
+
+Astro generates pure HTML at build time with zero JavaScript by default. The result: faster Time to First Byte, better Core Web Vitals scores, and simpler deployment to a CDN — which matters when the site is part of a business pitch.
+
+**Why TailwindCSS?**
+
+A startup landing goes through multiple rounds of copy and layout feedback from non-technical stakeholders. Tailwind's utility classes make visual iterations fast without touching a separate stylesheet. Changes happen in the component file directly.
 
 ---
 
-## ✨ Final Thoughts
-1. **Professional Online Presence:** Essential for building trust in the streaming and AV industry.
-2. **Astro + TailwindCSS:** A strong combo for fast, modern websites.
-3. **Community Involvement:** Showcasing participation in local entrepreneurship programs adds value.
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Astro |
+| Styling | TailwindCSS |
+| Language | TypeScript |
+| Deployment | Vercel |
 
 ---
+
+## What I Built
+
+- Services section presenting Stream Tech's offerings
+- Startup program showcase (Ruta de Emprendimiento 2024, Medellín)
+- Mobile-first responsive layout across all viewports
+- Optimized metadata for SEO (Open Graph, title, description)
+- Static deployment pipeline via Vercel
+
+---
+
+## What I'd Improve Now
+
+With what I know today, I'd add:
+- A contact form with Resend for email capture
+- Vercel Analytics to understand which sections drive engagement
+- Structured data (JSON-LD) for better search visibility
+
+---
+
+## Final Thoughts
+
+Building a site for your own company is a different experience than client work. Every performance tradeoff has a direct business consequence. That context reinforced why framework choice matters — not as a preference, but as a product decision.

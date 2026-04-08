@@ -9,7 +9,7 @@ const softSkills: SoftSkill[] = [
     icon: "tools-fill",
   },
   {
-    name: "Collaborative team player with strong communication",
+    name: "Collaborative team player with strong communication skills",
     icon: "group-fill",
   },
   {

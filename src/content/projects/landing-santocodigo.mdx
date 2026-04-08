@@ -1,0 +1,68 @@
+---
+title: Santo Código Landing Page
+summary: A clean, responsive landing page for Santo Código, built with React and Vite. Focused on fast delivery, mobile-first layout, and reusable component structure using shadcn/ui and TailwindCSS.
+tags:
+  - React
+  - Vite
+  - TypeScript
+  - Tailwind CSS
+startDate: 2024-06-01
+endDate: 2024-07-15
+author: Ulises Gómez
+url: https://www.santocodigo.com/
+cover: './images/santocodigo.png'
+ogImage: './images/santocodigo.png'
+---
+
+## Overview
+
+**Santo Código** needed a professional landing page that clearly communicated their brand and services. The requirement was a fast turnaround, clean design, and a fully responsive layout from mobile to desktop.
+
+---
+
+## Role
+**Frontend Developer** — design implementation, component architecture, and delivery.
+
+---
+
+## The Problem
+
+Small tech brands often launch without a professional web presence. A generic template won't communicate their specific voice or positioning. The site needed to feel custom while being delivered quickly.
+
+---
+
+## Solution
+
+A focused single-page landing built with React and Vite — fast build times, no unnecessary dependencies, and a component structure that made iteration quick during feedback cycles.
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 18 |
+| Build tool | Vite |
+| Language | TypeScript |
+| UI components | shadcn/ui + Radix UI |
+| Styling | TailwindCSS 3.4 |
+| Routing | React Router DOM |
+
+### Key Decisions
+
+**Why Vite over Next.js for a simple landing?**
+A landing page with no server-side data fetching or SEO-critical dynamic content doesn't need Next.js's complexity. Vite gives instant hot module replacement during development and a smaller production bundle. The result is a simpler project that's easier to hand off and maintain.
+
+**Why shadcn/ui?**
+Component consistency with zero design debt. Using Radix primitives ensures the navigation menu, accordions, and buttons are accessible by default without custom ARIA implementation.
+
+---
+
+## Challenges
+
+1. **Mobile-first execution** — Starting from the 375px layout and building up to desktop, avoiding the common mistake of designing desktop-first and breaking it down.
+2. **Component reuse** — Building section components as composable units so the client could easily request layout changes without full rewrites.
+
+---
+
+## Final Thoughts
+
+Santo Código demonstrates clean, fast frontend delivery for a real client with a clear brief. Not every project needs a complex stack — choosing the right tool for the scope is itself a technical decision.
