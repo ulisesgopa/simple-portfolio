@@ -1,285 +1,287 @@
 ---
 author: Ulises Gómez
 publishDate: 2025-06-01T10:00:00Z
-title: Mobile First — How I Think About Responsive Design
+title: "Mobile-First Reference — Responsive Design, Breakpoints & Audit"
 tags:
     - CSS
     - Tailwind CSS
     - Responsive Design
     - Mobile First
-description: The mobile-first principle applied to real projects — what it actually means in practice, how it's applied with Tailwind, the most common mistakes, and how to audit your own design.
+description: Quick reference for mobile-first responsive design. min-width vs max-width, Tailwind breakpoints, responsive patterns for nav, grids, and hero sections, common mistakes, and how to audit your own work.
 cover:
   src: './images/customizing-user-information/cover.webp'
   alt: 'Mobile First Responsive Design'
 ---
 
-## What "Mobile First" Actually Means
+## Quick Reference
 
-Mobile first is not "make it work on mobile too". It's a **CSS strategy**: you write the base styles for the smallest viewport and then use media queries to add styles as the viewport grows.
+- **Mobile-first** means base styles target the smallest viewport. Breakpoints **add** styles for larger screens — they never remove
+- Tailwind breakpoints are **min-width**: `md:` = "768px and up". Unprefixed classes apply to all sizes
+- Start designing at **375px** (smallest common phone). Desktop is the enhancement, not the default
+- `max-width` + `mx-auto` on containers prevents content from stretching too wide on large screens
+- Touch targets need a minimum of **44×44px** (WCAG guideline)
+- The viewport meta tag is **required** — without it, mobile devices render at desktop width
 
-The difference is fundamental:
+---
+
+## Mobile-first vs desktop-first — what's the actual difference?
+
+It's the **direction of media queries**:
 
 ```css
-/* ❌ Desktop first — design for desktop then "fix" mobile */
-.card {
+/* ❌ Desktop-first — base is desktop, mobile is a correction */
+.grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* desktop */
+  grid-template-columns: repeat(3, 1fr);  /* desktop default */
 }
-
 @media (max-width: 768px) {
-  .card {
-    grid-template-columns: 1fr; /* override for mobile */
-  }
+  .grid { grid-template-columns: 1fr; }  /* override for mobile */
 }
 
-/* ✅ Mobile first — design for mobile then enhance for desktop */
-.card {
+/* ✅ Mobile-first — base is mobile, desktop is an enhancement */
+.grid {
   display: grid;
-  grid-template-columns: 1fr; /* mobile base */
+  grid-template-columns: 1fr;            /* mobile default */
 }
-
 @media (min-width: 768px) {
-  .card {
-    grid-template-columns: 1fr 1fr 1fr; /* enhancement for desktop */
-  }
+  .grid { grid-template-columns: repeat(3, 1fr); }  /* add for desktop */
 }
 ```
 
-The direction of the override matters: desktop-first creates "fix" code, mobile-first creates "enhancement" code.
+Mobile-first produces **enhancement code** (adding capabilities). Desktop-first produces **correction code** (removing or overriding). Enhancement is more maintainable.
 
 ---
 
-## Tailwind Implements Mobile-First by Design
+## How do Tailwind's breakpoints work?
 
-Every Tailwind class without a prefix applies to **all sizes**. Breakpoint prefixes are `min-width` — they apply from that size upward:
+Every Tailwind breakpoint prefix applies **from that width upward**:
 
-```
-no prefix → 0px and up (mobile base)
-sm:        → 640px and up
-md:        → 768px and up
-lg:        → 1024px and up
-xl:        → 1280px and up
-2xl:       → 1536px and up
-```
+| Prefix | Min-width | Typical target |
+|--------|-----------|----------------|
+| *(none)* | 0px | Mobile base |
+| `sm:` | 640px | Large phone |
+| `md:` | 768px | Tablet |
+| `lg:` | 1024px | Laptop |
+| `xl:` | 1280px | Desktop |
+| `2xl:` | 1536px | Wide desktop |
 
 ```html
-<!-- Mobile: vertical stack, centered text, full-width button -->
-<!-- Tablet (md+): 2 columns, left-aligned text -->
-<!-- Desktop (lg+): 3 columns -->
+<!-- Read as: "1 col always, 2 cols from md, 3 cols from lg" -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-<div class="flex flex-col text-center md:flex-row md:text-left">
-  <button class="w-full md:w-auto">
-    Contact
-  </button>
-</div>
+<!-- "block on mobile (hamburger), flex on desktop (full nav)" -->
+<button class="block md:hidden">☰</button>
+<nav class="hidden md:flex gap-6">...</nav>
 ```
 
 ---
 
-## The Process I Follow on Every Project
+## What are the common responsive patterns?
 
-### 1. Always Start at 375px
-
-Before writing a single line of CSS, I set the browser viewport to 375px (iPhone SE — the smallest in common use). Every design decision starts from there.
-
-### 2. Define the Mobile Layout First
+### Navbar
 
 ```html
-<!-- Octopay landing — features section -->
-<!-- Mobile: 1 column, stacked cards -->
-<!-- Desktop: 3-column grid -->
-
-<section class="px-4 py-12 md:px-8 lg:px-16">
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-    <FeatureCard />
-    <FeatureCard />
-    <FeatureCard />
-  </div>
-</section>
-```
-
-### 3. Scalable Typography
-
-```html
-<!-- Headings that scale with the viewport -->
-<h1 class="text-2xl font-bold md:text-4xl lg:text-5xl">
-  Connect your business to the future
-</h1>
-
-<p class="text-sm text-gray-600 md:text-base lg:text-lg">
-  Description that scales too
-</p>
-```
-
-### 4. Proportional Spacing
-
-```html
-<!-- More padding on large screens, less on mobile -->
-<section class="py-8 px-4 md:py-16 md:px-8 lg:py-24 lg:px-16">
-```
-
----
-
-## Real Patterns from My Projects
-
-### Responsive Navbar — Octopay Landing
-
-```html
-<!-- Mobile: logo + hamburger button -->
-<!-- Desktop: logo + horizontal links + CTA -->
-
-<nav class="flex items-center justify-between px-4 py-3 md:px-8">
+<!-- Mobile: logo + hamburger -->
+<!-- Desktop: logo + links + CTA -->
+<header class="flex items-center justify-between px-4 py-3 md:px-8">
   <Logo />
 
-  <!-- Hamburger — visible only on mobile -->
+  <!-- Hamburger — mobile only -->
   <button class="block md:hidden" onClick={toggleMenu}>
     <MenuIcon />
   </button>
 
-  <!-- Links — hidden on mobile, visible on desktop -->
-  <div class="hidden md:flex items-center gap-6">
-    <NavLinks />
-    <Button>Get Started</Button>
-  </div>
-</nav>
+  <!-- Links — desktop only -->
+  <nav class="hidden md:flex items-center gap-6">
+    <a href="/about">About</a>
+    <a href="/projects">Projects</a>
+    <Button>Contact</Button>
+  </nav>
+</header>
 
-<!-- Mobile menu — dropdown -->
-<div class={`block md:hidden ${isOpen ? 'block' : 'hidden'}`}>
-  <MobileMenu />
+<!-- Mobile drawer -->
+{isOpen && (
+  <div class="block md:hidden border-t px-4 py-3 space-y-2">
+    <a class="block py-2" href="/about">About</a>
+    <a class="block py-2" href="/projects">Projects</a>
+  </div>
+)}
+```
+
+### Hero with image
+
+```html
+<!-- Mobile: stack (image top, text bottom) -->
+<!-- Desktop: split (text left, image right) -->
+<section class="flex flex-col gap-8 px-4 py-12 lg:flex-row lg:items-center lg:px-16 lg:py-24">
+  <div class="text-center lg:text-left lg:flex-1">
+    <h1 class="text-3xl font-bold md:text-4xl lg:text-5xl">Headline</h1>
+    <p class="mt-4 text-gray-600 md:text-lg">Supporting copy</p>
+    <Button class="mt-6">CTA</Button>
+  </div>
+
+  <div class="w-full max-w-sm mx-auto lg:flex-1 lg:max-w-none">
+    <img src="/hero.png" class="w-full" alt="Hero" />
+  </div>
+</section>
+```
+
+### Card grid
+
+```html
+<!-- 1 col mobile → 2 col tablet → 3 col desktop -->
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  {items.map(item => <Card item={item} />)}
 </div>
 ```
 
-### Projects Grid — This Portfolio
+### Scalable typography
 
 ```html
-<!-- 1 column on mobile, 2 on tablet, stays 2 on desktop by design -->
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-  {projects.map(project => <ProjectCard project={project} />)}
-</div>
+<h1 class="text-2xl font-bold md:text-4xl lg:text-5xl">
+  Title that scales
+</h1>
+<p class="text-sm text-gray-600 md:text-base lg:text-lg">
+  Body text
+</p>
 ```
 
-### Hero Section with Image — PeludoTag
+### Container with max-width
 
 ```html
-<!-- Mobile: image on top, text below (stack) -->
-<!-- Desktop: image on the right, text on the left (split) -->
-
-<section class="flex flex-col items-center gap-8 lg:flex-row lg:justify-between">
-  <div class="text-center lg:text-left lg:w-1/2">
-    <h1>Find your lost pet</h1>
-    <p>QR code system for pets</p>
-    <Button>Register a pet</Button>
-  </div>
-
-  <div class="w-full max-w-sm lg:w-1/2 lg:max-w-none">
-    <img src="/hero-pet.png" alt="Pet with QR code" />
+<!-- Without max-width: content stretches edge-to-edge on wide screens -->
+<!-- With max-width: comfortable reading width centered on screen -->
+<section class="px-4 py-12 md:px-8 lg:py-24">
+  <div class="max-w-4xl mx-auto">
+    Content here
   </div>
 </section>
 ```
 
 ---
 
-## Common Mistakes I Made and Fixed
+## What is the viewport meta tag?
 
-### 1. Forgetting the Viewport Meta Tag
-
-Without this, mobile will never render correctly:
+Without it, mobile devices render the page at desktop width (typically 980px) and then scale it down — everything becomes tiny and unreadable:
 
 ```html
-<!-- In the <head> — mandatory -->
+<!-- Required in <head> of every page -->
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 ```
 
-### 2. Using Fixed `px` for Font Sizes
+This tells the browser to use the device's actual width as the viewport width.
 
+---
+
+## How do you audit your own responsive design?
+
+**Chrome DevTools responsive mode:** `Cmd + Shift + M` (Mac) / `Ctrl + Shift + M` (Windows)
+
+**Viewports to test at:**
+
+```
+375px  → smallest common phone (iPhone SE)
+430px  → iPhone 15 Pro Max
+768px  → iPad portrait
+1024px → iPad landscape / small laptop
+1440px → standard desktop
+```
+
+**Checklist per viewport:**
+
+```
+375px:
+□ No horizontal scroll
+□ Text readable without zooming
+□ Buttons have enough tap area (min 44px height)
+□ Images don't clip or overflow
+□ Nav shows hamburger menu
+
+768px:
+□ Layout shifts from 1 column to 2
+□ Hamburger transitions to full nav
+
+1024px+:
+□ Content doesn't stretch too wide (max-width on containers)
+□ Text line length is comfortable (not more than ~80 chars)
+□ Sufficient whitespace
+```
+
+---
+
+## Common Interview Questions
+
+**Q: What is mobile-first and why does it matter?**
+**A:** A CSS strategy where base styles target the smallest viewport and `min-width` media queries add complexity for larger screens. It matters because most web traffic is mobile, and progressive enhancement (adding capabilities) produces simpler, more maintainable code than graceful degradation (removing them).
+
+**Q: What's the difference between `max-width` and `min-width` in media queries?**
+**A:** `max-width` applies the style up to that width — desktop-first. `min-width` applies from that width upward — mobile-first. Tailwind uses `min-width` exclusively for all breakpoint prefixes.
+
+**Q: Why is Tailwind inherently mobile-first?**
+**A:** Because unprefixed classes apply to all screen sizes, and breakpoint prefixes (`md:`, `lg:`) are `min-width` — they add styles to larger screens but never remove styles from smaller ones.
+
+**Q: What is a touch target and what's the minimum size?**
+**A:** The tappable area on a touchscreen. WCAG 2.5.5 recommends a minimum of 44×44px so it's comfortable to activate with a fingertip. Buttons that are too small cause accidental taps and accessibility failures.
+
+---
+
+## Common Mistakes
+
+**1. Missing the viewport meta tag** — the single most impactful mistake. Mobile browsers render at desktop width without it.
+
+**2. Fixed `px` font sizes** — prevent users from adjusting text size in their browser.
 ```css
-/* ❌ Doesn't scale with user preferences */
-font-size: 16px;
-
-/* ✅ Relative to the browser's base size */
-font-size: 1rem;  /* = 16px by default, but respects user changes */
+/* ❌ */  font-size: 16px;
+/* ✅ */  font-size: 1rem;  /* respects browser base size */
 ```
 
-### 3. Elements Breaking Out of the Viewport on Mobile
-
+**3. Images without width constraints** — an `<img>` without `width` or `max-width` can exceed the viewport.
 ```html
-<!-- ❌ An image without a width constraint can break the layout -->
-<img src="hero.png" />
-
-<!-- ✅ Always constrain images -->
-<img src="hero.png" class="w-full max-w-full" />
+<!-- ❌ -->  <img src="hero.png" />
+<!-- ✅ -->  <img src="hero.png" class="w-full max-w-full" />
 ```
 
-### 4. Touch Targets That Are Too Small
-
-Buttons on mobile need at least 44px height so a finger can tap them comfortably:
-
+**4. Touch targets smaller than 44px** — text links and tiny icon buttons fail on mobile.
 ```html
-<!-- ❌ Too small for mobile -->
-<button class="py-1 px-2 text-xs">Send</button>
-
-<!-- ✅ Appropriate touch target -->
-<button class="py-3 px-4 min-h-[44px]">Send</button>
+<!-- ❌ -->  <button class="py-1 px-2 text-xs">Save</button>
+<!-- ✅ -->  <button class="py-3 px-4 min-h-[44px]">Save</button>
 ```
+
+**5. No `max-width` on desktop** — content stretches to the full browser width, creating uncomfortably long line lengths on large monitors.
 
 ---
 
-## How to Audit Your Own Responsive Design
-
-**1. Chrome DevTools — Device Toolbar**
-- `Cmd + Shift + M` (Mac) or `Ctrl + Shift + M` (Windows)
-- Test at: 375px, 428px, 768px, 1024px, 1440px
-
-**2. Checklist per viewport:**
-
-```
-375px (small mobile):
-□ Is there horizontal scroll? (there shouldn't be)
-□ Is the text readable without zooming?
-□ Are the buttons tappable?
-□ Are images not clipped?
-
-768px (tablet):
-□ Does the layout shift from 1 column to 2?
-□ Does the navbar switch from hamburger to links?
-
-1024px+ (desktop):
-□ Is the content not stretching too wide?
-□ Is there a max-width on containers?
-```
-
-**3. Max-width on containers — frequent desktop mistake**
+## Cheat Sheet
 
 ```html
-<!-- ❌ Text stretches to full screen width on desktop -->
-<section class="px-8">
-  <p>Very long text that's hard to read on wide monitors...</p>
+<!-- ── Required head tag ───────────────────────────────── -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- ── Tailwind breakpoints (min-width) ───────────────── -->
+<!-- sm: 640px | md: 768px | lg: 1024px | xl: 1280px -->
+<div class="text-sm md:text-base lg:text-lg">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div class="flex flex-col md:flex-row">
+<div class="px-4 md:px-8 lg:px-16">
+
+<!-- ── Container pattern ──────────────────────────────── -->
+<section class="px-4 py-12 md:py-20">
+  <div class="max-w-5xl mx-auto">content</div>
 </section>
 
-<!-- ✅ Centered container with a maximum width -->
-<section class="px-4 md:px-8">
-  <div class="max-w-4xl mx-auto">
-    <p>Text with a readable line length on any screen</p>
-  </div>
-</section>
+<!-- ── Show / hide ────────────────────────────────────── -->
+<div class="block md:hidden">mobile only</div>
+<div class="hidden md:block">desktop only</div>
+<div class="hidden md:flex">desktop flex</div>
+
+<!-- ── Images ─────────────────────────────────────────── -->
+<img class="w-full max-w-full object-cover" />
+<img class="w-full aspect-video object-cover" />
+
+<!-- ── Touch target ───────────────────────────────────── -->
+<button class="min-h-[44px] px-4 py-3">Tap me</button>
+
+<!-- ── Typography scale ───────────────────────────────── -->
+<h1 class="text-2xl font-bold md:text-4xl lg:text-5xl">
+<p class="text-sm md:text-base text-gray-600">
 ```
-
----
-
-## What I Should Be Able to Explain in Interviews
-
-1. **What is mobile first and why does it matter?** — A strategy where base styles target the smallest viewport and `min-width` media queries scale up to desktop. It matters because most web traffic is mobile, and progressive enhancement (adding) produces better code than graceful degradation (removing).
-
-2. **The difference between `max-width` and `min-width` in media queries?** — `max-width` applies the style up to that width (desktop first). `min-width` applies the style from that width upward (mobile first). Tailwind uses `min-width` exclusively.
-
-3. **Why is Tailwind inherently mobile first?** — Because unprefixed classes apply to all sizes and breakpoints (`md:`, `lg:`) are `min-width` — they only add styles to larger screens, never remove them from smaller ones.
-
-4. **What is a touch target and what's the minimum size?** — The area of the screen that responds to touch. Accessibility guidelines (WCAG) recommend a minimum of 44x44px so it's comfortable to tap with a finger.
-
----
-
-## Resources to Go Deeper
-
-- [MDN: Responsive design](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design)
-- [Tailwind: Responsive Design](https://tailwindcss.com/docs/responsive-design)
-- [WCAG: Touch Target Size](https://www.w3.org/WAI/WCAG21/Understanding/target-size.html)

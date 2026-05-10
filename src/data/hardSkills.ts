@@ -8,7 +8,7 @@ const hardSkills: HardSkill[] = [
   {
     name: "JavaScript ES6+",
     description:
-      "My primary language — async/await, destructuring, modules, and modern DOM patterns",
+      "My primary language, async/await, destructuring, modules, and modern DOM patterns",
     icon: "javascript",
   },
   {
@@ -26,7 +26,7 @@ const hardSkills: HardSkill[] = [
   {
     name: "TypeScript",
     description:
-      "Type-safe development — interfaces, generics, and Zod schema validation",
+      "Type-safe development, interfaces, generics, and Zod schema validation",
     icon: "typescript",
   },
   {
@@ -44,7 +44,7 @@ const hardSkills: HardSkill[] = [
   {
     name: "Astro",
     description:
-      "Static site generation with island architecture — this portfolio is built with it",
+      "Static site generation with island architecture, this portfolio is built with it",
     icon: "astro_dark",
   },
   {
@@ -52,6 +52,18 @@ const hardSkills: HardSkill[] = [
     description:
       "Version control, feature branches, pull requests, and collaborative workflows",
     icon: "git",
+  },
+  {
+    name: "React Native & Expo",
+    description:
+      "Cross-platform mobile apps for iOS and Android from a single TypeScript codebase, with file-based routing via Expo Router",
+    icon: "react",
+  },
+  {
+    name: "Node.js & Bun",
+    description:
+      "Backend runtimes for REST APIs — Bun for high-performance services (Tienda Patitas, POS Colombia), Node.js for serverless functions",
+    icon: "nodejs",
   },
 ];
 

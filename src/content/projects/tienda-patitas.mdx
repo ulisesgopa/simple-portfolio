@@ -1,11 +1,13 @@
 ---
 title: Tienda Patitas
-summary: Landing page for a pet products e-commerce store. Built with React, Vite, and shadcn/ui, featuring a product catalog display, category navigation, cart integration hooks, and a fully responsive mobile-first layout.
+summary: "Full e-commerce system for a pet products retailer. Three independent services: a public storefront, a Bun + Prisma backend API with MercadoPago and Resend, and an admin dashboard with POS, inventory, customer, and sales management. Built with React, Vite, TypeScript, and TailwindCSS."
 tags:
   - React
   - Vite
   - TypeScript
-  - Tailwind CSS
+  - Bun
+  - Prisma
+  - MercadoPago
 startDate: 2024-10-01
 endDate: 2025-01-15
 author: Ulises Gómez
@@ -16,67 +18,126 @@ ogImage: './images/tiendapatitas.png'
 
 ## Overview
 
-**Tienda Patitas** is the frontend landing page for a pet products store. Part of a larger workspace that includes a backend and a point-of-sale system, this landing serves as the public-facing entry point — presenting the brand, showcasing products, and driving users toward purchase or contact.
+**Tienda Patitas** is a complete e-commerce system for a pet products retailer. It runs as three independent services: a public storefront where customers browse and buy, a backend API that handles all business logic and data, and an admin dashboard that gives the business owner and cashiers full control over the operation.
 
 ---
 
 ## Role
-**Frontend Developer** — landing page design implementation, component architecture, and integration with the broader Tienda Patitas product ecosystem.
+**Solo Developer**: backend API, public storefront, and admin dashboard — all three services from schema design to production deployment.
 
 ---
 
 ## The Problem
 
-Pet product stores in Latin America frequently have outdated or non-mobile web presences. Customers discover products on social media but have no clean web experience to land on. The landing needed to bridge that gap: professional, fast, and mobile-first.
+The client ran an active pet products business with no digital infrastructure beyond social media. Orders came through WhatsApp, inventory lived in a spreadsheet, and there was no way to track sales performance, manage customers, or process payments systematically. The goal was a real system: customers shop online, the owner manages everything from one dashboard, and a cashier can process counter sales with a POS.
 
 ---
 
-## Solution
+## Three Services
 
-A focused landing page built as part of the Tienda Patitas monorepo workspace, sharing type definitions and data contracts with the backend and dashboard systems.
-
-### Tech Stack
+### 1. Backend API
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | React 18 |
-| Build tool | Vite |
+| Runtime | Bun 1.2+ |
 | Language | TypeScript |
-| UI components | shadcn/ui + Radix UI |
-| Forms | React Hook Form + Zod |
-| State | React context |
+| HTTP | Bun.serve (native Web API, no framework) |
+| Database | PostgreSQL 15 |
+| ORM | Prisma 7 with @prisma/adapter-pg |
+| Auth | JWT via jose (access 15min + refresh 7d) |
+| Payments | MercadoPago (checkout + webhooks) |
+| Email | Resend (order confirmations, receipts) |
+| File storage | Vercel Blob (product images) |
+| Error tracking | Sentry |
+| Logging | Pino (structured logs) |
+| API Docs | OpenAPI + Swagger at `/docs` |
+
+**Modules:** auth, products, categories, customers, sales, purchases, cash register, discount codes, business config, payments, health check.
+
+**Key data model decisions:**
+- `PaymentMethod` enum: CASH, TRANSFER, CARD, MERCADOPAGO — a single sale can mix payment methods
+- `SaleSource` enum: POS, STORE, APP — every sale is attributed to its origin channel
+- `OrderStatus` and `PaymentStatus` as separate states — a sale can be delivered but partially paid
+
+### 2. Public Storefront
+
+| Layer | Technology |
+|-------|-----------|
+| Build tool | Vite 5.4 |
+| Framework | React 18 |
+| Language | TypeScript |
+| UI | shadcn/ui + Radix UI |
 | Styling | TailwindCSS 3.4 |
-| Routing | React Router DOM |
+| Routing | React Router DOM 6 |
+| Server state | TanStack Query 5 |
+| Forms | React Hook Form + Zod |
+| Auth | JWT stored in localStorage with automatic token refresh |
 | Analytics | Vercel Analytics + Speed Insights |
+| Testing | Vitest + Testing Library |
 
-### Key Sections
+**Customer-facing features:**
+- Product catalog with category filtering (client-side, instant)
+- Product detail pages with images, nutritional info, sizes, and benefits
+- Customer account: registration, login, order history
+- MercadoPago checkout integration
+- WhatsApp conversion fallback: product details encoded into a deep link for one-tap purchase inquiry
+- Discount code validation at checkout
 
-1. **Hero** — Brand statement with primary CTA
-2. **Product catalog** — Category-filtered product grid
-3. **Featured products** — Highlighted items with pricing
-4. **About** — Brand story and trust signals
-5. **Contact / WhatsApp CTA** — Direct conversion path
+### 3. Admin Dashboard + POS
+
+| Layer | Technology |
+|-------|-----------|
+| Build tool | Vite 5.4 |
+| Framework | React 18 |
+| Language | TypeScript |
+| UI | shadcn/ui + Radix UI |
+| Styling | TailwindCSS 3.4 |
+| Routing | React Router DOM 6 |
+| Server state | TanStack Query 5 |
+| Local state | Zustand 5 |
+| Forms | React Hook Form + Zod |
+| Animations | Framer Motion |
+| Testing | Vitest |
+
+**Admin modules:**
+- **POS**: counter sales with mixed payment methods (cash, transfer, card, MercadoPago), cash register sessions (open/close), change calculation
+- **Products**: full CRUD with images (Vercel Blob), sizes, nutritional info, benefit tags, categories, stock tracking
+- **Customers**: customer profiles with purchase history and balance
+- **Sales**: sale history with source tracking, payment status, order status, and delivery management
+- **Purchases**: supplier purchase management and inventory updates
+- **Discount codes**: create and manage promotional codes with validation rules
+- **Company settings**: business profile and configuration
 
 ---
 
 ## Technical Decisions Worth Explaining
 
-**Why part of a monorepo workspace?**
-The landing, backend, and POS system for Tienda Patitas share the same product data model. A workspace structure (`tiendapatitas-workspace`) lets the frontend import shared TypeScript types directly from the backend contracts — no duplication of type definitions across projects.
+**Why Bun.serve instead of Express, Hono, or Fastify?**
+Bun's native HTTP server handles routing, request parsing, and response formatting with the standard Web API (`Request`, `Response`). No framework overhead, no middleware chain to reason about. For a backend with well-defined modules and no need for framework-specific plugins, the standard API is enough — and Bun's performance characteristics make it a strong fit for a retail API that needs fast response times on product and cart operations.
 
-**Why React Router DOM instead of Next.js?**
-The landing is part of a Vite project where server-side rendering isn't required. React Router DOM provides client-side routing for the product detail pages without the Next.js overhead. Vite's build output is a static bundle, easy to deploy anywhere.
+**Why Prisma 7 with @prisma/adapter-pg instead of the default connection string?**
+Prisma 7 moved to a driver adapter model. Using `@prisma/adapter-pg` with the native `pg` client gives direct control over the PostgreSQL connection pool — important for a production API where you need predictable connection behavior without Prisma's managed connection overhead.
+
+**Why three separate services instead of a Next.js full-stack app?**
+Each service has a different deployment target and access control requirement. The storefront is public and deployed to Vercel as a static SPA. The backend is the single source of truth consumed by both frontends. The admin is an internal tool with role-based access (ADMIN and CASHIER roles). Separating them means a new admin feature doesn't require redeploying the storefront, and the backend can be updated independently of both.
+
+**Why TanStack Query on both frontends?**
+Product catalog, sales history, and customer data are server state — they live in the database, not in the client. TanStack Query handles caching, background refetch, and loading/error states without manual `useEffect` + `useState` fetch patterns. Zustand handles the POS session state (active cash register, cart items in progress) which is local and doesn't need server sync.
 
 ---
 
 ## Challenges
 
-1. **Workspace integration** — Keeping the landing page types in sync with the backend data contracts while both were evolving simultaneously.
-2. **Product filtering UX** — Implementing category filters that feel instant (client-side filtering via `Array.filter()`) without any visible layout shift.
-3. **WhatsApp conversion flow** — Encoding product details into WhatsApp deep links so customers could initiate a purchase inquiry from a product card in one tap.
+1. **Mixed payment methods per sale**: A single sale can be paid with cash plus a transfer. The payment model needed to be a line array per sale (not a single payment field) to support splits, partial payments, and the change calculation for cash.
+
+2. **Inventory synchronization**: When the admin creates a purchase (incoming stock), the product's stock count updates. When a sale is confirmed, stock decrements. These two flows needed to stay consistent without race conditions on concurrent operations.
+
+3. **MercadoPago webhook reliability**: Payment confirmation arrives asynchronously after the customer completes checkout. The webhook handler needed to be idempotent — a repeated notification for the same payment should not double-update the order status or send duplicate confirmation emails via Resend.
+
+4. **Token refresh across two frontends**: Both the storefront and the admin use JWT with a 15-minute access token. Each frontend implements its own refresh interceptor — if a request returns 401, it automatically calls the refresh endpoint, updates the stored token, and retries the original request. Keeping this logic consistent between the two codebases required careful alignment.
 
 ---
 
 ## Final Thoughts
 
-Tienda Patitas demonstrates frontend work within a real product system — not an isolated landing page, but a piece of a larger architecture with shared types, a real backend, and a coordinated deployment pipeline. It reflects how professional frontend work actually functions inside a product team.
+Tienda Patitas is the most architecturally complete project in the freelance section of this portfolio. Owning the full stack — backend API, storefront, and admin — across a real retail domain forced every decision about data modeling, payment flows, and API contracts to be thought through to production level. There's no "the backend team will handle that" here: if the payment webhook fires twice, that's my problem. If stock goes negative after a race condition, that's my problem. That accountability shapes how the system was designed.

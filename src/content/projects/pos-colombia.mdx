@@ -24,7 +24,7 @@ This project covers the full stack: a REST API backend and a web admin dashboard
 ---
 
 ## Role
-**Solo Developer** — backend architecture, database schema, REST API, admin frontend, electronic invoicing integration, and production deployment.
+**Solo Developer**: backend architecture, database schema, REST API, admin frontend, electronic invoicing integration, and production deployment.
 
 ---
 
@@ -33,7 +33,7 @@ This project covers the full stack: a REST API backend and a web admin dashboard
 Colombian SMEs face a specific challenge:
 - DIAN (Colombia's tax authority) requires electronic invoicing for all registered businesses
 - Most affordable POS systems either lack this integration or require expensive monthly plans
-- Businesses need: product management, sales tracking, cash register sessions, and legal invoices — all in one system
+- Businesses need: product management, sales tracking, cash register sessions, and legal invoices, all in one system
 
 ---
 
@@ -41,7 +41,7 @@ Colombian SMEs face a specific challenge:
 
 A self-hostable POS system with two separate parts:
 
-### Backend — REST API
+### Backend, REST API
 
 | Layer | Technology |
 |-------|-----------|
@@ -54,17 +54,17 @@ A self-hostable POS system with two separate parts:
 | Deployment | Railway / Docker |
 
 **API Modules:**
-- `/auth` — JWT login with role-based guards (admin / cashier)
-- `/products` — CRUD with category filtering
-- `/categories` — Product taxonomy
-- `/customers` — Customer database
-- `/sales` — Create, list, and view sale details
-- `/cash` — Open/close cash register sessions, session history
-- `/business` — Business profile and fiscal settings
-- `/billing/electronic-invoicing` — Factus integration config
-- `/billing/factus/catalogs` — Sync DIAN catalogs (municipalities, measurement units, tributes, numbering ranges)
+- `/auth`, JWT login with role-based guards (admin / cashier)
+- `/products`, CRUD with category filtering
+- `/categories`, Product taxonomy
+- `/customers`, Customer database
+- `/sales`, Create, list, and view sale details
+- `/cash`, Open/close cash register sessions, session history
+- `/business`, Business profile and fiscal settings
+- `/billing/electronic-invoicing`, Factus integration config
+- `/billing/factus/catalogs`, Sync DIAN catalogs (municipalities, measurement units, tributes, numbering ranges)
 
-### Frontend — Admin Dashboard
+### Frontend, Admin Dashboard
 
 | Layer | Technology |
 |-------|-----------|
@@ -86,7 +86,7 @@ A self-hostable POS system with two separate parts:
 Bun runs TypeScript natively without a build step in development, starts significantly faster than Node, and has built-in test runner and bundler. For a backend that needs fast iteration cycles and minimal configuration, Bun reduces friction without sacrificing production stability.
 
 **Why Prisma with Accelerate?**
-Prisma's typed query builder prevents SQL injection and provides compile-time guarantees on query shape. Accelerate adds connection pooling and query caching for PostgreSQL — important in serverless/edge deployments where connection limits are a constraint.
+Prisma's typed query builder prevents SQL injection and provides compile-time guarantees on query shape. Accelerate adds connection pooling and query caching for PostgreSQL, important in serverless/edge deployments where connection limits are a constraint.
 
 **Why Zustand + React Query instead of just one state library?**
 They solve different problems. Zustand manages UI state (active session, current cashier, sidebar state). React Query manages server state (products cache, sales list, customer data) with built-in cache invalidation, background refetch, and loading/error states. Using one for both would either over-engineer local UI state or under-serve the API caching needs.
@@ -98,12 +98,14 @@ Cash register systems need security controls. A 15-minute access token limits th
 
 ## Challenges
 
-1. **DIAN/Factus integration** — The Colombian electronic invoicing API has specific catalog requirements (municipalities, measurement units, tax tributes, numbering ranges) that must be synced and cached locally to avoid repeated API calls during invoice generation.
-2. **Cash register session model** — Modeling open/close cycles with historical audit trails required careful database schema design to support business reporting without data loss.
-3. **Role-based access** — Admin and cashier roles need different views and API access levels. Implementing role guards consistently across both the API (JWT claims) and the frontend (route protection) without duplication.
+1. **DIAN/Factus integration**: The Colombian electronic invoicing API has specific catalog requirements (municipalities, measurement units, tax tributes, numbering ranges) that must be synced and cached locally to avoid repeated API calls during invoice generation.
+2. **Cash register session model**: Modeling open/close cycles with historical audit trails required careful database schema design to support business reporting without data loss.
+3. **Role-based access**: Admin and cashier roles need different views and API access levels. Implementing role guards consistently across both the API (JWT claims) and the frontend (route protection) without duplication.
 
 ---
 
 ## Final Thoughts
 
-POS Colombia is the most technically complete project in this portfolio. It demonstrates full-stack architecture decisions, a production-ready backend with documented API, real business domain knowledge (Colombian fiscal compliance), and a data-rich admin frontend with charts, forms, and role management.
+Most POS software sold in Colombia either ignores the DIAN requirement entirely or charges a monthly subscription that makes no financial sense for a small business. Building one that gets fiscal compliance right required understanding the regulatory landscape as deeply as the technical one — cataloguing DIAN municipalities, measurement units, tributes, and numbering ranges as domain knowledge, not just API calls.
+
+POS Colombia demonstrates full-stack ownership with real business domain knowledge: a production-ready backend with documented API, a data-rich admin frontend with charts and role management, and an integration that solves a real market-specific problem that generic software skips.

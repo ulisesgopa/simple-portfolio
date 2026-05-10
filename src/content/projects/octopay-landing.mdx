@@ -16,12 +16,12 @@ ogImage: './images/octopay.png'
 
 ## Overview
 
-**Octopay** is a digital payment platform connecting businesses to modern financial infrastructure. The landing page needed to communicate trust, technical capability, and ease of integration — targeting both SME owners and technical decision-makers.
+**Octopay** is a digital payment platform connecting businesses to modern financial infrastructure. The landing page needed to communicate trust, technical capability, and ease of integration, targeting both SME owners and technical decision-makers.
 
 ---
 
 ## Role
-**Frontend Developer** — full implementation from design reference to production build.
+**Frontend Developer**: full implementation from design reference to production build.
 
 ---
 
@@ -37,7 +37,7 @@ Most landing pages optimize for one audience and lose the other.
 
 ## Solution
 
-A multi-section landing with distinct content layers per audience — business sections (Hero, Benefits, Testimonials) flow into technical sections (Integrations, Security, API reference, Partners) without feeling disconnected.
+A multi-section landing with distinct content layers per audience, business sections (Hero, Benefits, Testimonials) flow into technical sections (Integrations, Security, API reference, Partners) without feeling disconnected.
 
 ### Tech Stack
 
@@ -53,18 +53,18 @@ A multi-section landing with distinct content layers per audience — business s
 
 ### Sections Built
 
-1. **Hero** — Primary CTA with animated entrance
-2. **Services** — Core product offerings with detail pages
-3. **Features** — Capability grid with icons
-4. **Partners** — Logo carousel of integrations
-5. **Integration** — How to connect Octopay to existing systems
-6. **Security** — Trust signals, certifications, data handling
-7. **Team** — Key people behind the platform
-8. **News** — Latest updates with detail pages
-9. **FAQ** — Accordion with categorized questions
-10. **Help Center** — Support pathways
-11. **Contact Methods** — Multiple contact channels
-12. **Contact Form** — Validated form with Zod
+1. **Hero**: Primary CTA with animated entrance
+2. **Services**: Core product offerings with detail pages
+3. **Features**: Capability grid with icons
+4. **Partners**: Logo carousel of integrations
+5. **Integration**: How to connect Octopay to existing systems
+6. **Security**: Trust signals, certifications, data handling
+7. **Team**: Key people behind the platform
+8. **News**: Latest updates with detail pages
+9. **FAQ**: Accordion with categorized questions
+10. **Help Center**: Support pathways
+11. **Contact Methods**: Multiple contact channels
+12. **Contact Form**: Validated form with Zod
 
 ### Color System
 
@@ -82,24 +82,24 @@ Error:     #EF4444
 ## Technical Decisions Worth Explaining
 
 **Why Next.js 15 + React 19 for a landing page?**
-React 19's improved server components and streaming mean above-the-fold content renders faster. Next.js App Router enables per-section lazy loading — the FAQ accordion and contact form JavaScript only loads when the user scrolls near those sections.
+React 19's improved server components and streaming mean above-the-fold content renders faster. Next.js App Router enables per-section lazy loading, the FAQ accordion and contact form JavaScript only loads when the user scrolls near those sections.
 
 **Why Framer Motion over CSS animations?**
 Framer Motion handles scroll-triggered entrance animations (`whileInView`) with a clean declarative API. CSS animations would require Intersection Observer setup manually. For a page with 15+ animated sections, the DX tradeoff is justified.
 
 **Why shadcn/ui for components?**
-The FAQ accordion, contact form inputs, and navigation menu need to be accessible out of the box. Radix UI primitives handle keyboard navigation, ARIA attributes, and focus management — things that are easy to get wrong building from scratch.
+The FAQ accordion, contact form inputs, and navigation menu need to be accessible out of the box. Radix UI primitives handle keyboard navigation, ARIA attributes, and focus management, things that are easy to get wrong building from scratch.
 
 ---
 
 ## Challenges
 
-1. **Animation performance** — 15+ sections with Framer Motion entrance animations can cause jank on lower-end devices. Solved by using `viewport: { once: true }` so animations only run once, and `will-change: transform` hints on heavy elements.
-2. **TypeScript with Framer Motion** — Typing animated component props correctly when combining Framer's `motion` variants with custom component props required careful generic usage.
-3. **Consistent section spacing** — Creating a design system of spacing tokens in Tailwind config to maintain visual rhythm across 15 sections without per-section overrides.
+1. **Animation performance**: 15+ sections with Framer Motion entrance animations can cause jank on lower-end devices. Solved by using `viewport: { once: true }` so animations only run once, and `will-change: transform` hints on heavy elements.
+2. **TypeScript with Framer Motion**: Typing animated component props correctly when combining Framer's `motion` variants with custom component props required careful generic usage.
+3. **Consistent section spacing**: Creating a design system of spacing tokens in Tailwind config to maintain visual rhythm across 15 sections without per-section overrides.
 
 ---
 
 ## Final Thoughts
 
-Octopay shows production-level landing page development: modern stack (React 19), thoughtful animations, accessible components, and a multi-audience content strategy. It goes well beyond a template — every section addresses a specific conversion goal.
+Octopay shows production-level landing page development: modern stack (React 19), thoughtful animations, accessible components, and a multi-audience content strategy. It goes well beyond a template, every section addresses a specific conversion goal.

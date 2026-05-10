@@ -1,0 +1,129 @@
+---
+title: Ticketera MIES
+summary: Event ticketing platform built for MIES, a church organization. Next.js App Router frontend covering event management, a visual landing page builder, QR code check-in, and an admin dashboard, integrated with an existing NestJS backend API.
+tags:
+  - Next.js
+  - NestJS
+  - TypeScript
+  - PostgreSQL
+  - TailwindCSS
+startDate: 2026-04-01
+endDate: 2026-05-02
+author: Ulises Gómez
+url: https://event-dashboard.vercel.app
+cover: './images/portada-congresotransformacion.webp'
+ogImage: './images/portada-congresotransformacion.webp'
+---
+
+## Overview
+
+**Ticketera MIES** is a complete event ticketing system built for a church organization that runs large-scale events, conferences, congresses, retreats. The platform handles the full attendee lifecycle: event creation, public registration, payment collection, ticket delivery, and check-in at the door.
+
+It runs as two deployed services: a NestJS REST API on Koyeb (built by Junior Ricci, running for ~3 years as the core backend) and a Next.js admin + public frontend on Vercel.
+
+---
+
+## Role
+**Frontend Developer**: admin dashboard, public event pages, visual landing page builder, QR check-in interface, image storage, and Vercel deployment. The NestJS backend API was built by backend developer Junior Ricci and runs independently on Koyeb.
+
+---
+
+## The Problem
+
+The organization was managing event registrations manually, spreadsheets, WhatsApp groups, cash payments without receipts. As events scaled past a few hundred attendees, that approach had real failure modes:
+
+- No single source of truth for who had paid and who hadn't
+- No physical check-in system at the door, anyone could walk in
+- No way to send confirmations or QR codes to registered attendees
+- Event promotion depended on static social media posts with no dedicated landing page
+
+---
+
+## Solution
+
+A purpose-built platform with two separate concerns:
+
+### Backend, REST API
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | NestJS |
+| Language | TypeScript |
+| Database | PostgreSQL (Koyeb) |
+| ORM | TypeORM (synchronize mode) |
+| Auth | JWT with admin guards |
+| Payments | MercadoPago Checkout Pro |
+| Email | Nodemailer (QR code delivery) |
+
+**API Modules:**
+- `/auth`, Admin login with JWT
+- `/events`, Full event CRUD with slug, status, and landing config
+- `/tickets`, Ticket creation, status management (pending → approved), QR check-in
+- `/users`, Attendee management
+- `/enterprises`, Organization configuration (name, logo, brand color, contact)
+- `/mercadopago`, Preference creation and webhook processing
+
+### Frontend, Admin Dashboard + Public Pages
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Styling | TailwindCSS + shadcn/ui |
+| Image storage | Vercel Blob |
+| Deployment | Vercel |
+
+**Admin modules:**
+- Event management with 6 focused edit modals (info, dates, cover image, tickets/price, access, advanced)
+- Visual landing page builder, compose 9 sections per event (hero, about, features, speakers, schedule, location, pricing, FAQ, CTA)
+- Image gallery picker, browse or upload images organized by event folder in Vercel Blob
+- QR code check-in scanner
+- Ticket validation queue, approve/reject payments with proof-of-payment previews
+- Organization settings
+
+**Public pages:**
+- `/eventos/[slug]`, Server-rendered event landing with all active sections
+- `/eventos/[slug]/registro`, Attendee registration form
+- `/mi-ticket/[code]`, Ticket page showing the QR code for check-in
+
+---
+
+## Technical Decisions Worth Explaining
+
+**Why two separate deployments instead of a Next.js monorepo?**
+
+The API needs to be reusable, a future mobile app or integration can hit the same endpoints. Keeping backend and frontend separate also means they can be scaled, updated, and deployed independently. The NestJS service runs on Koyeb; the Next.js frontend on Vercel. Each stays within its deployment platform's strengths.
+
+**Why a visual landing page builder instead of static pages?**
+
+Events have distinct identities, different speakers, different cities, different audiences. A fixed template would require a developer for every new event. The builder stores a `landingConfig.sections` JSON array per event with 9 typed section schemas. The admin enables sections and fills in content; the public page is a Server Component that renders only the enabled sections with the saved data.
+
+**Why TypeORM in synchronize mode?**
+
+The project is early-stage. Full migration workflows would slow down iteration significantly when the schema is still evolving. TypeORM's `synchronize: true` applies entity changes automatically on server restart. The tradeoff is acceptable at this scale, all critical constraints (FK cascades, nullable fields) are enforced at the entity decorator level.
+
+**Why MercadoPago over Stripe?**
+
+Argentina. Stripe doesn't support domestic debit cards or bank transfers, which is how most of the attendee base pays. MercadoPago Checkout Pro handles the full Argentine payment ecosystem, credit, debit, transfer, and cash, with a single integration.
+
+**Why UUID-based QR codes?**
+
+Each ticket's QR code is a UUID generated server-side at creation time (BeforeInsert TypeORM hook). The check-in flow scans the QR, calls the API with that code, and the API returns the ticket status. This avoids any client-side validation, the source of truth is always the database, not the QR payload.
+
+---
+
+## Challenges
+
+1. **MercadoPago webhook reliability**: Payment confirmations arrive asynchronously. The webhook endpoint needs to be idempotent (a repeated notification for the same payment should not double-confirm a ticket) and the attendee needs their QR code delivered by email immediately after confirmation.
+
+2. **Landing field consistency**: The admin editor saves field names under one schema (e.g. `imageUrl`, `buttonText`, `text`) while the public page has to read exactly those names. During development, mismatches caused images and text to silently not appear. Fixing this required auditing every section's saved keys against every read path in the Server Component.
+
+3. **Sidebar layout on desktop**: Using `min-h-screen` on both the shell container and the sidebar caused the sidebar to stretch the full page height on long content pages. Fixed with an `h-screen overflow-hidden` container, `h-full` on the sidebar, and `overflow-y-auto` on the main content area, so the sidebar stays fixed and only the content scrolls.
+
+4. **Cascading deletes**: Deleting an event with registered tickets failed with a PostgreSQL FK constraint error. TypeORM's `@ManyToOne` decorators needed explicit `{ onDelete: 'CASCADE' }` options on the ticket and event URL entities. With `synchronize: true`, the fix applied automatically on next server start.
+
+---
+
+## Final Thoughts
+
+Ticketera MIES is the kind of project where every feature has a direct, real-world consequence. A broken QR code means someone can't enter an event. A missing payment webhook means an attendee paid but has no ticket. That operational stakes context made every architectural decision more deliberate, idempotency, cascading deletes, image field consistency, things that could be skipped in a demo but not here.

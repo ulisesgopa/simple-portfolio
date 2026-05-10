@@ -1,14 +1,15 @@
 ---
-title: Habit Tracker App
-summary: A gamified cross-platform habit tracker built with React Native and Expo, designed for neurodivergent users. Covers habit management, finances, calendar, and a unique Battle Mode — all with full accessibility support and a web version.
+title: Habit Flow
+summary: "A gamified habit tracker for neurodivergent users — with finances, calendar, and a Battle Mode focus session. Built with React Native, Expo Router, and a Bun + Prisma backend. Runs on web and on iOS/Android via Expo Go, with native app distribution in progress."
 tags:
   - React Native
   - Expo
   - TypeScript
   - Zustand
+  - Bun
   - Prisma
 startDate: 2025-01-15
-endDate: 2026-04-01
+endDate: 2026-06-01
 author: Ulises Gómez
 url: https://habit-flow-six-sooty.vercel.app/
 cover: './images/budget-wise/finance_app_concept.webp'
@@ -17,91 +18,105 @@ ogImage: './images/budget-wise/og-finance_app.webp'
 
 ## Overview
 
-**Habit Tracker App** is a mobile-first application built for people who want to manage their daily life through a system that feels like a video game. It targets neurodivergent users specifically — people who struggle with traditional habit apps that feel clinical, repetitive, or overwhelming.
+**Habit Flow** is a cross-platform productivity app built around a simple observation: most habit trackers assume your brain works the same way every day. They don't. Habit Flow was built for the users those apps leave behind — people who need structure, positive reinforcement, and flexibility in the same tool.
 
-The app runs on **iOS, Android, and Web** from a single codebase using React Native and Expo Router.
+The app runs on **web, iOS, and Android** from a single TypeScript codebase using React Native and Expo Router. The web version is live and the mobile app runs on Expo Go while native packages are in progress.
 
 ---
 
 ## Role
-**Solo Developer** — architecture, UI, state management, backend API, and deployment.
+**Solo Developer**: product design, frontend (web + native), state management, backend API, and deployment.
 
 ---
 
 ## The Problem
 
-Most habit tracking apps fail neurodivergent users because they:
-- Show too much information at once (cognitive overload)
-- Have no motivation system beyond streaks
-- Offer no offline capability
-- Are purely task-based with no emotional engagement
+Existing habit tracking apps fail a specific type of user by:
+- Showing too much at once (cognitive overload on bad days)
+- Offering streaks as the only motivation mechanism — brutal when broken
+- Being purely task-based with no emotional engagement
+- Treating finances, tasks, and habits as separate apps entirely
+
+The result: users who need the app most are the ones who abandon it first.
 
 ---
 
 ## Solution
 
-A gamified dashboard where completing habits earns XP, unlocks levels and achievements, and accumulates points redeemable in a reward store. All wrapped in a UI with strong accessibility controls.
+A unified productivity dashboard where completing habits earns XP, unlocks levels and achievements, and accumulates points redeemable in a personal reward store. All modules live in one app, not six.
 
 ### Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Mobile | React Native + Expo SDK |
-| Routing | Expo Router (file-based, like Next.js) |
-| Web | Expo web export (static) |
-| State | Zustand |
-| Backend | Vercel serverless functions |
+| Routing | Expo Router (file-based, same model as Next.js) |
+| Web | Expo web export, deployed to Vercel |
+| State | Zustand + persist middleware |
+| Backend | Bun + TypeScript REST API |
 | Database | PostgreSQL via Prisma ORM |
 | Local storage | Async Storage |
-| Styling | TailwindCSS (web) + React Native StyleSheet |
 
 ### Key Modules
 
-1. **Habits** — Daily/weekly habit tracking with streaks and completion rates
-2. **Missions (To-dos)** — Priority task management
-3. **Finances** — Income/expense tracker with monthly summaries
-4. **Calendar** — Local event scheduling with weekly/monthly views
-5. **Rewards Store** — Spend XP on personal rewards
-6. **Battle Mode** — Extreme focus session that locks distractions
+1. **Habits** — Daily and weekly tracking with completion rates, streaks, and visual progress
+2. **Missions (To-dos)** — Priority task management with urgency classification
+3. **Finances** — Income and expense tracker with monthly summaries and balance tracking
+4. **Calendar** — Personal event scheduling with weekly and monthly views
+5. **Rewards Store** — Spend earned XP on real personal rewards defined by the user
+6. **Battle Mode** — Extreme focus session that visually locks distractions and counts down
 
 ### Gamification System
 
 - XP earned for every completed action
 - Level progression system
-- Achievement badges
-- Reward redemption store
+- Achievement badges for milestones
+- Reward store redeemable with accumulated points
 
-### Accessibility Features
+### Accessibility — Built as Core Features
 
-Built as first-class features, not afterthoughts:
-- **Low-stim mode** — reduces animations and visual noise
-- **Dyslexia-friendly font** option
-- **High contrast mode**
+Every accessibility option is a first-class feature, not a checkbox:
+- **Low-stim mode** — reduces animations and visual noise for high-sensitivity days
+- **Dyslexia-friendly font** — toggleable OpenDyslexic or similar
+- **High contrast mode** — for visual processing needs
 - Full keyboard navigation on web
 
 ---
 
 ## Technical Decisions Worth Explaining
 
-**Why Expo Router instead of React Navigation?**
-File-based routing means the same mental model as Next.js. The web version shares the same route structure as mobile — no separate router config per platform.
+**Why Expo Router over React Navigation?**
+File-based routing gives the same mental model as Next.js on both mobile and web. The same directory structure defines routes on iOS, Android, and the browser — no separate router configuration per platform. Deep linking works out of the box.
 
-**Why Zustand over Redux?**
-The app has rich local state (current XP, active habits, theme, accessibility flags) but no complex server-state caching needs. Zustand handles this with significantly less boilerplate than Redux, and integrates with Async Storage for persistence in a few lines.
+**Why Zustand with Async Storage persistence?**
+The app has rich local state: current XP, active habits, theme, accessibility flags, pending sync queue. Zustand's `persist` middleware serializes the store to Async Storage on every update and rehydrates on mount, in four lines of code. Redux would have required actions, reducers, and a custom persistence layer.
 
-**Why Prisma on the backend?**
-Schema migrations and type-safe queries reduce bugs when adding modules. The same TypeScript types generated by Prisma are reused in the Expo frontend via shared type imports.
+**Why a Bun backend instead of serverless functions?**
+The backend handles sync logic, XP calculation, and cross-device state persistence — operations that benefit from stateful process context and fast startup times. Bun runs TypeScript natively without a build step, starts in milliseconds, and performs well under sustained load. Prisma provides type-safe queries and schema migrations.
+
+---
+
+## Current State
+
+The app is live and running:
+- **Web**: deployed at habit-flow-six-sooty.vercel.app
+- **Mobile**: installable on iOS and Android via Expo Go for testing
+- **Native distribution**: Android (Google Play via Stream Tech developer account) and iOS (App Store) in progress — pending Apple Developer enrollment
 
 ---
 
 ## Challenges
 
-1. **Offline-first architecture** — synchronizing local Async Storage state with the remote PostgreSQL database without conflicts
-2. **Cross-platform styling** — Tailwind works on web, React Native StyleSheet on mobile — building a component API that abstracts both
-3. **Accessibility and gamification together** — making sure the reward animations and level-up sequences don't break low-stim mode users
+1. **Offline-first architecture** — local Async Storage state needs to sync with PostgreSQL without conflicts when connectivity is restored. Implemented an optimistic update model with a sync queue.
+
+2. **Cross-platform styling** — Tailwind CSS on web, React Native StyleSheet on mobile. Built a component abstraction that accepts styled variants for each platform without exposing the difference to the feature layer.
+
+3. **Accessibility and gamification together** — level-up animations and XP celebrations must respect low-stim mode. Any motion or sound effect that fires on a habit completion checks the user's preference first.
 
 ---
 
 ## Final Thoughts
 
-This project demonstrates the full lifecycle of a product from concept to deployed app on multiple platforms. It goes beyond landing pages and shows real application state management, cross-platform routing, accessibility engineering, and backend integration — all in a single codebase.
+This is the most personal project in the portfolio. I'm building for a problem I experience myself — and that changes how you make product decisions. There's no "the user will figure it out" shortcut when you are the user.
+
+It's also the project that forced the most breadth: React Native for mobile, Expo for cross-platform tooling, a real backend with sync logic, and accessibility engineering as a design constraint. Every decision has a personal reason behind it, not just a technical one.

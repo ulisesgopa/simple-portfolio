@@ -1,61 +1,84 @@
 ---
 author: Ulises Gómez
 publishDate: 2025-02-10T10:00:00Z
-title: JavaScript Async/Await — What I Learned Building Real APIs
+title: "JavaScript Async Reference — Event Loop, Promises & async/await"
 tags:
     - JavaScript
     - Async/Await
     - Fetch API
     - Promises
-description: How asynchronous code works in JavaScript, why it exists, and the real patterns I use across my projects with Supabase, Resend, and native fetch.
+description: Quick reference for asynchronous JavaScript. Event loop, Promise states, async/await patterns, Promise combinators, sequential vs parallel execution. With interview Q&A and a cheat sheet.
 cover:
   src: './images/customizing-theme-color-schemes/cover.webp'
   alt: 'JavaScript Async Await'
 ---
 
-## Why JavaScript Needs Asynchronous Code
+## Quick Reference
 
-JavaScript runs on a single thread. That means if an operation blocks that thread — calling an API, reading from a database, waiting on a timer — the entire UI freezes.
-
-The solution is the **asynchronous model**: instead of blocking while waiting, JavaScript delegates the operation and keeps executing. When the operation completes, it resumes from where it left off.
+- JavaScript is **single-threaded** — async operations don't run in parallel inside JS, they delegate to the browser/runtime and get a callback when done
+- `async` functions always return a **Promise**, even without `await` inside
+- `await` pauses the **current async function** only — other code keeps running
+- Forgetting `await` gives you an unresolved Promise, not the value
+- `Promise.all` fails fast if any promise rejects. `Promise.allSettled` waits for all and never throws
+- Microtasks (Promises) run **before** macrotasks (setTimeout, setInterval) in the event loop
 
 ---
 
-## Callbacks → Promises → Async/Await
+## How does the Event Loop work?
 
-This is the evolution that solved the problem:
+JavaScript has one call stack. When an async operation completes, its callback is queued and processed when the stack is empty.
 
-### Callbacks (the problem)
-
-```javascript
-fetchUser(id, function(error, user) {
-  if (error) {
-    handleError(error)
-  } else {
-    fetchPosts(user.id, function(error, posts) {
-      if (error) {
-        handleError(error)
-      } else {
-        // callback hell — every nesting level is a level of pain
-        render(posts)
-      }
-    })
-  }
-})
+```
+Call Stack        Microtask Queue    Macrotask Queue
+─────────────     ───────────────    ───────────────
+main()            Promise.then()     setTimeout()
+fetchData()       async/await        setInterval()
+                  queueMicrotask()   I/O events
 ```
 
-### Promises (better, but verbose)
+**Execution order:** synchronous code → microtasks → macrotasks.
 
 ```javascript
+console.log('1')               // sync
+
+setTimeout(() => {
+  console.log('4')             // macrotask
+}, 0)
+
+Promise.resolve().then(() => {
+  console.log('3')             // microtask
+})
+
+console.log('2')               // sync
+
+// Output: 1, 2, 3, 4
+```
+
+This is a classic interview question. `setTimeout(..., 0)` does not mean "immediate" — it means "after all microtasks."
+
+---
+
+## Callbacks → Promises → async/await
+
+The same operation expressed in each style:
+
+```javascript
+// Callbacks — nested, hard to reason about
+fetchUser(id, (err, user) => {
+  if (err) return handleError(err)
+  fetchPosts(user.id, (err, posts) => {
+    if (err) return handleError(err)
+    render(posts)  // callback hell
+  })
+})
+
+// Promises — flat chain, better
 fetchUser(id)
   .then(user => fetchPosts(user.id))
   .then(posts => render(posts))
-  .catch(error => handleError(error))
-```
+  .catch(handleError)
 
-### Async/Await (what I use today)
-
-```javascript
+// async/await — reads like synchronous code
 async function loadUserPosts(id) {
   try {
     const user = await fetchUser(id)
@@ -67,189 +90,226 @@ async function loadUserPosts(id) {
 }
 ```
 
-`async/await` is syntactic sugar over Promises. Under the hood they are exactly the same — only the syntax changes.
+`async/await` is syntactic sugar over Promises. They compile to the same thing.
 
 ---
 
-## Fetch API — the base pattern
+## What are the three Promise states?
 
-`fetch()` is the browser's native function for making HTTP requests. It returns a Promise.
+| State | Meaning | Transitions to |
+|-------|---------|----------------|
+| `pending` | Initial state, operation in progress | `fulfilled` or `rejected` |
+| `fulfilled` | Operation completed successfully | terminal |
+| `rejected` | Operation failed | terminal |
+
+Once a Promise settles (fulfilled or rejected), it never changes state again.
 
 ```javascript
-// Basic GET
-async function getProducts() {
-  const response = await fetch('https://api.example.com/products')
+// Creating a Promise manually
+const promise = new Promise((resolve, reject) => {
+  if (success) resolve(value)   // → fulfilled
+  else reject(new Error('...')) // → rejected
+})
 
-  if (!response.ok) {
-    throw new Error(`HTTP error: ${response.status}`)
-  }
-
-  const data = await response.json()
-  return data
-}
-```
-
-**Two `await` calls worth understanding:**
-1. `await fetch(url)` — waits for the HTTP response to arrive (the headers)
-2. `await response.json()` — waits for the full body to be parsed
-
-These are two separate operations. If you forget the second `await`, you get an unresolved Promise, not the data.
-
----
-
-## The Pattern I Use Across My Projects
-
-In **POS Colombia**, every backend API call follows this pattern:
-
-```typescript
-// Typed with TypeScript so we know exactly what to expect
-interface Product {
-  id: string
-  name: string
-  price: number
-  categoryId: string
-}
-
-async function fetchProducts(token: string): Promise<Product[]> {
-  const response = await fetch('/api/products', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!response.ok) {
-    // Don't assume all errors look the same
-    const errorData = await response.json()
-    throw new Error(errorData.error.message)
-  }
-
-  return response.json()
-}
+// Consuming
+promise
+  .then(value => { /* fulfilled */ })
+  .catch(error => { /* rejected */ })
+  .finally(() => { /* always */ })
 ```
 
 ---
 
-## POST with a Body — Creating a Resource
+## What does an async function actually return?
 
-```typescript
-async function createSale(saleData: CreateSaleDto, token: string) {
-  const response = await fetch('/api/sales', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(saleData), // data goes serialized in the body
-  })
-
-  if (!response.ok) {
-    throw new Error('Error creating sale')
-  }
-
-  return response.json()
-}
-```
-
----
-
-## Supabase — fetch with abstraction
-
-In **PeludoTag**, I use Supabase which handles fetch internally:
-
-```typescript
-import { supabase } from '@/lib/supabase'
-
-async function getPetById(petId: string) {
-  const { data, error } = await supabase
-    .from('pets')
-    .select('*')
-    .eq('id', petId)
-    .single()
-
-  if (error) throw error
-  return data
-}
-```
-
-Supabase uses the same async/await model but abstracts authentication headers, JSON parsing, and error handling into the `{ data, error }` object.
-
----
-
-## Error Handling: What Tutorials Skip
-
-A common mistake is using try/catch without knowing what to do with the error:
+Every `async` function wraps its return value in a Promise:
 
 ```javascript
-// ❌ Empty catch — the error disappears silently
-try {
-  const data = await fetchData()
-} catch (e) {}
-
-// ❌ console.log and carry on as if nothing happened
-try {
-  const data = await fetchData()
-} catch (e) {
-  console.log(e)
+async function greet() {
+  return 'hello'  // actually returns Promise.resolve('hello')
 }
-```
 
-What I do in my projects:
-
-```typescript
-// ✅ Handle the error in a way the user can see
-async function loadPet(id: string) {
-  try {
-    const pet = await getPetById(id)
-    setPet(pet)
-  } catch (error) {
-    // Notify the user (PeludoTag uses sonner for toasts)
-    toast.error('Could not load the pet profile')
-    // And report in production (Sentry in PeludoTag)
-    Sentry.captureException(error)
-  } finally {
-    setLoading(false) // this always runs, error or not
-  }
+// Equivalent to:
+function greet() {
+  return Promise.resolve('hello')
 }
+
+// You must await or .then() to get the value
+const message = await greet()  // 'hello'
 ```
 
 ---
 
-## Parallel Calls with Promise.all
+## Sequential vs Parallel execution
 
-If I need multiple pieces of data that don't depend on each other, I don't fetch them one at a time:
-
-```typescript
-// ❌ Sequential — 300ms + 300ms = 600ms of waiting
+```javascript
+// Sequential — 300ms + 300ms = 600ms
 const user = await fetchUser(id)
 const products = await fetchProducts()
 
-// ✅ Parallel — both run at the same time, ~300ms total
+// Parallel — both run simultaneously, ~300ms total
 const [user, products] = await Promise.all([
   fetchUser(id),
   fetchProducts(),
 ])
 ```
 
-`Promise.all` fails if any of the promises fail. If I need tolerance to individual failures, I use `Promise.allSettled`.
+**Only use sequential `await` when the second call depends on the result of the first.**
 
 ---
 
-## What I Should Be Able to Explain in Interviews
+## What are the Promise combinators?
 
-1. **What is a Promise?** — An object representing a future value. It can be in `pending`, `fulfilled`, or `rejected` state.
+| Method | Resolves when | Rejects when | Use case |
+|--------|--------------|-------------|----------|
+| `Promise.all` | All fulfill | Any rejects | Need all results |
+| `Promise.allSettled` | All settle (any state) | Never | Need all results, tolerating failures |
+| `Promise.race` | First settles | First rejects | Timeout pattern |
+| `Promise.any` | First fulfills | All reject | Try multiple sources, use fastest |
 
-2. **Does `async` without `await` make sense?** — Yes. An `async` function always returns a Promise even if it has no `await` inside.
+```javascript
+// allSettled — for dashboard data where partial failure is OK
+const results = await Promise.allSettled([
+  fetchSales(),
+  fetchInventory(),
+  fetchCustomers(),
+])
+results.forEach(r => {
+  if (r.status === 'fulfilled') use(r.value)
+  if (r.status === 'rejected') logError(r.reason)
+})
 
-3. **What happens if you forget `await`?** — The function continues without waiting. `const data = fetchData()` gives you a Promise, not the data.
-
-4. **When would you use `Promise.all` vs `Promise.allSettled`?** — `.all` when all results are required (if one fails, the rest don't matter). `.allSettled` when I need partial results even if some fail.
+// race — timeout pattern
+const data = await Promise.race([
+  fetch('/api/data'),
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Timeout')), 5000)
+  ),
+])
+```
 
 ---
 
-## Resources to Go Deeper
+## How do you handle errors properly?
 
-- MDN: [Using Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises)
-- MDN: [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
-- MDN: [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+```javascript
+// ❌ Silent catch — error disappears
+try {
+  const data = await fetchData()
+} catch (e) {}
+
+// ❌ Log and continue — state may be inconsistent
+try {
+  const data = await fetchData()
+} catch (e) { console.log(e) }
+
+// ✅ Handle visibly, report, clean up
+async function loadPet(id: string) {
+  try {
+    const pet = await getPetById(id)
+    setPet(pet)
+  } catch (error) {
+    toast.error('Could not load the pet profile')
+    Sentry.captureException(error)
+  } finally {
+    setLoading(false)  // always runs, error or not
+  }
+}
+```
+
+---
+
+## Common Interview Questions
+
+**Q: What is the output of this code?**
+```javascript
+async function main() {
+  console.log('A')
+  await Promise.resolve()
+  console.log('B')
+}
+console.log('C')
+main()
+console.log('D')
+```
+**A:** `C`, `A`, `D`, `B`. Synchronous code runs first (C, then A, then D). The `await` suspends `main` and resumes it as a microtask after the current sync code finishes (B last).
+
+**Q: Does `async` without `await` make sense?**
+**A:** Yes. An `async` function always returns a Promise, even with no `await` inside. Useful for consistent return types across a module.
+
+**Q: What happens if you forget `await`?**
+**A:** The code continues without waiting. `const data = fetchData()` gives you a `Promise<Data>`, not `Data`. TypeScript will usually catch this if the types are correct.
+
+**Q: `Promise.all` vs `Promise.allSettled` — when to use each?**
+**A:** Use `.all` when all results are required and a single failure should abort everything. Use `.allSettled` when you want all results even if some fail — like loading multiple dashboard widgets independently.
+
+---
+
+## Common Mistakes
+
+**1. `async` inside `forEach`** — `forEach` doesn't await callbacks. Use `for...of` or `Promise.all` instead.
+```javascript
+// ❌ These don't wait for each other
+items.forEach(async (item) => { await processItem(item) })
+
+// ✅ Sequential
+for (const item of items) { await processItem(item) }
+
+// ✅ Parallel
+await Promise.all(items.map(item => processItem(item)))
+```
+
+**2. Nested try/catch in Promise chains** — pick one style, don't mix.
+
+**3. Creating a Promise unnecessarily** — if a function already returns a Promise, don't wrap it.
+```javascript
+// ❌
+return new Promise((resolve) => { resolve(fetch(url)) })
+// ✅
+return fetch(url)
+```
+
+**4. Unhandled rejection** — always attach a `.catch()` or use try/catch with `await`.
+
+---
+
+## Cheat Sheet
+
+```javascript
+// ── Create a Promise ───────────────────────────────────
+new Promise((resolve, reject) => { ... })
+Promise.resolve(value)
+Promise.reject(new Error('...'))
+
+// ── Consume ────────────────────────────────────────────
+promise.then(v => ...).catch(e => ...).finally(() => ...)
+const v = await promise  // inside async function
+
+// ── async function ─────────────────────────────────────
+async function fn() { return value }           // returns Promise<value>
+const fn = async () => { ... }
+const result = await fn()
+
+// ── Error handling ─────────────────────────────────────
+try {
+  const data = await fetch(url).then(r => r.json())
+} catch (error) {
+  // handle
+} finally {
+  // always
+}
+
+// ── Parallel ───────────────────────────────────────────
+const [a, b] = await Promise.all([fetchA(), fetchB()])
+const results = await Promise.allSettled([fetchA(), fetchB()])
+
+// ── Combinators ────────────────────────────────────────
+Promise.all(promises)          // all or fail
+Promise.allSettled(promises)   // all, never throws
+Promise.race(promises)         // first to settle
+Promise.any(promises)          // first to fulfill
+
+// ── forEach gotcha ────────────────────────────────────
+for (const x of items) { await process(x) }              // sequential
+await Promise.all(items.map(x => process(x)))            // parallel
+```

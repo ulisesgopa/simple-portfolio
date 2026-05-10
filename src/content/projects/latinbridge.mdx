@@ -1,0 +1,105 @@
+---
+title: LatinBridge
+summary: "B2B platform connecting Latin American exporters with Chinese buyers. Next.js 15 with trilingual routing (ES/EN/PT), Supabase auth, an AI-powered lead qualification assistant, and an admin pipeline dashboard for the sales team."
+tags:
+  - Next.js
+  - TypeScript
+  - Supabase
+  - i18n
+startDate: 2025-02-01
+endDate: 2025-05-01
+author: Ulises Gómez
+url: https://latinbridge.vercel.app
+cover: './images/streamtech.png'
+ogImage: './images/streamtech.png'
+---
+
+## Overview
+
+**LatinBridge** is a B2B international trade platform connecting Latin American exporters with buyers in China. It operates across three locales with full multilingual routing, an AI-powered lead qualification assistant, and a protected admin dashboard where the sales team manages and tracks inbound leads through a full pipeline.
+
+---
+
+## Role
+**Solo Developer**: multilingual landing, lead capture, admin authentication system, deal pipeline dashboard, SEO structured data, and AI assistant integration.
+
+---
+
+## The Problem
+
+B2B export platforms operate across languages and cultures. A landing page that speaks only one locale loses qualified leads from the others. At the same time, without a lead management system, the sales team works out of email inboxes, with no tracking, no conversion metrics, and no pipeline visibility.
+
+---
+
+## Solution
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Auth + DB | Supabase (PostgreSQL + Row Level Security) |
+| i18n | next-intl (ES / EN / PT) |
+| Validation | Zod |
+| Animations | Framer Motion |
+| SEO | JSON-LD structured data (Organization, Service, WebSite schemas) |
+
+---
+
+## Key Features
+
+### Multilingual Routing (ES / EN / PT)
+
+next-intl provides locale-aware URL structures (`/es`, `/en`, `/pt`) with automatic locale detection and validation. Each locale has its own message dictionary. The routing middleware redirects unlocalized URLs to the user's preferred locale based on the `Accept-Language` header.
+
+### Lead Capture, Two Entry Points
+
+The landing offers two conversion paths:
+1. **Lead configurator modal**: a multi-step form where prospects define product category, volume, and target market
+2. **AI micro-assistant**: a conversational interface that qualifies leads through guided questions before routing to the configurator
+
+Both flows write to the same leads table in Supabase with a source tag, so the admin dashboard can compare conversion rates between entry points.
+
+### Admin Dashboard with Lead Pipeline
+
+The admin area is protected by a dual-layer authentication system:
+- **Supabase JWT tokens** stored in HTTP-only cookies for session persistence
+- **Email allowlist** check on every protected route, even with a valid JWT, only approved email addresses can access the admin area
+
+The dashboard shows leads across four pipeline stages (`pending_quote → contacted → quoted → closed_won`) with conversion rate KPIs per stage, time-in-stage tracking, and status update controls.
+
+### SEO, Structured Data
+
+Each locale generates its own JSON-LD graph with Organization, WebSite, and Service schemas. Dynamic OG images are generated per locale for social sharing.
+
+---
+
+## Technical Decisions Worth Explaining
+
+**Why Supabase instead of a custom auth backend?**
+Supabase provides PostgreSQL, auth, and storage without the infrastructure overhead of a separate API service. Row Level Security (RLS) at the database layer means data access rules are defined once and enforced at the database level, not just in application code that can be bypassed.
+
+**Why next-intl instead of react-i18next?**
+next-intl integrates directly with Next.js App Router's Server Components. Translations are applied at render time on the server, no client-side translation bundle, no flash of untranslated content. It also provides type-safe message keys via TypeScript code generation from the message dictionaries.
+
+**Why dual lead capture?**
+Different users in a B2B context behave differently. Some prospects are ready to fill a structured form; others prefer a conversational first contact. The AI assistant handles the latter without requiring a multi-step form upfront. Both paths write to the same database so no lead data is lost by offering two entry points.
+
+---
+
+## Challenges
+
+1. **Locale validation middleware**: next-intl's middleware needs to detect, validate, and redirect locales without conflicting with Next.js's own middleware layer. Requires careful ordering of middleware matchers to avoid redirect loops on admin routes.
+
+2. **Session persistence across locales**: Supabase JWT tokens in cookies need the `path=/` attribute to persist across locale prefixes (`/es`, `/en`, `/pt`). Without this, navigating between locales cleared the session silently.
+
+3. **JSON-LD per locale**: Each locale requires its own schema graph with localized name and description fields. The structured data component reads from the current locale's message dictionary and injects the correct graph per page at render time.
+
+---
+
+## Final Thoughts
+
+International products have international problems. i18n is more than translation — it's locale detection in middleware, URL structure decisions, session cookie persistence across route prefixes, and content that actually resonates with each market. LatinBridge made those invisible complexities visible and concrete.
+
+The AI qualification assistant also represents a different way of thinking about lead capture: some prospects won't fill a multi-step form on first contact, but they will have a conversation. Meeting users where they are — whether that's a structured form or a chat — is a product decision that affects conversion directly. Both paths land in the same database, which is how you measure which one works better.

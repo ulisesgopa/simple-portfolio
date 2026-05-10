@@ -1,6 +1,6 @@
 ---
-title: Negocios Uno Landing Page
-summary: First paid freelance project. Built the marketing landing page for Negocios Uno, a business management platform for SMEs. Delivered with Astro for performance and Tailwind for rapid iteration under a short client deadline.
+title: Negocios Uno
+summary: First paid freelance project. Marketing landing page for an SME management platform, built with Astro and TailwindCSS. Shipped under a two-week deadline with real client feedback cycles.
 tags:
   - Astro
   - TailwindCSS
@@ -14,43 +14,40 @@ ogImage: './images/portada-negociosuno.webp'
 
 ## Overview
 
-**Negocios Uno** is a platform that helps small and medium businesses manage their day-to-day operations. The client needed a professional landing page to generate leads and communicate the product's value to business owners who aren't necessarily tech-savvy.
+**Negocios Uno** is a platform that helps small and medium businesses manage their day-to-day operations. The client had a working product but no web presence — potential users were landing on nothing after hearing about it through social channels.
 
-This was my first paid freelance web project.
+This was the first project where a real person paid me to build something, reviewed the work, and needed it deployed and working by a specific date.
 
 ---
 
 ## Role
-
 **Freelance Frontend Developer** — requirements gathering, design implementation, development, and delivery.
 
 ---
 
 ## The Problem
 
-The client had a working product but no web presence. Potential users were landing on nothing after seeing the product mentioned on social media. The brief was clear: build a fast, professional site that converts visitors into contacts, with a two-week deadline.
+The client had a product and users but no web presence. The ask was concrete: a professional landing page that communicates the platform's value to business owners who aren't necessarily technical, with a clear CTA, and live within two weeks.
 
 ---
 
-## Technical Decisions
+## Solution
 
-**Why Astro?**
+A static marketing site with a sharp content hierarchy: lead with the value proposition, follow with features, close with social proof and contact.
 
-The site is entirely marketing content — no login, no dynamic data, no interactivity beyond a contact CTA. Astro's static output means the page loads as raw HTML — no JavaScript parse time, no hydration overhead. For a landing page where every second of load time affects conversion, this was the right choice.
-
-**Constraint-driven stack selection:**
-
-Two weeks, solo developer, client with non-technical feedback cycles. Astro's file-based routing and component model made the project easy to reason about, easy to iterate on, and easy to hand off.
-
----
-
-## Stack
+### Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Framework | Astro |
 | Styling | TailwindCSS |
 | Deployment | Vercel |
+
+**Why Astro for a landing page?**
+The site is entirely marketing content — no login, no dynamic data, no client-side interactivity beyond the contact CTA. Astro's static output ships as raw HTML with zero JavaScript overhead. For a page where load time directly affects conversion, this was the obvious choice.
+
+**Constraint-driven decision making:**
+Two weeks, solo, non-technical client with feedback via screenshots and written notes. Astro's file-based routing and component model made the project fast to reason about and easy to iterate on based on client input.
 
 ---
 
@@ -59,24 +56,24 @@ Two weeks, solo developer, client with non-technical feedback cycles. Astro's fi
 - Hero section with primary value proposition and CTA
 - Features breakdown for SME decision-makers
 - Testimonials section
-- Contact section
-- Mobile-first responsive layout
-- SEO metadata (title, description, Open Graph)
+- Contact section with clear next steps
+- Mobile-first responsive layout across all breakpoints
+- SEO metadata: title, description, Open Graph tags
 
 ---
 
-## What This Project Taught Me
+## What Working With a Real Client Taught Me
 
-Working with a real client for the first time taught me things no tutorial covers:
+No tutorial covers what a real client relationship surfaces:
 
-- **Requirements change mid-build** — building with components made pivoting painless
-- **Non-technical feedback is specific but described visually** — "make it feel more serious" means adjusting font weight, spacing, and color contrast, not the layout
-- **Delivery means deployed and working** — not just running locally
+- **Requirements change mid-build**: having a component-based architecture made pivoting on section order and content painless — change the component, done
+- **Non-technical feedback is specific but described visually**: "make it feel more serious" translates to adjusting font weight, tightening spacing, and pulling back on color saturation — not redesigning the layout
+- **Delivery means deployed and working**: not running locally, not staged behind a password — live, on the actual domain, working on mobile
 
 ---
 
-## What I'd Improve Now
+## Why This Project Is in the Portfolio
 
-- Add a working contact form with email delivery (Resend or Formspree)
-- Implement analytics to track CTA clicks
-- Add `rel="noopener noreferrer"` to all external links
+This wasn't a side project or a learning exercise. A real business owner trusted me with their web presence, reviewed it against their expectations, and paid for the result.
+
+That accountability — someone's livelihood depending on a deadline you committed to — is the foundation every subsequent project is built on. Every client engagement since has referenced lessons from this one.

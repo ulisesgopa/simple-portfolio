@@ -1,0 +1,131 @@
+---
+title: CRM TBS Wireless
+summary: Full-stack internal CRM for a Colombian telecom company. Automated receipt generation that previously took 5-8 hours/day, added per-collector audit trails, dual sales modes (cash and credit), and real-time KPI dashboards. Built with Next.js 15, React 19, Prisma/PostgreSQL, and Playwright E2E tests.
+tags:
+  - Next.js
+  - TypeScript
+  - Prisma
+  - PostgreSQL
+  - Playwright
+startDate: 2023-12-10
+endDate: 2024-02-10
+author: Ulises Gómez
+url: https://crm-tbswireless.vercel.app
+cover: './images/posdashboard.png'
+ogImage: './images/posdashboard.png'
+---
+
+## Overview
+
+**CRM TBS Wireless** is a full-stack internal operations system for TBS Wireless Services, a Colombian telecom company. It covers the full customer and revenue lifecycle: onboarding, service plan assignment, invoice generation, payment tracking, collections management, and real-time KPI reporting for operations teams.
+
+It replaced a workflow that was partially manual and spread across disconnected tools, spreadsheets, WhatsApp, and disconnected billing records.
+
+---
+
+## Role
+**Solo Developer**: database schema, full API layer, admin dashboard, authentication system, E2E test coverage, and production deployment.
+
+---
+
+## The Problem
+
+The operations team was managing billing entirely by hand. Receipt generation alone took **5 to 8 hours per day**: an employee manually producing each receipt for every payment received. Beyond that:
+
+- No audit trail by collector, no way to verify who collected what
+- No single source of truth for payment status: cash, credit, and overdue accounts were tracked in disconnected spreadsheets
+- No client requirement tracking, support requests were managed through WhatsApp
+- No programmatic way to activate or suspend services when payment status changed
+
+---
+
+## Solution
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| React version | React 19 |
+| Language | TypeScript |
+| Database | PostgreSQL |
+| ORM | Prisma 6 with Accelerate extension |
+| UI | Tailwind CSS 4 + Radix UI |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts |
+| Animations | Framer Motion |
+| Auth | JWT with role-based access (admin / collector) |
+| Testing | Playwright E2E |
+
+---
+
+## Key Technical Features
+
+### Real-time Operations Dashboard
+
+The main dashboard aggregates data across the full business: revenue collected, overdue invoices, payment rates, active customers, and collector performance. It runs 13+ parallel Prisma queries with aggregations and distinct selections to compute KPIs without loading raw records into memory.
+
+The dashboard uses `force-dynamic` rendering, every request hits the database fresh so operations teams always see current state.
+
+### Invoice Lifecycle Management
+
+Invoices move through a defined status lifecycle: `PENDING → OVERDUE → PAID`. Each transition affects UI state, collection prioritization, and reporting inclusion. The model supports credit agreements with installment payment plans alongside standard invoices.
+
+### Collector Work Sessions
+
+Collectors log work sessions with a start/end time and associated payment receipts. This gives management visibility into collector activity and links individual payments to the operator who processed them.
+
+### Production Data Integrity
+
+Database seed and snapshot scripts include environment checks that **prevent accidental production overwrites**: the scripts detect the current environment and abort if run outside of development. Migrations are separated from the seed layer to keep schema evolution independent of test data.
+
+### Playwright E2E Tests
+
+Full E2E coverage including:
+- Mobile and desktop viewport variants
+- Authentication flows (login, role-based redirects)
+- Core CRUD operations
+- Hydration error detection, Playwright intercepts console errors and fails tests if React hydration issues appear in the production build
+
+---
+
+## Technical Decisions Worth Explaining
+
+**Why Next.js App Router with `force-dynamic` instead of a REST API + SPA?**
+Server Components simplify the data layer for dashboard screens, instead of client-side fetches, the component itself runs the Prisma query at request time. `force-dynamic` ensures fresh data on every request, which is required for an ops tool where staleness has real business consequences.
+
+**Why Prisma with `directUrl`?**
+Prisma's Accelerate extension uses a proxied connection string that pools connections. But migrations require a direct database connection. Separating `url` (pooled, for queries) from `directUrl` (direct, for migrations) avoids connection issues in environments where Accelerate is enabled.
+
+**Why Playwright over Cypress?**
+Playwright natively supports multiple browsers and provides better support for testing Next.js server-rendered pages, including hydration error detection via `page.on('console', ...)`. It also runs faster in CI with parallelized test workers.
+
+---
+
+## Challenges
+
+1. **KPI query performance**: Aggregating revenue, payment counts, and overdue rates across thousands of records in a single dashboard request. Solved by pushing aggregations to the database layer (`groupBy`, `_sum`, `_count`) rather than loading raw records and computing in JavaScript.
+
+2. **Idempotent payment processing**: Payment receipts uploaded by collectors needed to update invoice status exactly once, even if the same receipt was submitted multiple times. Solved with a `processedAt` timestamp check before updating invoice state.
+
+3. **Role-based UI branching**: Admin and collector roles see completely different navigation and available actions. Implemented via JWT claim inspection in the layout component, with server-side middleware redirects for unauthorized route access.
+
+---
+
+## Roadmap, Planned Integrations
+
+Two integrations are planned that will close the loop between billing and network operations:
+
+**DIAN Electronic Invoicing**
+Colombia's tax authority requires electronic invoicing for all registered businesses. The CRM already models the fiscal data, the next step is connecting to the Factus API to emit legally valid invoices directly from the same workflow that currently generates receipts.
+
+**RouterOS API, Automated Service Management**
+TBS Wireless runs its network on MikroTik RouterOS. The planned integration will allow the CRM to automatically activate or suspend a customer's service based on payment status, a payment confirmation triggers service activation, an overdue deadline triggers suspension, without any manual intervention at the network level.
+
+---
+
+## Final Thoughts
+
+The clearest way to measure the impact: **receipt generation went from 5–8 hours of daily manual work to automatic**. The system handles what an employee used to spend most of their workday on, and adds audit trails, per-collector accountability, and dual payment modes (cash and credit) that didn't exist before.
+
+This project also changed how I think about software scope. The most valuable systems aren't the ones with the most features — they're the ones where removing a bottleneck gives someone their day back. Finding that bottleneck, understanding the workflow deeply enough to eliminate it, and shipping something that works in production every day is the highest-leverage thing a developer can do for a business.

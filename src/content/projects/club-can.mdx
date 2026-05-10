@@ -1,0 +1,106 @@
+---
+title: El Club Can
+summary: Premium marketing website for a high-end dog training school in Buenos Aires. Built with TanStack Start + React 19 + TanStack Router for file-based routing, with Radix UI for accessible components and Motion animations. Deployed to Cloudflare Workers.
+tags:
+  - TanStack Start
+  - React
+  - TypeScript
+  - Radix UI
+  - Cloudflare
+startDate: 2025-05-01
+endDate: 2025-08-01
+author: Ulises Gómez
+url: https://elclubcan.vercel.app
+cover: './images/santocodigo.png'
+ogImage: './images/santocodigo.png'
+---
+
+## Overview
+
+**El Club Can** is the web presence for a premium dog training school in Buenos Aires. The brand positions itself at the high end of the market, the site needed to reflect that through visual quality, clear methodology communication, and a lead generation flow that qualifies prospects before contact.
+
+---
+
+## Role
+**Frontend Developer**: component architecture, routing setup, animation system, lead capture form, and deployment to Cloudflare Workers.
+
+---
+
+## The Problem
+
+Premium service businesses live or die by first impressions. A generic template signals commodity. The client needed a site that:
+- Communicated training methodology with credibility and authority
+- Differentiated visually from the typical pet service aesthetic
+- Captured qualified leads, not just contact form submissions, but prospects with context about their dog's situation and training goals
+
+---
+
+## Solution
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Meta-framework | TanStack Start |
+| React version | React 19 |
+| Language | TypeScript |
+| Routing | TanStack Router (file-based) |
+| Bundler | Vite 7 |
+| UI | Tailwind CSS 4 + Radix UI (25+ components) |
+| Animations | Motion |
+| Deployment | Cloudflare Workers |
+
+---
+
+## Why TanStack Start Instead of Next.js
+
+TanStack Start is a full-stack React meta-framework built on TanStack Router, file-based routing with explicit server/client separation via `createServerFn` rather than React Server Components.
+
+For this project, it offered:
+- **Edge-native deployment**: runs on Cloudflare Workers' V8 isolate runtime without a Node.js server
+- **Explicit data loading**: `createServerFn` makes the server/client boundary visible in code rather than implicit through framework conventions
+- **Vite 7 bundler**: faster HMR and native ESM output
+
+The tradeoff is a smaller ecosystem compared to Next.js. For a marketing site with clear, bounded scope and a specific deployment target, it was the right call.
+
+---
+
+## Key Sections
+
+1. **Hero**: Cinematic entrance with Motion animations and a direct positioning statement
+2. **Methodology**: Training approach explained with visual differentiation from competitors
+3. **Services**: Program tiers with premium positioning and clear value per level
+4. **Testimonials**: Social proof with real client outcomes
+5. **Club Can Highlight**: Brand differentiator section explaining the school's philosophy
+6. **Contact / Lead capture**: Qualification form collecting dog age, breed, and specific behavioral goals before routing to the trainer
+
+---
+
+## Technical Decisions Worth Explaining
+
+**Why Radix UI primitives over shadcn/ui?**
+Using Radix UI directly (without shadcn's pre-styled layer) gives full visual control. shadcn introduces base styles that require overriding for brand-specific work. Starting from Radix primitives with Tailwind and custom design tokens produces a cleaner result, more work upfront, but no specificity battles.
+
+**Why Cloudflare Workers instead of Vercel?**
+The client wanted geographic distribution optimized for Argentina and Latin America. Cloudflare's network has Points of Presence closer to the target audience than Vercel's default region. The TanStack Start + Cloudflare Workers combination also keeps infrastructure costs minimal for a marketing site with variable traffic.
+
+**Why Motion instead of Framer Motion?**
+Motion v11+ ships a smaller core bundle. For a marketing site where animation performance directly affects perceived quality, the reduced JavaScript overhead matters. The API is largely compatible with Framer Motion, and the project's animation requirements fit Motion's core without the full Framer Motion feature set.
+
+---
+
+## Challenges
+
+1. **TanStack Start ecosystem maturity**: The meta-framework was in beta during development. Some Cloudflare Workers adapter configurations had incomplete documentation, requiring reading source code and community issues to understand the correct setup.
+
+2. **Tailwind 4 CSS-first configuration**: Tailwind 4 uses a new `@theme` directive instead of `tailwind.config.js`. Integrating custom color tokens required understanding the new CSS custom property inheritance model, which differs significantly from Tailwind 3.
+
+3. **Animation accessibility**: Motion animations needed to respect the `prefers-reduced-motion` media query. Implemented a wrapper hook that reads the system preference and conditionally disables transition props, so users who have requested reduced motion aren't affected.
+
+---
+
+## Final Thoughts
+
+Premium clients don't pay just for functionality — they pay for how it makes their brand look. El Club Can pushed every frontend decision toward quality: motion that feels intentional, components built from Radix primitives with full visual control, deployment optimized for the actual geographic audience.
+
+The technical lesson is that the most popular tool isn't always the right one. TanStack Start + Cloudflare Workers is lighter, faster to the edge, and architecturally explicit for a scope like this. The broader lesson: a site that looks premium converts premium clients. Understanding that connection between visual execution and business outcome is what separates a developer from a product partner.
