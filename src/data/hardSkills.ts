@@ -20,19 +20,19 @@ const hardSkills: HardSkill[] = [
   {
     name: "Next.js",
     description:
-      "My go-to React framework for scalable, SEO-friendly web applications",
+      "My favorite React framework for scalable, SEO friendly web applications",
     icon: "nextjs_icon_dark",
   },
   {
     name: "TypeScript",
     description:
-      "Type-safe development, interfaces, generics, and Zod schema validation",
+      "Type safe development, interfaces, generics, and Zod schema validation",
     icon: "typescript",
   },
   {
     name: "Tailwind CSS",
     description:
-      "Utility-first styling, responsive design systems, and custom theme configuration",
+      "Utility first styling, responsive design systems, and custom theme configuration",
     icon: "tailwind",
   },
   {
@@ -56,13 +56,13 @@ const hardSkills: HardSkill[] = [
   {
     name: "React Native & Expo",
     description:
-      "Cross-platform mobile apps for iOS and Android from a single TypeScript codebase, with file-based routing via Expo Router",
-    icon: "react",
+      "Cross platform mobile apps for iOS and Android from a single TypeScript codebase, with file-based routing via Expo Router",
+    icon: "expo",
   },
   {
     name: "Node.js & Bun",
     description:
-      "Backend runtimes for REST APIs — Bun for high-performance services (Tienda Patitas, POS Colombia), Node.js for serverless functions",
+      "Backend runtimes for REST APIs Bun for high performance services (Tienda Patitas, POS Colombia), Node.js for serverless functions",
     icon: "nodejs",
   },
 ];
