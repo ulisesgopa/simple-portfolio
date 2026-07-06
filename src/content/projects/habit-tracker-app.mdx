@@ -83,35 +83,12 @@ Every accessibility option is a first-class feature, not a checkbox:
 
 ---
 
-## Technical Decisions Worth Explaining
-
-**Why Expo Router over React Navigation?**
-File-based routing gives the same mental model as Next.js on both mobile and web. The same directory structure defines routes on iOS, Android, and the browser — no separate router configuration per platform. Deep linking works out of the box.
-
-**Why Zustand with Async Storage persistence?**
-The app has rich local state: current XP, active habits, theme, accessibility flags, pending sync queue. Zustand's `persist` middleware serializes the store to Async Storage on every update and rehydrates on mount, in four lines of code. Redux would have required actions, reducers, and a custom persistence layer.
-
-**Why a Bun backend instead of serverless functions?**
-The backend handles sync logic, XP calculation, and cross-device state persistence — operations that benefit from stateful process context and fast startup times. Bun runs TypeScript natively without a build step, starts in milliseconds, and performs well under sustained load. Prisma provides type-safe queries and schema migrations.
-
----
-
 ## Current State
 
 The app is live and running:
 - **Web**: deployed at habit-flow-six-sooty.vercel.app
 - **Mobile**: installable on iOS and Android via Expo Go for testing
 - **Native distribution**: Android (Google Play via Stream Tech developer account) and iOS (App Store) in progress — pending Apple Developer enrollment
-
----
-
-## Challenges
-
-1. **Offline-first architecture** — local Async Storage state needs to sync with PostgreSQL without conflicts when connectivity is restored. Implemented an optimistic update model with a sync queue.
-
-2. **Cross-platform styling** — Tailwind CSS on web, React Native StyleSheet on mobile. Built a component abstraction that accepts styled variants for each platform without exposing the difference to the feature layer.
-
-3. **Accessibility and gamification together** — level-up animations and XP celebrations must respect low-stim mode. Any motion or sound effect that fires on a habit completion checks the user's preference first.
 
 ---
 

@@ -39,11 +39,11 @@ The client ran an active pet products business with no digital infrastructure be
 
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Bun 1.2+ |
+| Runtime | Bun |
 | Language | TypeScript |
-| HTTP | Bun.serve (native Web API, no framework) |
-| Database | PostgreSQL 15 |
-| ORM | Prisma 7 with @prisma/adapter-pg |
+| HTTP | Bun.serve |
+| Database | PostgreSQL |
+| ORM | Prisma |
 | Auth | JWT via jose (access 15min + refresh 7d) |
 | Payments | MercadoPago (checkout + webhooks) |
 | Email | Resend (order confirmations, receipts) |
@@ -63,15 +63,15 @@ The client ran an active pet products business with no digital infrastructure be
 
 | Layer | Technology |
 |-------|-----------|
-| Build tool | Vite 5.4 |
-| Framework | React 18 |
+| Build tool | Vite |
+| Framework | React |
 | Language | TypeScript |
 | UI | shadcn/ui + Radix UI |
-| Styling | TailwindCSS 3.4 |
-| Routing | React Router DOM 6 |
-| Server state | TanStack Query 5 |
+| Styling | TailwindCSS |
+| Routing | React Router |
+| Server state | TanStack Query |
 | Forms | React Hook Form + Zod |
-| Auth | JWT stored in localStorage with automatic token refresh |
+| Auth | JWT with automatic token refresh |
 | Analytics | Vercel Analytics + Speed Insights |
 | Testing | Vitest + Testing Library |
 
@@ -87,14 +87,14 @@ The client ran an active pet products business with no digital infrastructure be
 
 | Layer | Technology |
 |-------|-----------|
-| Build tool | Vite 5.4 |
-| Framework | React 18 |
+| Build tool | Vite |
+| Framework | React |
 | Language | TypeScript |
 | UI | shadcn/ui + Radix UI |
-| Styling | TailwindCSS 3.4 |
-| Routing | React Router DOM 6 |
-| Server state | TanStack Query 5 |
-| Local state | Zustand 5 |
+| Styling | TailwindCSS |
+| Routing | React Router |
+| Server state | TanStack Query |
+| Local state | Zustand |
 | Forms | React Hook Form + Zod |
 | Animations | Framer Motion |
 | Testing | Vitest |
@@ -110,34 +110,6 @@ The client ran an active pet products business with no digital infrastructure be
 
 ---
 
-## Technical Decisions Worth Explaining
-
-**Why Bun.serve instead of Express, Hono, or Fastify?**
-Bun's native HTTP server handles routing, request parsing, and response formatting with the standard Web API (`Request`, `Response`). No framework overhead, no middleware chain to reason about. For a backend with well-defined modules and no need for framework-specific plugins, the standard API is enough — and Bun's performance characteristics make it a strong fit for a retail API that needs fast response times on product and cart operations.
-
-**Why Prisma 7 with @prisma/adapter-pg instead of the default connection string?**
-Prisma 7 moved to a driver adapter model. Using `@prisma/adapter-pg` with the native `pg` client gives direct control over the PostgreSQL connection pool — important for a production API where you need predictable connection behavior without Prisma's managed connection overhead.
-
-**Why three separate services instead of a Next.js full-stack app?**
-Each service has a different deployment target and access control requirement. The storefront is public and deployed to Vercel as a static SPA. The backend is the single source of truth consumed by both frontends. The admin is an internal tool with role-based access (ADMIN and CASHIER roles). Separating them means a new admin feature doesn't require redeploying the storefront, and the backend can be updated independently of both.
-
-**Why TanStack Query on both frontends?**
-Product catalog, sales history, and customer data are server state — they live in the database, not in the client. TanStack Query handles caching, background refetch, and loading/error states without manual `useEffect` + `useState` fetch patterns. Zustand handles the POS session state (active cash register, cart items in progress) which is local and doesn't need server sync.
-
----
-
-## Challenges
-
-1. **Mixed payment methods per sale**: A single sale can be paid with cash plus a transfer. The payment model needed to be a line array per sale (not a single payment field) to support splits, partial payments, and the change calculation for cash.
-
-2. **Inventory synchronization**: When the admin creates a purchase (incoming stock), the product's stock count updates. When a sale is confirmed, stock decrements. These two flows needed to stay consistent without race conditions on concurrent operations.
-
-3. **MercadoPago webhook reliability**: Payment confirmation arrives asynchronously after the customer completes checkout. The webhook handler needed to be idempotent — a repeated notification for the same payment should not double-update the order status or send duplicate confirmation emails via Resend.
-
-4. **Token refresh across two frontends**: Both the storefront and the admin use JWT with a 15-minute access token. Each frontend implements its own refresh interceptor — if a request returns 401, it automatically calls the refresh endpoint, updates the stored token, and retries the original request. Keeping this logic consistent between the two codebases required careful alignment.
-
----
-
 ## Final Thoughts
 
-Tienda Patitas is the most architecturally complete project in the freelance section of this portfolio. Owning the full stack — backend API, storefront, and admin — across a real retail domain forced every decision about data modeling, payment flows, and API contracts to be thought through to production level. There's no "the backend team will handle that" here: if the payment webhook fires twice, that's my problem. If stock goes negative after a race condition, that's my problem. That accountability shapes how the system was designed.
+Tienda Patitas is the most architecturally complete project in the freelance section of this portfolio. Owning the entire system — backend API, storefront, and admin — across a real retail domain forced every decision about data modeling, payment flows, and API contracts to be thought through to production level. There's no "the backend team will handle that" here: if the payment webhook fires twice, that's my problem. If stock goes negative after a race condition, that's my problem. That accountability shapes how the system was designed.

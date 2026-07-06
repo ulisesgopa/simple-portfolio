@@ -71,27 +71,6 @@ A web platform where:
 
 ---
 
-## Technical Decisions Worth Explaining
-
-**Why Supabase over a custom backend?**
-Row Level Security (RLS) in Supabase means each user can only access their own pets' data — enforced at the database level, not just in application code. This removes an entire category of authorization bugs. Supabase Auth also handles JWT session management out of the box.
-
-**Why Next.js App Router?**
-The public pet profile pages (`/m/[id]`) are static-friendly and benefit from Next.js's static generation with dynamic params. The dashboard is fully client-side. The API routes handle the notification logic server-side so Resend API keys are never exposed to the client.
-
-**Why Sentry?**
-In a production app where the QR scanning flow is the critical path, any error that breaks that flow means a pet doesn't get found. Sentry captures runtime errors in production with full stack traces, so issues can be diagnosed and fixed quickly.
-
----
-
-## Challenges
-
-1. **QR code + public page reliability** — The QR must always resolve to a working URL. Handling deleted or deactivated pets required a graceful fallback page rather than a 404.
-2. **Geolocation permissions** — Browsers require explicit user permission. The UX needed to handle denied permission without breaking the notification flow.
-3. **Email deliverability** — Configuring Resend with proper SPF/DKIM records to avoid spam folders for critical lost-pet alerts.
-
----
-
 ## Final Thoughts
 
-PeludoTag is a full-stack product with a clear real-world use case, production-level error handling (Sentry), real analytics, and a well-reasoned backend choice (Supabase). It shows the ability to take a feature from user problem → architecture decision → shipped product.
+PeludoTag is a complete product with a clear real-world use case, production-level error handling (Sentry), real analytics, and a well-reasoned backend choice (Supabase). It shows the ability to take a feature from user problem → architecture decision → shipped product.

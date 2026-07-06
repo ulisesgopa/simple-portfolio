@@ -43,11 +43,10 @@ A multi-section landing with distinct content layers per audience, business sect
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 15 (App Router) |
-| React version | React 19 |
+| Framework | Next.js (App Router) |
 | Animations | Framer Motion |
 | UI components | shadcn/ui + Radix UI |
-| Styling | TailwindCSS 4 |
+| Styling | TailwindCSS |
 | Language | TypeScript |
 | Icons | Lucide React |
 
@@ -65,38 +64,6 @@ A multi-section landing with distinct content layers per audience, business sect
 10. **Help Center**: Support pathways
 11. **Contact Methods**: Multiple contact channels
 12. **Contact Form**: Validated form with Zod
-
-### Color System
-
-```
-Primary:   #0052CC (Octopay Blue)
-Accent:    #00BFA6 (Green)
-Background: #FFFFFF
-Text dark: #1A1A1A
-Text muted: #6B7280
-Error:     #EF4444
-```
-
----
-
-## Technical Decisions Worth Explaining
-
-**Why Next.js 15 + React 19 for a landing page?**
-React 19's improved server components and streaming mean above-the-fold content renders faster. Next.js App Router enables per-section lazy loading, the FAQ accordion and contact form JavaScript only loads when the user scrolls near those sections.
-
-**Why Framer Motion over CSS animations?**
-Framer Motion handles scroll-triggered entrance animations (`whileInView`) with a clean declarative API. CSS animations would require Intersection Observer setup manually. For a page with 15+ animated sections, the DX tradeoff is justified.
-
-**Why shadcn/ui for components?**
-The FAQ accordion, contact form inputs, and navigation menu need to be accessible out of the box. Radix UI primitives handle keyboard navigation, ARIA attributes, and focus management, things that are easy to get wrong building from scratch.
-
----
-
-## Challenges
-
-1. **Animation performance**: 15+ sections with Framer Motion entrance animations can cause jank on lower-end devices. Solved by using `viewport: { once: true }` so animations only run once, and `will-change: transform` hints on heavy elements.
-2. **TypeScript with Framer Motion**: Typing animated component props correctly when combining Framer's `motion` variants with custom component props required careful generic usage.
-3. **Consistent section spacing**: Creating a design system of spacing tokens in Tailwind config to maintain visual rhythm across 15 sections without per-section overrides.
 
 ---
 

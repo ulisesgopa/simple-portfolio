@@ -37,7 +37,7 @@ B2B export platforms operate across languages and cultures. A landing page that 
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js (App Router) |
 | Language | TypeScript |
 | Auth + DB | Supabase (PostgreSQL + Row Level Security) |
 | i18n | next-intl (ES / EN / PT) |
@@ -72,29 +72,6 @@ The dashboard shows leads across four pipeline stages (`pending_quote → contac
 ### SEO, Structured Data
 
 Each locale generates its own JSON-LD graph with Organization, WebSite, and Service schemas. Dynamic OG images are generated per locale for social sharing.
-
----
-
-## Technical Decisions Worth Explaining
-
-**Why Supabase instead of a custom auth backend?**
-Supabase provides PostgreSQL, auth, and storage without the infrastructure overhead of a separate API service. Row Level Security (RLS) at the database layer means data access rules are defined once and enforced at the database level, not just in application code that can be bypassed.
-
-**Why next-intl instead of react-i18next?**
-next-intl integrates directly with Next.js App Router's Server Components. Translations are applied at render time on the server, no client-side translation bundle, no flash of untranslated content. It also provides type-safe message keys via TypeScript code generation from the message dictionaries.
-
-**Why dual lead capture?**
-Different users in a B2B context behave differently. Some prospects are ready to fill a structured form; others prefer a conversational first contact. The AI assistant handles the latter without requiring a multi-step form upfront. Both paths write to the same database so no lead data is lost by offering two entry points.
-
----
-
-## Challenges
-
-1. **Locale validation middleware**: next-intl's middleware needs to detect, validate, and redirect locales without conflicting with Next.js's own middleware layer. Requires careful ordering of middleware matchers to avoid redirect loops on admin routes.
-
-2. **Session persistence across locales**: Supabase JWT tokens in cookies need the `path=/` attribute to persist across locale prefixes (`/es`, `/en`, `/pt`). Without this, navigating between locales cleared the session silently.
-
-3. **JSON-LD per locale**: Each locale requires its own schema graph with localized name and description fields. The structured data component reads from the current locale's message dictionary and injects the correct graph per page at render time.
 
 ---
 

@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# internal working docs (not for the public repo)
+PORTFOLIO-BRIEF.md
+CV-2026-TEXT.md
+finish.md

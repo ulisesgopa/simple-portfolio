@@ -1,6 +1,6 @@
 ---
 title: CRM TBS Wireless
-summary: Full-stack internal CRM for a Colombian telecom company. Automated receipt generation that previously took 5-8 hours/day, added per-collector audit trails, dual sales modes (cash and credit), and real-time KPI dashboards. Built with Next.js 15, React 19, Prisma/PostgreSQL, and Playwright E2E tests.
+summary: Internal CRM for a Colombian telecom company. Automated receipt generation that previously took 5-8 hours/day, added per-collector audit trails, dual sales modes (cash and credit), and real-time KPI dashboards. Built with Next.js 15, React 19, Prisma/PostgreSQL, and Playwright E2E tests.
 tags:
   - Next.js
   - TypeScript
@@ -17,7 +17,7 @@ ogImage: './images/posdashboard.png'
 
 ## Overview
 
-**CRM TBS Wireless** is a full-stack internal operations system for TBS Wireless Services, a Colombian telecom company. It covers the full customer and revenue lifecycle: onboarding, service plan assignment, invoice generation, payment tracking, collections management, and real-time KPI reporting for operations teams.
+**CRM TBS Wireless** is an internal operations system for TBS Wireless Services, a Colombian telecom company. It covers the full customer and revenue lifecycle: onboarding, service plan assignment, invoice generation, payment tracking, collections management, and real-time KPI reporting for operations teams.
 
 It replaced a workflow that was partially manual and spread across disconnected tools, spreadsheets, WhatsApp, and disconnected billing records.
 
@@ -45,12 +45,11 @@ The operations team was managing billing entirely by hand. Receipt generation al
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 15 (App Router) |
-| React version | React 19 |
+| Framework | Next.js (App Router) |
 | Language | TypeScript |
 | Database | PostgreSQL |
-| ORM | Prisma 6 with Accelerate extension |
-| UI | Tailwind CSS 4 + Radix UI |
+| ORM | Prisma with Accelerate |
+| UI | Tailwind CSS + Radix UI |
 | Forms | React Hook Form + Zod |
 | Charts | Recharts |
 | Animations | Framer Motion |
@@ -86,41 +85,6 @@ Full E2E coverage including:
 - Authentication flows (login, role-based redirects)
 - Core CRUD operations
 - Hydration error detection, Playwright intercepts console errors and fails tests if React hydration issues appear in the production build
-
----
-
-## Technical Decisions Worth Explaining
-
-**Why Next.js App Router with `force-dynamic` instead of a REST API + SPA?**
-Server Components simplify the data layer for dashboard screens, instead of client-side fetches, the component itself runs the Prisma query at request time. `force-dynamic` ensures fresh data on every request, which is required for an ops tool where staleness has real business consequences.
-
-**Why Prisma with `directUrl`?**
-Prisma's Accelerate extension uses a proxied connection string that pools connections. But migrations require a direct database connection. Separating `url` (pooled, for queries) from `directUrl` (direct, for migrations) avoids connection issues in environments where Accelerate is enabled.
-
-**Why Playwright over Cypress?**
-Playwright natively supports multiple browsers and provides better support for testing Next.js server-rendered pages, including hydration error detection via `page.on('console', ...)`. It also runs faster in CI with parallelized test workers.
-
----
-
-## Challenges
-
-1. **KPI query performance**: Aggregating revenue, payment counts, and overdue rates across thousands of records in a single dashboard request. Solved by pushing aggregations to the database layer (`groupBy`, `_sum`, `_count`) rather than loading raw records and computing in JavaScript.
-
-2. **Idempotent payment processing**: Payment receipts uploaded by collectors needed to update invoice status exactly once, even if the same receipt was submitted multiple times. Solved with a `processedAt` timestamp check before updating invoice state.
-
-3. **Role-based UI branching**: Admin and collector roles see completely different navigation and available actions. Implemented via JWT claim inspection in the layout component, with server-side middleware redirects for unauthorized route access.
-
----
-
-## Roadmap, Planned Integrations
-
-Two integrations are planned that will close the loop between billing and network operations:
-
-**DIAN Electronic Invoicing**
-Colombia's tax authority requires electronic invoicing for all registered businesses. The CRM already models the fiscal data, the next step is connecting to the Factus API to emit legally valid invoices directly from the same workflow that currently generates receipts.
-
-**RouterOS API, Automated Service Management**
-TBS Wireless runs its network on MikroTik RouterOS. The planned integration will allow the CRM to automatically activate or suspend a customer's service based on payment status, a payment confirmation triggers service activation, an overdue deadline triggers suspension, without any manual intervention at the network level.
 
 ---
 
