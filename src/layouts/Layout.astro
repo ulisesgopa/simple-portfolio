@@ -27,13 +27,16 @@ const {
     canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
     imageOg = SITE.ogImage,
 } = Astro.props;
+
+// Social crawlers require absolute URLs for og:image / twitter:image
+const ogImageURL = new URL(imageOg, Astro.site).href;
 ---
 
 <!doctype html>
 <html lang={SITE.lang ?? "en"} class={cn({"scroll-smooth": scrollSmooth})}>
 <head>
     <meta name="msapplication-TileColor" content="#000000"/>
-    <meta name="viewport" content="width=device-width"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta charset="UTF-8"/>
     <meta name="generator" content={Astro.generator}/>
 
@@ -46,16 +49,18 @@ const {
     <link rel="canonical" href={canonicalURL}/>
 
     <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content={SITE.title}/>
     <meta property="og:title" content={title}/>
     <meta property="og:description" content={description}/>
     <meta property="og:url" content={canonicalURL}/>
-    <meta property="og:image" content={imageOg}/>
+    <meta property="og:image" content={ogImageURL}/>
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image"/>
-    <meta property="twitter:url" content={canonicalURL}/>
-    <meta property="twitter:title" content={title}/>
-    <meta property="twitter:description" content={description}/>
-    <meta property="twitter:image" content={imageOg}/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:url" content={canonicalURL}/>
+    <meta name="twitter:title" content={title}/>
+    <meta name="twitter:description" content={description}/>
+    <meta name="twitter:image" content={ogImageURL}/>
 
     <title>{title}</title>
     <ClientRouter/>
