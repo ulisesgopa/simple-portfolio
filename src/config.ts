@@ -35,10 +35,10 @@ export const ME = {
     email: "ulisesgopa@gmail.com",
     businessEmail: "info@escuelaperritos.com.ar",
     linkedin: "https://www.linkedin.com/in/whoisulisesgomez/",
-    resumeDoc: "Ulises-Gomez-Frontend-Developer-CV.pdf",
+    resumeDoc: "Cv_2026.pdf",
   },
   aboutMe:
-    "Frontend Developer with 3+ years building SaaS platforms and landing pages using React, Next.js, and TypeScript. Experience deploying and maintaining production services on Vercel, AWS, Linode, and Cloudflare, including live TV and radio broadcasting infrastructure. 7 years in hardware diagnostics gave me a systematic, problem first approach to debugging and architecture that I apply to every frontend challenge. Based in Buenos Aires, open to remote.",
+    "Frontend Developer with 3+ years building SaaS platforms and landing pages using React, Next.js, and TypeScript. Experience deploying and maintaining production services on Vercel, AWS, Linode, and Cloudflare, including live TV and radio broadcasting infrastructure. A technical background spanning board-level diagnostics, network architecture, and professional audiovisual systems gave me a systematic, root-cause-first approach to debugging that I apply to every frontend challenge. Based in Buenos Aires, open to remote.",
 };
 
 export const SOCIALS = [
