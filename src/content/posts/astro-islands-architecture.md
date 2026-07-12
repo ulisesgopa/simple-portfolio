@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-07-15T10:00:00Z
+publishDate: 2026-06-17T10:00:00Z
 title: "Astro Reference — Islands Architecture, Content Collections & Hydration"
 tags:
     - Astro

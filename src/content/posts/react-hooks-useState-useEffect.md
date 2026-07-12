@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-03-01T10:00:00Z
+publishDate: 2026-02-24T10:00:00Z
 title: "React Hooks Reference — useState, useEffect & Beyond"
 tags:
     - React

@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-03-20T10:00:00Z
+publishDate: 2026-04-08T10:00:00Z
 title: "Tailwind CSS Reference — Configuration, cn(), Dark Mode & Design System"
 tags:
     - Tailwind CSS

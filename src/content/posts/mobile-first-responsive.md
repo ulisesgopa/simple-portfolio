@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-06-01T10:00:00Z
+publishDate: 2026-05-26T10:00:00Z
 title: "Mobile-First Reference — Responsive Design, Breakpoints & Audit"
 tags:
     - CSS

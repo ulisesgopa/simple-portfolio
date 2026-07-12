@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-04-05T10:00:00Z
+publishDate: 2026-03-15T10:00:00Z
 title: "TypeScript Reference — Types, Generics & Utility Types"
 tags:
     - TypeScript

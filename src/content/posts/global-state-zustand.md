@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-05-10T10:00:00Z
+publishDate: 2026-05-02T10:00:00Z
 title: "Zustand Reference — Global State, Selectors & Persistence"
 tags:
     - React

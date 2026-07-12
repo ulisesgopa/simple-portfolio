@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2025-02-10T10:00:00Z
+publishDate: 2026-02-05T10:00:00Z
 title: "JavaScript Async Reference — Event Loop, Promises & async/await"
 tags:
     - JavaScript

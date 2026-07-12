@@ -1,6 +1,6 @@
 ---
 author: Ulises Gómez
-publishDate: 2024-12-20T15:20:35Z
+publishDate: 2026-01-18T10:00:00Z
 title: "Git Reference — Commands, Workflows & Interview Questions"
 tags:
     - Git
@@ -227,7 +227,7 @@ git stash drop         # delete without restoring
 
 **1. Force pushing to a shared branch** — overwrites other people's commits. Always use `git revert` on shared branches instead of `reset`.
 
-**2. Committing secrets** — `.env` files, API keys, credentials. Fix: add `.env` to `.gitignore` before writing the first line of code. If already committed, use `git filter-repo` (not history rewriting is safe for solo, dangerous for shared).
+**2. Committing secrets** — `.env` files, API keys, credentials. Fix: add `.env` to `.gitignore` before writing the first line of code. If already committed, rotate the exposed credentials immediately and scrub history with `git filter-repo` (history rewriting is manageable on a solo repo, dangerous on a shared one).
 
 **3. Rebasing a public branch** — rewrites commit hashes. Anyone who pulled the branch now has conflicts. Only rebase local branches.
 
