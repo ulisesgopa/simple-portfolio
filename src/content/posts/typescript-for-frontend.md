@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-03-15T10:00:00Z
-title: "TypeScript Reference — Types, Generics & Utility Types"
+title: "TypeScript Reference: Types, Generics & Utility Types"
 tags:
     - TypeScript
     - JavaScript
@@ -9,22 +9,22 @@ tags:
     - React
 description: Quick reference for TypeScript in frontend projects. type vs interface, generics, utility types, any vs unknown vs never, type narrowing, and Zod. With interview Q&A and a cheat sheet.
 cover:
-  src: './images/customizing-user-information/cover.webp'
+  src: './images/covers/typescript-for-frontend.webp'
   alt: 'TypeScript for Frontend'
 ---
 
 ## Quick Reference
 
-- TypeScript types exist **only at compile time** — they're erased in the browser. Zod handles **runtime** validation
+- TypeScript types exist **only at compile time**, they're erased in the browser. Zod handles **runtime** validation
 - `interface` can be extended with `extends` and re-declared (declaration merging). `type` cannot be re-declared but supports unions, intersections, and conditional types
-- Generics are **type parameters** — `Array<T>`, `Promise<T>`, `ApiResponse<T>` are generics you use every day
-- `unknown` is the type-safe alternative to `any` — you must narrow it before using it
-- `never` means a value that **can never exist** — used in exhaustive checks and impossible branches
-- `z.infer<typeof schema>` extracts a TypeScript type from a Zod schema — define once, validate at runtime and compile time
+- Generics are **type parameters**, `Array<T>`, `Promise<T>`, `ApiResponse<T>` are generics you use every day
+- `unknown` is the type-safe alternative to `any`, you must narrow it before using it
+- `never` means a value that **can never exist**, used in exhaustive checks and impossible branches
+- `z.infer<typeof schema>` extracts a TypeScript type from a Zod schema, define once, validate at runtime and compile time
 
 ---
 
-## type vs interface — what's the real difference?
+## type vs interface: what's the real difference?
 
 Both describe object shapes. The practical differences are:
 
@@ -37,7 +37,7 @@ Both describe object shapes. The practical differences are:
 | Primitives, tuples, functions | No | Yes |
 
 ```typescript
-// interface — for object shapes and component props
+// interface: for object shapes and component props
 interface Product {
   id: string
   name: string
@@ -45,11 +45,11 @@ interface Product {
   stock: number
 }
 
-// type — for unions, primitives, complex structures
+// type: for unions, primitives, complex structures
 type PaymentMethod = 'CASH' | 'TRANSFER' | 'CARD' | 'MERCADOPAGO'
 type SaleSource = 'POS' | 'STORE' | 'APP'
 
-// ApiResponse with union — only possible with type
+// ApiResponse with union: only possible with type
 type ApiResponse<T> =
   | { data: T; error: null }
   | { data: null; error: string }
@@ -64,25 +64,25 @@ type ApiResponse<T> =
 Generics are type parameters that let you write typed code that works with multiple types without losing type safety.
 
 ```typescript
-// Without generics — must repeat for every type
+// Without generics: must repeat for every type
 function getFirstProduct(items: Product[]): Product { return items[0] }
 function getFirstUser(items: User[]): User { return items[0] }
 
-// With generics — one function, TypeScript infers the type
+// With generics: one function, TypeScript infers the type
 function getFirst<T>(items: T[]): T { return items[0] }
 
 const product = getFirst(products) // TypeScript knows: Product
 const user = getFirst(users)       // TypeScript knows: User
 ```
 
-**Generic with constraint — T must have a specific shape:**
+**Generic with constraint, T must have a specific shape:**
 
 ```typescript
 function getById<T extends { id: string }>(items: T[], id: string): T | undefined {
   return items.find(item => item.id === id)
 }
 
-// Works with Product, User, Customer — anything that has .id: string
+// Works with Product, User, Customer: anything that has .id: string
 ```
 
 **Generic API response pattern:**
@@ -114,50 +114,50 @@ interface User {
   role: 'admin' | 'cashier'
 }
 
-// Partial — all fields optional (for PATCH requests)
+// Partial: all fields optional (for PATCH requests)
 type UpdateUserDto = Partial<User>
 
-// Required — all fields mandatory
+// Required: all fields mandatory
 type FullUser = Required<User>
 
-// Readonly — immutable
+// Readonly: immutable
 type ReadonlyUser = Readonly<User>
 
-// Pick — select fields
+// Pick: select fields
 type UserPublic = Pick<User, 'id' | 'name' | 'role'>
 
-// Omit — exclude fields
+// Omit: exclude fields
 type UserWithoutPassword = Omit<User, 'password'>
 
-// Record — typed object with dynamic keys
+// Record: typed object with dynamic keys
 type RolePermissions = Record<User['role'], string[]>
 
-// ReturnType — infer what a function returns
+// ReturnType: infer what a function returns
 type Products = ReturnType<typeof getProducts>
 
-// Parameters — infer a function's argument types
+// Parameters: infer a function's argument types
 type LoginArgs = Parameters<typeof login>
 
-// NonNullable — remove null and undefined
+// NonNullable: remove null and undefined
 type StrictId = NonNullable<string | null | undefined> // string
 ```
 
 ---
 
-## any vs unknown vs never — when to use each?
+## any vs unknown vs never: when to use each?
 
 ```typescript
-// any — opts out of type checking entirely. Avoid.
+// any: opts out of type checking entirely. Avoid.
 let x: any = 'hello'
 x.foo.bar.baz  // TypeScript won't catch this error
 
-// unknown — type-safe top type. Must narrow before using.
+// unknown: type-safe top type. Must narrow before using.
 let y: unknown = fetchSomething()
 if (typeof y === 'string') {
   console.log(y.toUpperCase())  // OK, narrowed to string
 }
 
-// never — value that can never exist. Used in exhaustive checks.
+// never: value that can never exist. Used in exhaustive checks.
 function assertNever(x: never): never {
   throw new Error('Unhandled case: ' + x)
 }
@@ -199,7 +199,7 @@ function render(element: HTMLElement | SVGElement) {
   }
 }
 
-// Discriminated union — the cleanest pattern
+// Discriminated union: the cleanest pattern
 type Result<T> =
   | { success: true; data: T }
   | { success: false; error: string }
@@ -217,7 +217,7 @@ function handle(result: Result<Product>) {
 
 ## What is Zod and why do you need it if you have TypeScript?
 
-TypeScript types are erased at compile time — the browser never sees them. Data from external APIs, forms, or `localStorage` arrives as `any` at runtime. Zod validates that data at runtime and throws descriptive errors if it doesn't match.
+TypeScript types are erased at compile time, the browser never sees them. Data from external APIs, forms, or `localStorage` arrives as `any` at runtime. Zod validates that data at runtime and throws descriptive errors if it doesn't match.
 
 ```typescript
 import { z } from 'zod'
@@ -228,7 +228,7 @@ const loginSchema = z.object({
   password: z.string().min(8, 'Minimum 8 characters'),
 })
 
-// Infer TypeScript type from schema — no duplication
+// Infer TypeScript type from schema: no duplication
 type LoginForm = z.infer<typeof loginSchema>
 
 // Runtime validation
@@ -254,7 +254,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
 **A:** `interface` supports declaration merging (same name = merged) and is ideal for objects. `type` supports unions, intersections, and conditional types. For most object shapes they're interchangeable; prefer `type` for unions and `interface` for component props.
 
 **Q: What does `z.infer<typeof schema>` do?**
-**A:** Extracts the equivalent TypeScript type from a Zod schema at compile time. You write the schema once and get both runtime validation and the TypeScript type — no duplication.
+**A:** Extracts the equivalent TypeScript type from a Zod schema at compile time. You write the schema once and get both runtime validation and the TypeScript type, no duplication.
 
 **Q: What are generics for?**
 **A:** Writing typed code that works with multiple types without losing type information. `Array<T>`, `Promise<T>`, `ApiResponse<T>` are built-in examples where the container is fixed but the content type varies.
@@ -263,23 +263,23 @@ const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
 **A:** TypeScript only exists during development. At runtime, data from external APIs, forms, or `localStorage` is effectively `any`. Zod validates at runtime and throws if the shape doesn't match.
 
 **Q: What is the `satisfies` operator?**
-**A:** Added in TypeScript 4.9. It validates that a value matches a type without widening the type. `const config = { ... } satisfies Config` — TypeScript checks the shape but keeps the specific literal types instead of broadening to `string`.
+**A:** Added in TypeScript 4.9. It validates that a value matches a type without widening the type. `const config = { ... } satisfies Config`, TypeScript checks the shape but keeps the specific literal types instead of broadening to `string`.
 
 ---
 
 ## Common Mistakes
 
-**1. Using `any` instead of `unknown`** — `any` disables all type checking. Use `unknown` and narrow it.
+**1. Using `any` instead of `unknown`**: `any` disables all type checking. Use `unknown` and narrow it.
 
-**2. Forgetting `null` in union types for optional data** — Supabase and most databases return `null`, not `undefined`.
+**2. Forgetting `null` in union types for optional data**: Supabase and most databases return `null`, not `undefined`.
 ```typescript
 // ❌ name: string    (might be null from DB)
 // ✅ name: string | null
 ```
 
-**3. Duplicating types between Zod schema and TypeScript interface** — use `z.infer` to derive the type from the schema.
+**3. Duplicating types between Zod schema and TypeScript interface**: use `z.infer` to derive the type from the schema.
 
-**4. Type assertions (`as`) instead of narrowing** — `as User` silences TypeScript without actually checking.
+**4. Type assertions (`as`) instead of narrowing**: `as User` silences TypeScript without actually checking.
 ```typescript
 // ❌ const user = data as User  (unsafe, no check at runtime)
 // ✅ use Zod .parse() or type guards

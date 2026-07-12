@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-01-18T10:00:00Z
-title: "Git Reference — Commands, Workflows & Interview Questions"
+title: "Git Reference: Commands, Workflows & Interview Questions"
 tags:
     - Git
     - GitHub
@@ -9,7 +9,7 @@ tags:
     - Workflow
 description: Quick reference for Git. The three areas, branching strategy, essential commands, merge vs rebase, undoing mistakes, and the workflows I use across all projects. Interview Q&A included.
 cover:
-  src: './images/customizing-theme-color-schemes/cover.webp'
+  src: './images/covers/git-github.webp'
   alt: 'Git workflow and version control'
 ---
 
@@ -18,7 +18,7 @@ cover:
 - Git has **3 areas**: working directory (unstaged) → index/staging area → repository (commits)
 - `HEAD` points to your current commit. Detached HEAD means you're on a commit, not a branch
 - `git fetch` downloads remote changes. `git pull` = fetch + merge into current branch
-- `git reset` rewrites history — safe for local commits. `git revert` creates a new undo commit — safe for shared branches
+- `git reset` rewrites history, safe for local commits. `git revert` creates a new undo commit, safe for shared branches
 - `merge` preserves full history with a merge commit. `rebase` replays commits for a linear history
 - **Never rebase commits already pushed to a shared branch**
 
@@ -36,10 +36,10 @@ git diff --staged → staging vs last commit
 ```
 
 Every file in your project is in one of these states:
-- **Untracked** — Git has never seen it
-- **Modified** — changed since last commit, not staged
-- **Staged** — added with `git add`, will be in the next commit
-- **Committed** — stored in repository history
+- **Untracked**, Git has never seen it
+- **Modified**, changed since last commit, not staged
+- **Staged**, added with `git add`, will be in the next commit
+- **Committed**, stored in repository history
 
 ---
 
@@ -76,7 +76,7 @@ main         ← always deployable, connected to Vercel/Cloudflare prod
 ```
 
 **Rules:**
-- `main` is always deployable — no broken code reaches it
+- `main` is always deployable, no broken code reaches it
 - Feature branches are short-lived: opened, merged, deleted within days
 - Every push to a branch triggers a Vercel preview deployment
 
@@ -122,7 +122,7 @@ feat:          C → D' → E'   (D and E replayed on top of C)
 | | Merge | Rebase |
 |---|---|---|
 | History | Preserves full divergence | Linear, cleaner |
-| Safe for shared branches | Yes | No — rewrites hashes |
+| Safe for shared branches | Yes | No, rewrites hashes |
 | Merge commit | Yes | No |
 | Best for | Long-lived branches, PR merges | Feature branches before merging |
 
@@ -175,7 +175,7 @@ git reset --soft HEAD~1
 # Undo last commit, keep changes unstaged
 git reset --mixed HEAD~1   # (default)
 
-# Undo last commit, discard changes entirely — destructive
+# Undo last commit, discard changes entirely, destructive
 git reset --hard HEAD~1
 
 # Undo a specific committed file, keep it unstaged
@@ -207,10 +207,10 @@ git stash drop         # delete without restoring
 ## Common Interview Questions
 
 **Q: What is the difference between `merge` and `rebase`?**
-**A:** Both integrate changes from one branch into another. `merge` creates a merge commit and preserves full history — good for long-lived branches and PRs. `rebase` replays commits on top of the target for a linear history — good for feature branches before merging. Never rebase commits already pushed to a shared branch.
+**A:** Both integrate changes from one branch into another. `merge` creates a merge commit and preserves full history, good for long-lived branches and PRs. `rebase` replays commits on top of the target for a linear history, good for feature branches before merging. Never rebase commits already pushed to a shared branch.
 
-**Q: `git reset` vs `git revert` — when to use each?**
-**A:** `reset` moves HEAD backward, rewriting history. It's safe for local commits not yet pushed. `revert` creates a new commit that undoes a previous one without rewriting history — safe for shared branches because it doesn't affect commits others may have pulled.
+**Q: `git reset` vs `git revert`: when to use each?**
+**A:** `reset` moves HEAD backward, rewriting history. It's safe for local commits not yet pushed. `revert` creates a new commit that undoes a previous one without rewriting history, safe for shared branches because it doesn't affect commits others may have pulled.
 
 **Q: What is a detached HEAD?**
 **A:** When you checkout a specific commit hash instead of a branch name, HEAD points to a commit with no branch attached. New commits made in this state can be garbage-collected. Fix with `git checkout -b new-branch-name`.
@@ -219,19 +219,19 @@ git stash drop         # delete without restoring
 **A:** Open the conflicting file, choose which changes to keep (or combine both), remove the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`), stage the resolved file, then complete with `git merge --continue` or `git rebase --continue`.
 
 **Q: What does `git reflog` do?**
-**A:** Records every time HEAD changes, even resets and rebases. It's the safety net — if you `reset --hard` and lose commits, `git reflog` shows the hash of where you were before and lets you recover it.
+**A:** Records every time HEAD changes, even resets and rebases. It's the safety net, if you `reset --hard` and lose commits, `git reflog` shows the hash of where you were before and lets you recover it.
 
 ---
 
 ## Common Mistakes
 
-**1. Force pushing to a shared branch** — overwrites other people's commits. Always use `git revert` on shared branches instead of `reset`.
+**1. Force pushing to a shared branch**: overwrites other people's commits. Always use `git revert` on shared branches instead of `reset`.
 
-**2. Committing secrets** — `.env` files, API keys, credentials. Fix: add `.env` to `.gitignore` before writing the first line of code. If already committed, rotate the exposed credentials immediately and scrub history with `git filter-repo` (history rewriting is manageable on a solo repo, dangerous on a shared one).
+**2. Committing secrets**: `.env` files, API keys, credentials. Fix: add `.env` to `.gitignore` before writing the first line of code. If already committed, rotate the exposed credentials immediately and scrub history with `git filter-repo` (history rewriting is manageable on a solo repo, dangerous on a shared one).
 
-**3. Rebasing a public branch** — rewrites commit hashes. Anyone who pulled the branch now has conflicts. Only rebase local branches.
+**3. Rebasing a public branch**: rewrites commit hashes. Anyone who pulled the branch now has conflicts. Only rebase local branches.
 
-**4. `git add .` without reviewing** — stages everything including files you didn't intend to commit. Use `git add <specific-file>` and review with `git diff --staged`.
+**4. `git add .` without reviewing**: stages everything including files you didn't intend to commit. Use `git add <specific-file>` and review with `git diff --staged`.
 
 ---
 

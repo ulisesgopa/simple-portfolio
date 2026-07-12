@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-07-08T10:00:00Z
-title: "Next.js Reference — App Router, Server Components & Rendering Strategies"
+title: "Next.js Reference: App Router, Server Components & Rendering Strategies"
 tags:
     - Next.js
     - React
@@ -9,22 +9,22 @@ tags:
     - Frontend
 description: Quick reference for Next.js App Router. Server vs Client Components, rendering strategies (static, dynamic, ISR), data fetching and caching, Server Actions, and route conventions. Interview Q&A included.
 cover:
-  src: './images/customizing-theme-color-schemes/cover.webp'
+  src: './images/covers/nextjs-app-router.webp'
   alt: 'Next.js App Router and Server Components'
 ---
 
 ## Quick Reference
 
-- App Router components are **Server Components by default** — zero JS shipped to the client unless you opt in with `'use client'`
-- `'use client'` marks a **boundary**, not a single component — everything it imports becomes client code too
-- Server Components can be `async` and fetch data directly — no `useEffect`, no loading state juggling
+- App Router components are **Server Components by default**, zero JS shipped to the client unless you opt in with `'use client'`
+- `'use client'` marks a **boundary**, not a single component, everything it imports becomes client code too
+- Server Components can be `async` and fetch data directly, no `useEffect`, no loading state juggling
 - Rendering is **per route**: static (default), dynamic (on request), or ISR (static + revalidation)
 - `fetch` in Server Components is extended with caching: `{ cache: 'force-cache' }`, `{ next: { revalidate: 60 } }`, `{ cache: 'no-store' }`
 - Server Actions (`'use server'`) let forms mutate data without writing API routes
 
 ---
 
-## App Router vs Pages Router — what changed?
+## App Router vs Pages Router: what changed?
 
 | | Pages Router (`pages/`) | App Router (`app/`) |
 |---|---|---|
@@ -41,11 +41,11 @@ The App Router is the recommended approach for new projects. The mental model sh
 ## Server Components vs Client Components
 
 ```tsx
-// app/events/page.tsx — Server Component (default, no directive)
+// app/events/page.tsx: Server Component (default, no directive)
 // Runs ONLY on the server. Can access DB, secrets, filesystem.
 // Ships ZERO JavaScript to the browser.
 export default async function EventsPage() {
-  const events = await getEvents()  // direct async fetch — no useEffect
+  const events = await getEvents()  // direct async fetch, no useEffect
   return (
     <section>
       {events.map(event => <EventCard key={event.id} event={event} />)}
@@ -56,14 +56,14 @@ export default async function EventsPage() {
 ```
 
 ```tsx
-// components/RegisterButton.tsx — Client Component
+// components/RegisterButton.tsx: Client Component
 'use client'
 
 import { useState } from 'react'
 
 export function RegisterButton({ eventId }: { eventId: string }) {
   const [loading, setLoading] = useState(false)
-  // hooks, event handlers, browser APIs — all need 'use client'
+  // hooks, event handlers, browser APIs: all need 'use client'
   return <button onClick={() => register(eventId)} disabled={loading}>Register</button>
 }
 ```
@@ -74,7 +74,7 @@ export function RegisterButton({ eventId }: { eventId: string }) {
 - Uses browser APIs (`window`, `localStorage`, `IntersectionObserver`)
 - Uses context consumers or libraries that depend on them (Zustand works in both, but subscriptions are client-side)
 
-**The composition rule:** keep `'use client'` as low in the tree as possible. A page can be 90% server-rendered with small interactive islands — the same philosophy as Astro islands, built into the framework.
+**The composition rule:** keep `'use client'` as low in the tree as possible. A page can be 90% server-rendered with small interactive islands, the same philosophy as Astro islands, built into the framework.
 
 ---
 
@@ -90,7 +90,7 @@ Client-side          → 'use client' + fetch in the browser (for user-specific 
 ```
 
 ```tsx
-// Static — event landing pages, generated at build
+// Static: event landing pages, generated at build
 export default async function EventPage({ params }) {
   const event = await getEventBySlug(params.slug)
   return <EventLanding event={event} />
@@ -102,10 +102,10 @@ export async function generateStaticParams() {
   return events.map(e => ({ slug: e.slug }))
 }
 
-// ISR — revalidate the page every 5 minutes
+// ISR: revalidate the page every 5 minutes
 export const revalidate = 300
 
-// Dynamic — force per-request rendering (admin dashboards)
+// Dynamic: force per-request rendering (admin dashboards)
 export const dynamic = 'force-dynamic'
 ```
 
@@ -124,7 +124,7 @@ const res = await fetch(url, { cache: 'force-cache' })
 // Revalidated every 60 seconds (ISR per-request)
 const res = await fetch(url, { next: { revalidate: 60 } })
 
-// Never cached (always fresh — dashboards, auth data)
+// Never cached (always fresh: dashboards, auth data)
 const res = await fetch(url, { cache: 'no-store' })
 
 // Tag-based invalidation
@@ -133,7 +133,7 @@ const res = await fetch(url, { next: { tags: ['events'] } })
 revalidateTag('events')  // purges every fetch tagged 'events'
 ```
 
-**Request deduplication:** identical `fetch` calls in the same render pass are automatically deduped — a layout and a page can both request the same data without a double hit.
+**Request deduplication:** identical `fetch` calls in the same render pass are automatically deduped, a layout and a page can both request the same data without a double hit.
 
 ---
 
@@ -164,7 +164,7 @@ app/
 
 ## What are Server Actions?
 
-Functions that run on the server, callable directly from forms or client components — no API route boilerplate:
+Functions that run on the server, callable directly from forms or client components, no API route boilerplate:
 
 ```tsx
 // app/actions/tickets.ts
@@ -183,7 +183,7 @@ export async function approveTicket(formData: FormData) {
 ```
 
 ```tsx
-// In a Server Component — works without any client JS
+// In a Server Component: works without any client JS
 <form action={approveTicket}>
   <input type="hidden" name="ticketId" value={ticket.id} />
   <button type="submit">Approve</button>
@@ -196,12 +196,12 @@ For pending/error states in the client, `useActionState` (React 19) wraps the ac
 
 ---
 
-## How does hydration work — and what causes hydration errors?
+## How does hydration work, and what causes hydration errors?
 
 The server sends HTML; React then attaches event listeners and state on the client ("hydration"). The rendered output of both passes must match.
 
 ```tsx
-// ❌ Hydration mismatch — server and client render different text
+// ❌ Hydration mismatch: server and client render different text
 function Clock() {
   return <span>{new Date().toLocaleTimeString()}</span>
 }
@@ -211,7 +211,7 @@ function Clock() {
 function Clock() {
   const [time, setTime] = useState<string | null>(null)
   useEffect(() => { setTime(new Date().toLocaleTimeString()) }, [])
-  return <span>{time ?? '—'}</span>
+  return <span>{time ?? '...'}</span>
 }
 ```
 
@@ -231,41 +231,41 @@ const inter = Inter({ subsets: ['latin'] })
 <Image src={event.coverUrl} alt={event.name} width={1200} height={630} priority />
 ```
 
-- `priority` on above-the-fold images (hero, LCP element) — disables lazy loading for them
-- `next/font` self-hosts fonts at build time — no external request to Google, no FOUT
+- `priority` on above-the-fold images (hero, LCP element), disables lazy loading for them
+- `next/font` self-hosts fonts at build time, no external request to Google, no FOUT
 
 ---
 
 ## Common Interview Questions
 
 **Q: What is a React Server Component and how is it different from SSR?**
-**A:** SSR renders HTML on the server but still ships the full component JS for hydration. Server Components never ship their JS to the client — the code runs only on the server and sends a serialized result. SSR is *where the first render happens*; Server Components are *where the code lives*. App Router uses both together.
+**A:** SSR renders HTML on the server but still ships the full component JS for hydration. Server Components never ship their JS to the client, the code runs only on the server and sends a serialized result. SSR is *where the first render happens*; Server Components are *where the code lives*. App Router uses both together.
 
 **Q: Can a Server Component use useState?**
-**A:** No. Server Components render once on the server — there's no state, no effects, no event handlers. Interactivity requires a Client Component (`'use client'`). The pattern is to push state to the leaves and keep data fetching at the top in Server Components.
+**A:** No. Server Components render once on the server, there's no state, no effects, no event handlers. Interactivity requires a Client Component (`'use client'`). The pattern is to push state to the leaves and keep data fetching at the top in Server Components.
 
 **Q: What does `'use client'` actually do?**
-**A:** It marks the boundary where the client bundle starts. That module and everything it imports get bundled and shipped to the browser. It does NOT mean "renders only on the client" — Client Components still render to HTML on the server first, then hydrate.
+**A:** It marks the boundary where the client bundle starts. That module and everything it imports get bundled and shipped to the browser. It does NOT mean "renders only on the client", Client Components still render to HTML on the server first, then hydrate.
 
 **Q: How do you decide between static, ISR, and dynamic rendering?**
 **A:** By how fresh the data must be and whether the output depends on the request. Marketing/event pages → static. Content that updates on a schedule → ISR with `revalidate`. Anything reading cookies, headers, or user sessions → dynamic. Using `cookies()` or `headers()` automatically opts the route into dynamic.
 
 **Q: What's the difference between a Server Action and an API route?**
-**A:** A Server Action is an RPC-style function tied to your UI — called from a form or client component, type-safe end to end, no manual fetch or JSON parsing. An API route is a public HTTP endpoint — needed for webhooks and external consumers. Use Actions for your own mutations, routes for everything external.
+**A:** A Server Action is an RPC-style function tied to your UI, called from a form or client component, type-safe end to end, no manual fetch or JSON parsing. An API route is a public HTTP endpoint, needed for webhooks and external consumers. Use Actions for your own mutations, routes for everything external.
 
 ---
 
 ## Common Mistakes
 
-**1. Putting `'use client'` at the top of every file** — turns the app back into a client-heavy SPA and loses the Server Component benefits. Keep the boundary low.
+**1. Putting `'use client'` at the top of every file**: turns the app back into a client-heavy SPA and loses the Server Component benefits. Keep the boundary low.
 
-**2. Fetching in `useEffect` when a Server Component could do it** — extra round trip, loading spinners, and client JS for data that was available at render time on the server.
+**2. Fetching in `useEffect` when a Server Component could do it**: extra round trip, loading spinners, and client JS for data that was available at render time on the server.
 
-**3. Passing non-serializable props across the boundary** — functions, class instances, and Dates can't cross from Server to Client Components (except Server Actions). Pass plain data.
+**3. Passing non-serializable props across the boundary**: functions, class instances, and Dates can't cross from Server to Client Components (except Server Actions). Pass plain data.
 
-**4. Using `cache: 'no-store'` everywhere "to be safe"** — disables the entire caching layer and makes every page dynamic. Choose per data source.
+**4. Using `cache: 'no-store'` everywhere "to be safe"**: disables the entire caching layer and makes every page dynamic. Choose per data source.
 
-**5. Reading `params` or `searchParams` and expecting a static page** — `searchParams` makes the route dynamic. If you need static, move the variation into the path segment and `generateStaticParams`.
+**5. Reading `params` or `searchParams` and expecting a static page**: `searchParams` makes the route dynamic. If you need static, move the variation into the path segment and `generateStaticParams`.
 
 ---
 

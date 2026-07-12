@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-02-24T10:00:00Z
-title: "React Hooks Reference — useState, useEffect & Beyond"
+title: "React Hooks Reference: useState, useEffect & Beyond"
 tags:
     - React
     - Hooks
@@ -9,24 +9,24 @@ tags:
     - Frontend
 description: Quick reference for the most important React hooks. useState, useEffect, useRef, useMemo, useCallback, and custom hooks with interview Q&A and a cheat sheet.
 cover:
-  src: './images/customizing-user-information/cover.webp'
+  src: './images/covers/react-hooks-useState-useEffect.webp'
   alt: 'React Hooks useState useEffect'
 ---
 
 ## Quick Reference
 
-- Hooks only work in **function components** and at the **top level** — no inside loops, conditions, or nested functions
-- `useState` returns `[value, setter]` — the setter does **not** mutate, it schedules a re-render with a new value
-- `useEffect` runs **after** the render — empty array `[]` = once on mount, no array = every render
+- Hooks only work in **function components** and at the **top level**, no inside loops, conditions, or nested functions
+- `useState` returns `[value, setter]`, the setter does **not** mutate, it schedules a re-render with a new value
+- `useEffect` runs **after** the render, empty array `[]` = once on mount, no array = every render
 - The cleanup function inside `useEffect` runs before the component unmounts **and** before the effect runs again
 - `useRef` gives you a mutable `.current` that does **not** cause a re-render when changed
-- `useMemo` memoizes a **value**, `useCallback` memoizes a **function** — both take a dependency array
+- `useMemo` memoizes a **value**, `useCallback` memoizes a **function**, both take a dependency array
 
 ---
 
 ## What problem did hooks solve?
 
-Before React 16.8, sharing stateful logic between components required class components, HOCs, or render props — all verbose and hard to compose. Hooks let function components use state, side effects, and lifecycle behavior without any of that.
+Before React 16.8, sharing stateful logic between components required class components, HOCs, or render props, all verbose and hard to compose. Hooks let function components use state, side effects, and lifecycle behavior without any of that.
 
 ```javascript
 // Before hooks: class with manual binding
@@ -69,7 +69,7 @@ setCount(count + 1)
 setCount(prev => prev + 1)
 ```
 
-**Updating object state requires spreading — setter replaces, not merges:**
+**Updating object state requires spreading, setter replaces, not merges:**
 
 ```javascript
 // ❌ Loses all other fields
@@ -79,7 +79,7 @@ setForm({ name: 'Ulises' })
 setForm(prev => ({ ...prev, name: 'Ulises' }))
 ```
 
-**Lazy initializer — runs only once on mount:**
+**Lazy initializer, runs only once on mount:**
 
 ```javascript
 // expensiveCalc() called on every render (ignored after first)
@@ -111,9 +111,9 @@ useEffect(() => {
 |-------|-------------|
 | `[]` | Once on mount (equivalent to `componentDidMount`) |
 | `[id]` | On mount and every time `id` changes |
-| *(omitted)* | After every render — almost never what you want |
+| *(omitted)* | After every render, almost never what you want |
 
-**Pattern — fetching data with cancellation:**
+**Pattern: fetching data with cancellation**
 
 ```typescript
 useEffect(() => {
@@ -141,8 +141,8 @@ useEffect(() => {
 
 Two distinct uses:
 
-1. **DOM access** — get a direct reference to a DOM element
-2. **Mutable value** — store a value that changes but should **not** trigger a re-render
+1. **DOM access**: get a direct reference to a DOM element
+2. **Mutable value**: store a value that changes but should **not** trigger a re-render
 
 ```javascript
 // DOM access
@@ -162,13 +162,13 @@ const timerId = useRef<ReturnType<typeof setTimeout> | null>(null)
 Both exist to avoid re-computing or re-creating things on every render. Use them when the cost of recomputation is measurable or when referential equality matters for a child component.
 
 ```javascript
-// useMemo — memoizes a computed value
+// useMemo: memoizes a computed value
 const total = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.subtotal, 0),
   [cartItems]
 )
 
-// useCallback — memoizes a function reference
+// useCallback: memoizes a function reference
 const handleSubmit = useCallback(async (data: FormData) => {
   await createSale(data)
   clearCart()
@@ -226,7 +226,7 @@ const { data: pet, loading } = useFetch<Pet>(`/api/pets/${id}`)
 
 ## Common Mistakes
 
-**1. Mutating state directly** — React won't detect the change and won't re-render.
+**1. Mutating state directly**: React won't detect the change and won't re-render.
 ```javascript
 // ❌
 user.name = 'Ulises'
@@ -234,14 +234,14 @@ user.name = 'Ulises'
 setUser(prev => ({ ...prev, name: 'Ulises' }))
 ```
 
-**2. Infinite loop in useEffect** — setting state that's in the dependency array creates a loop.
+**2. Infinite loop in useEffect**: setting state that's in the dependency array creates a loop.
 ```javascript
 // ❌ data changes → effect runs → data changes → ...
 useEffect(() => { setData([...data, item]) }, [data])
 // ✅ use functional update or restructure
 ```
 
-**3. Missing cleanup on subscriptions** — listeners survive component unmount, causing memory leaks.
+**3. Missing cleanup on subscriptions**: listeners survive component unmount, causing memory leaks.
 ```javascript
 // ❌
 useEffect(() => { window.addEventListener('resize', handler) }, [])
@@ -252,7 +252,7 @@ useEffect(() => {
 }, [])
 ```
 
-**4. Unnecessary useEffect for derived values** — compute them directly during render.
+**4. Unnecessary useEffect for derived values**: compute them directly during render.
 ```javascript
 // ❌
 useEffect(() => { setFullName(`${first} ${last}`) }, [first, last])

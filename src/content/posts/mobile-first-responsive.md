@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-05-26T10:00:00Z
-title: "Mobile-First Reference — Responsive Design, Breakpoints & Audit"
+title: "Mobile-First Reference: Responsive Design, Breakpoints & Audit"
 tags:
     - CSS
     - Tailwind CSS
@@ -9,27 +9,27 @@ tags:
     - Mobile First
 description: Quick reference for mobile-first responsive design. min-width vs max-width, Tailwind breakpoints, responsive patterns for nav, grids, and hero sections, common mistakes, and how to audit your own work.
 cover:
-  src: './images/customizing-user-information/cover.webp'
+  src: './images/covers/mobile-first-responsive.webp'
   alt: 'Mobile First Responsive Design'
 ---
 
 ## Quick Reference
 
-- **Mobile-first** means base styles target the smallest viewport. Breakpoints **add** styles for larger screens — they never remove
+- **Mobile-first** means base styles target the smallest viewport. Breakpoints **add** styles for larger screens, they never remove
 - Tailwind breakpoints are **min-width**: `md:` = "768px and up". Unprefixed classes apply to all sizes
 - Start designing at **375px** (smallest common phone). Desktop is the enhancement, not the default
 - `max-width` + `mx-auto` on containers prevents content from stretching too wide on large screens
 - Touch targets need a minimum of **44×44px** (WCAG guideline)
-- The viewport meta tag is **required** — without it, mobile devices render at desktop width
+- The viewport meta tag is **required**, without it, mobile devices render at desktop width
 
 ---
 
-## Mobile-first vs desktop-first — what's the actual difference?
+## Mobile-first vs desktop-first: what's the actual difference?
 
 It's the **direction of media queries**:
 
 ```css
-/* ❌ Desktop-first — base is desktop, mobile is a correction */
+/* ❌ Desktop-first, base is desktop, mobile is a correction */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);  /* desktop default */
@@ -38,7 +38,7 @@ It's the **direction of media queries**:
   .grid { grid-template-columns: 1fr; }  /* override for mobile */
 }
 
-/* ✅ Mobile-first — base is mobile, desktop is an enhancement */
+/* ✅ Mobile-first, base is mobile, desktop is an enhancement */
 .grid {
   display: grid;
   grid-template-columns: 1fr;            /* mobile default */
@@ -86,12 +86,12 @@ Every Tailwind breakpoint prefix applies **from that width upward**:
 <header class="flex items-center justify-between px-4 py-3 md:px-8">
   <Logo />
 
-  <!-- Hamburger — mobile only -->
+  <!-- Hamburger, mobile only -->
   <button class="block md:hidden" onClick={toggleMenu}>
     <MenuIcon />
   </button>
 
-  <!-- Links — desktop only -->
+  <!-- Links, desktop only -->
   <nav class="hidden md:flex items-center gap-6">
     <a href="/about">About</a>
     <a href="/projects">Projects</a>
@@ -162,7 +162,7 @@ Every Tailwind breakpoint prefix applies **from that width upward**:
 
 ## What is the viewport meta tag?
 
-Without it, mobile devices render the page at desktop width (typically 980px) and then scale it down — everything becomes tiny and unreadable:
+Without it, mobile devices render the page at desktop width (typically 980px) and then scale it down, everything becomes tiny and unreadable:
 
 ```html
 <!-- Required in <head> of every page -->
@@ -215,10 +215,10 @@ This tells the browser to use the device's actual width as the viewport width.
 **A:** A CSS strategy where base styles target the smallest viewport and `min-width` media queries add complexity for larger screens. It matters because most web traffic is mobile, and progressive enhancement (adding capabilities) produces simpler, more maintainable code than graceful degradation (removing them).
 
 **Q: What's the difference between `max-width` and `min-width` in media queries?**
-**A:** `max-width` applies the style up to that width — desktop-first. `min-width` applies from that width upward — mobile-first. Tailwind uses `min-width` exclusively for all breakpoint prefixes.
+**A:** `max-width` applies the style up to that width, desktop-first. `min-width` applies from that width upward, mobile-first. Tailwind uses `min-width` exclusively for all breakpoint prefixes.
 
 **Q: Why is Tailwind inherently mobile-first?**
-**A:** Because unprefixed classes apply to all screen sizes, and breakpoint prefixes (`md:`, `lg:`) are `min-width` — they add styles to larger screens but never remove styles from smaller ones.
+**A:** Because unprefixed classes apply to all screen sizes, and breakpoint prefixes (`md:`, `lg:`) are `min-width`, they add styles to larger screens but never remove styles from smaller ones.
 
 **Q: What is a touch target and what's the minimum size?**
 **A:** The tappable area on a touchscreen. WCAG 2.5.5 recommends a minimum of 44×44px so it's comfortable to activate with a fingertip. Buttons that are too small cause accidental taps and accessibility failures.
@@ -227,27 +227,27 @@ This tells the browser to use the device's actual width as the viewport width.
 
 ## Common Mistakes
 
-**1. Missing the viewport meta tag** — the single most impactful mistake. Mobile browsers render at desktop width without it.
+**1. Missing the viewport meta tag**: the single most impactful mistake. Mobile browsers render at desktop width without it.
 
-**2. Fixed `px` font sizes** — prevent users from adjusting text size in their browser.
+**2. Fixed `px` font sizes**: prevent users from adjusting text size in their browser.
 ```css
 /* ❌ */  font-size: 16px;
 /* ✅ */  font-size: 1rem;  /* respects browser base size */
 ```
 
-**3. Images without width constraints** — an `<img>` without `width` or `max-width` can exceed the viewport.
+**3. Images without width constraints**: an `<img>` without `width` or `max-width` can exceed the viewport.
 ```html
 <!-- ❌ -->  <img src="hero.png" />
 <!-- ✅ -->  <img src="hero.png" class="w-full max-w-full" />
 ```
 
-**4. Touch targets smaller than 44px** — text links and tiny icon buttons fail on mobile.
+**4. Touch targets smaller than 44px**: text links and tiny icon buttons fail on mobile.
 ```html
 <!-- ❌ -->  <button class="py-1 px-2 text-xs">Save</button>
 <!-- ✅ -->  <button class="py-3 px-4 min-h-[44px]">Save</button>
 ```
 
-**5. No `max-width` on desktop** — content stretches to the full browser width, creating uncomfortably long line lengths on large monitors.
+**5. No `max-width` on desktop**: content stretches to the full browser width, creating uncomfortably long line lengths on large monitors.
 
 ---
 

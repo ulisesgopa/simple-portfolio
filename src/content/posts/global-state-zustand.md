@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-05-02T10:00:00Z
-title: "Zustand Reference — Global State, Selectors & Persistence"
+title: "Zustand Reference: Global State, Selectors & Persistence"
 tags:
     - React
     - Zustand
@@ -9,15 +9,15 @@ tags:
     - Frontend
 description: Quick reference for Zustand. When to use it, how create() works, selectors for performance, persist middleware, and how it compares to Context API and TanStack Query. Interview Q&A included.
 cover:
-  src: './images/customizing-theme-color-schemes/cover.webp'
+  src: './images/covers/global-state-zustand.webp'
   alt: 'Global State with Zustand'
 ---
 
 ## Quick Reference
 
-- Zustand is for **local app state** — cart contents, UI state, session data — not server state
-- **No Provider, no boilerplate** — `create()` returns a hook you call directly in any component
-- `set()` merges by default — no need to spread the entire state manually
+- Zustand is for **local app state**, cart contents, UI state, session data, not server state
+- **No Provider, no boilerplate**, `create()` returns a hook you call directly in any component
+- `set()` merges by default, no need to spread the entire state manually
 - Use **selectors** `useStore(s => s.value)` to avoid re-renders when unrelated parts of the store change
 - The `persist` middleware serializes state to `localStorage` automatically
 - **Zustand ≠ TanStack Query**: Zustand is for client state, TanStack Query is for server state
@@ -60,7 +60,7 @@ const useCounterStore = create<CounterState>((set) => ({
   reset: () => set({ count: 0 }),
 }))
 
-// In any component — no Provider needed
+// In any component: no Provider needed
 function Counter() {
   const { count, increment } = useCounterStore()
   return <button onClick={increment}>{count}</button>
@@ -143,7 +143,7 @@ const cartItems = store.cartItems
 // ✅ Only re-renders when cartItems changes
 const cartItems = usePOSStore((state) => state.cartItems)
 
-// ✅ Multiple values — useShallow prevents unnecessary re-renders
+// ✅ Multiple values: useShallow prevents unnecessary re-renders
 import { useShallow } from 'zustand/react/shallow'
 
 const { cartItems, selectedCustomer } = usePOSStore(
@@ -192,7 +192,7 @@ const usePreferencesStore = create<PreferencesStore>()(
 
 ---
 
-## Zustand vs Context API — when to use each?
+## Zustand vs Context API: when to use each?
 
 ```
 Context API works well for:
@@ -211,21 +211,21 @@ Context API re-renders **all consumers** whenever any part of the context value 
 
 ---
 
-## Zustand vs TanStack Query — they solve different problems
+## Zustand vs TanStack Query: they solve different problems
 
 ```typescript
-// TanStack Query — for data that lives on the server
+// TanStack Query: for data that lives on the server
 const { data: products, isLoading } = useQuery({
   queryKey: ['products'],
   queryFn: fetchProducts,
   staleTime: 5 * 60 * 1000,  // cache 5 minutes
 })
 
-// Zustand — for data that lives in the client
+// Zustand: for data that lives in the client
 const { cartItems, addToCart } = usePOSStore()
 ```
 
-TanStack Query handles caching, background refetch, loading states, and server synchronization. Zustand handles none of that — it's pure in-memory local state. In POS Colombia, both are used together because they solve different things.
+TanStack Query handles caching, background refetch, loading states, and server synchronization. Zustand handles none of that, it's pure in-memory local state. In POS Colombia, both are used together because they solve different things.
 
 ---
 
@@ -241,24 +241,24 @@ TanStack Query handles caching, background refetch, loading states, and server s
 **A:** Context API re-renders all consumers when any part of the context value changes. Zustand uses selectors for granular subscriptions. For frequently-changing state like a shopping cart, Zustand is significantly more efficient.
 
 **Q: What does the `persist` middleware do?**
-**A:** Serializes the store state to `localStorage` on every update and rehydrates it on mount. It's the equivalent of manually calling `localStorage.setItem` in every action and `localStorage.getItem` on initialization — but automatic and typed.
+**A:** Serializes the store state to `localStorage` on every update and rehydrates it on mount. It's the equivalent of manually calling `localStorage.setItem` in every action and `localStorage.getItem` on initialization, but automatic and typed.
 
 ---
 
 ## Common Mistakes
 
-**1. Using Zustand for server state** — use TanStack Query instead. Zustand doesn't handle cache invalidation, background refetch, or stale data.
+**1. Using Zustand for server state**: use TanStack Query instead. Zustand doesn't handle cache invalidation, background refetch, or stale data.
 
-**2. Subscribing to the whole store** — `const store = useStore()` re-renders the component on every state change. Always use a selector.
+**2. Subscribing to the whole store**: `const store = useStore()` re-renders the component on every state change. Always use a selector.
 
-**3. Storing derived values in the store** — compute them from the store state instead.
+**3. Storing derived values in the store**: compute them from the store state instead.
 ```typescript
 // ❌ Keep cartTotal in store
 // ✅ Derive it:
 const total = usePOSStore(state => state.cartItems.reduce((s, i) => s + i.subtotal, 0))
 ```
 
-**4. Not using `set` with a function for updates that depend on current state** — can read stale values.
+**4. Not using `set` with a function for updates that depend on current state**: can read stale values.
 ```typescript
 // ❌ count might be stale
 set({ count: count + 1 })
@@ -298,6 +298,6 @@ set({ key: value })                    // merge
 set(state => ({ key: state.key + 1 })) // function form (safe)
 set({ key: value }, true)             // replace entire state (replace flag)
 
-// ── get() — read state inside actions ─────────────────
+// ── get(): read state inside actions ─────────────────
 const value = get().someField
 ```

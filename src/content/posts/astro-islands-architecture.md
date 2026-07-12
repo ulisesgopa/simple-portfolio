@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-06-17T10:00:00Z
-title: "Astro Reference — Islands Architecture, Content Collections & Hydration"
+title: "Astro Reference: Islands Architecture, Content Collections & Hydration"
 tags:
     - Astro
     - JavaScript
@@ -9,18 +9,18 @@ tags:
     - Frontend
 description: Quick reference for Astro. Islands architecture, client directives, Content Collections with Zod, View Transitions, and when to choose Astro over Next.js. Interview Q&A included.
 cover:
-  src: './images/customizing-theme-color-schemes/cover.webp'
+  src: './images/covers/astro-islands-architecture.webp'
   alt: 'Astro Islands Architecture'
 ---
 
 ## Quick Reference
 
-- Astro generates **pure HTML by default** — zero JavaScript sent to the browser unless you explicitly opt in
+- Astro generates **pure HTML by default**, zero JavaScript sent to the browser unless you explicitly opt in
 - An "island" is an interactive component that hydrates on the client, isolated from surrounding static content
-- `.astro` files run **only on the server** at build time — no access to `window`, `localStorage`, or browser APIs
+- `.astro` files run **only on the server** at build time, no access to `window`, `localStorage`, or browser APIs
 - `.tsx`/`.jsx` components become islands when given a `client:*` directive
-- Content Collections validate `.md`/`.mdx` frontmatter with **Zod at build time** — build fails on schema errors
-- View Transitions are native browser API exposed as a component — no React Router, no extra JS bundle
+- Content Collections validate `.md`/`.mdx` frontmatter with **Zod at build time**, build fails on schema errors
+- View Transitions are native browser API exposed as a component, no React Router, no extra JS bundle
 
 ---
 
@@ -49,11 +49,11 @@ Most of the page is static HTML. Only the components that need interactivity are
 
 ```
 Page structure:
-├── Header (static HTML — 0 JS)
-├── Hero section (static HTML — 0 JS)
-├── TabsButtons (⬛ React island — JS loads with client:idle)
-├── ProjectCards (static HTML — 0 JS)
-└── Footer (static HTML — 0 JS)
+├── Header (static HTML, 0 JS)
+├── Hero section (static HTML, 0 JS)
+├── TabsButtons (⬛ React island, JS loads with client:idle)
+├── ProjectCards (static HTML, 0 JS)
+└── Footer (static HTML, 0 JS)
 ```
 
 Each island is independent. Their JavaScript loads and executes in isolation.
@@ -63,27 +63,27 @@ Each island is independent. Their JavaScript loads and executes in isolation.
 ## What are the client directives?
 
 ```astro
-<!-- No directive — server-rendered only, zero JS to client -->
+<!-- No directive, server-rendered only, zero JS to client -->
 <Navbar />
 
-<!-- client:load — hydrate immediately on page load -->
+<!-- client:load, hydrate immediately on page load -->
 <CriticalWidget client:load />
 
-<!-- client:idle — hydrate when browser main thread is free -->
+<!-- client:idle, hydrate when browser main thread is free -->
 <TabsButtons client:idle />
 
-<!-- client:visible — hydrate when component enters viewport -->
+<!-- client:visible, hydrate when component enters viewport -->
 <HeavyChart client:visible />
 
-<!-- client:only="react" — skip server render, client only -->
+<!-- client:only="react", skip server render, client only -->
 <BrowserOnlyMap client:only="react" />
 ```
 
 **Choosing the right directive:**
-- `client:load` — interactive from the first moment (auth buttons, nav)
-- `client:idle` — non-critical interactive (tabs, tooltips)
-- `client:visible` — below the fold (charts, comment sections)
-- `client:only` — requires browser APIs not available on server (maps, canvas)
+- `client:load`: interactive from the first moment (auth buttons, nav)
+- `client:idle`: non-critical interactive (tabs, tooltips)
+- `client:visible`: below the fold (charts, comment sections)
+- `client:only`: requires browser APIs not available on server (maps, canvas)
 
 ---
 
@@ -200,9 +200,9 @@ No React Router, no SPA routing state, no additional JavaScript bundle. It's a n
 
 Astro excels for content-heavy sites. It's not the right tool for:
 
-- **Complex global state** — dashboards with real-time updates, optimistic UI, complex filters
-- **Auth-heavy apps** — Next.js has a better ecosystem (NextAuth, Clerk, middleware)
-- **Apps where most pages are interactive** — if 80%+ of the app needs React, the island model adds overhead without benefit
+- **Complex global state**, dashboards with real-time updates, optimistic UI, complex filters
+- **Auth-heavy apps**, Next.js has a better ecosystem (NextAuth, Clerk, middleware)
+- **Apps where most pages are interactive**, if 80%+ of the app needs React, the island model adds overhead without benefit
 
 **Decision rule:** content/marketing/portfolio/blog → Astro. Auth-gated dashboards, SPAs → Next.js.
 
@@ -217,22 +217,22 @@ Astro excels for content-heavy sites. It's not the right tool for:
 **A:** The portfolio is mostly static content. Astro generates pure HTML with zero JS overhead by default. Next.js would send the React runtime to every user even though most pages don't need client-side JavaScript. Right tool for the right job.
 
 **Q: What does `client:idle` do vs `client:load`?**
-**A:** `client:load` hydrates the component as soon as the page HTML loads — may compete with other critical resources. `client:idle` waits until the browser has finished its initial work and has free time on the main thread, better for non-critical interactive components.
+**A:** `client:load` hydrates the component as soon as the page HTML loads, may compete with other critical resources. `client:idle` waits until the browser has finished its initial work and has free time on the main thread, better for non-critical interactive components.
 
 **Q: How does Astro validate Content Collections?**
-**A:** Using Zod schemas defined in `src/content/config.ts`. The build fails with a clear field-level error if any content file doesn't match the schema. This is build-time validation — errors surface before deployment, not in production.
+**A:** Using Zod schemas defined in `src/content/config.ts`. The build fails with a clear field-level error if any content file doesn't match the schema. This is build-time validation, errors surface before deployment, not in production.
 
 ---
 
 ## Common Mistakes
 
-**1. Using browser APIs in `.astro` files** — `.astro` runs at build time (Node environment). `window`, `document`, `localStorage` are not available. Move browser-specific logic to a `client:only` island.
+**1. Using browser APIs in `.astro` files**: `.astro` runs at build time (Node environment). `window`, `document`, `localStorage` are not available. Move browser-specific logic to a `client:only` island.
 
-**2. Missing the Zod schema** — without a schema, Content Collections are untyped. Add the schema and type-check your MDX frontmatter.
+**2. Missing the Zod schema**: without a schema, Content Collections are untyped. Add the schema and type-check your MDX frontmatter.
 
-**3. Using `client:load` for everything** — hydrates all islands immediately, defeats the point. Use `client:idle` or `client:visible` for non-critical components.
+**3. Using `client:load` for everything**: hydrates all islands immediately, defeats the point. Use `client:idle` or `client:visible` for non-critical components.
 
-**4. Putting async data fetching in client components** — Astro server components can fetch data at build time. Only use client-side fetching when data must be dynamic at request time.
+**4. Putting async data fetching in client components**: Astro server components can fetch data at build time. Only use client-side fetching when data must be dynamic at request time.
 
 ---
 
@@ -251,7 +251,7 @@ const { title, description } = Astro.props
 <!-- Static HTML (0 JS) -->
 {items.map(item => <div>{item.data.title}</div>)}
 
-<!-- React island — pick one directive -->
+<!-- React island, pick one directive -->
 <MyReactComponent client:load />     <!-- immediately -->
 <MyReactComponent client:idle />     <!-- when browser is free -->
 <MyReactComponent client:visible />  <!-- when in viewport -->

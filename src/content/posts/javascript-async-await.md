@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-02-05T10:00:00Z
-title: "JavaScript Async Reference — Event Loop, Promises & async/await"
+title: "JavaScript Async Reference: Event Loop, Promises & async/await"
 tags:
     - JavaScript
     - Async/Await
@@ -9,15 +9,15 @@ tags:
     - Promises
 description: Quick reference for asynchronous JavaScript. Event loop, Promise states, async/await patterns, Promise combinators, sequential vs parallel execution. With interview Q&A and a cheat sheet.
 cover:
-  src: './images/customizing-theme-color-schemes/cover.webp'
+  src: './images/covers/javascript-async-await.webp'
   alt: 'JavaScript Async Await'
 ---
 
 ## Quick Reference
 
-- JavaScript is **single-threaded** — async operations don't run in parallel inside JS, they delegate to the browser/runtime and get a callback when done
+- JavaScript is **single-threaded**, async operations don't run in parallel inside JS, they delegate to the browser/runtime and get a callback when done
 - `async` functions always return a **Promise**, even without `await` inside
-- `await` pauses the **current async function** only — other code keeps running
+- `await` pauses the **current async function** only, other code keeps running
 - Forgetting `await` gives you an unresolved Promise, not the value
 - `Promise.all` fails fast if any promise rejects. `Promise.allSettled` waits for all and never throws
 - Microtasks (Promises) run **before** macrotasks (setTimeout, setInterval) in the event loop
@@ -54,7 +54,7 @@ console.log('2')               // sync
 // Output: 1, 2, 3, 4
 ```
 
-This is a classic interview question. `setTimeout(..., 0)` does not mean "immediate" — it means "after all microtasks."
+This is a classic interview question. `setTimeout(..., 0)` does not mean "immediate", it means "after all microtasks."
 
 ---
 
@@ -63,7 +63,7 @@ This is a classic interview question. `setTimeout(..., 0)` does not mean "immedi
 The same operation expressed in each style:
 
 ```javascript
-// Callbacks — nested, hard to reason about
+// Callbacks: nested, hard to reason about
 fetchUser(id, (err, user) => {
   if (err) return handleError(err)
   fetchPosts(user.id, (err, posts) => {
@@ -72,13 +72,13 @@ fetchUser(id, (err, user) => {
   })
 })
 
-// Promises — flat chain, better
+// Promises: flat chain, better
 fetchUser(id)
   .then(user => fetchPosts(user.id))
   .then(posts => render(posts))
   .catch(handleError)
 
-// async/await — reads like synchronous code
+// async/await: reads like synchronous code
 async function loadUserPosts(id) {
   try {
     const user = await fetchUser(id)
@@ -143,11 +143,11 @@ const message = await greet()  // 'hello'
 ## Sequential vs Parallel execution
 
 ```javascript
-// Sequential — 300ms + 300ms = 600ms
+// Sequential: 300ms + 300ms = 600ms
 const user = await fetchUser(id)
 const products = await fetchProducts()
 
-// Parallel — both run simultaneously, ~300ms total
+// Parallel: both run simultaneously, ~300ms total
 const [user, products] = await Promise.all([
   fetchUser(id),
   fetchProducts(),
@@ -168,7 +168,7 @@ const [user, products] = await Promise.all([
 | `Promise.any` | First fulfills | All reject | Try multiple sources, use fastest |
 
 ```javascript
-// allSettled — for dashboard data where partial failure is OK
+// allSettled: for dashboard data where partial failure is OK
 const results = await Promise.allSettled([
   fetchSales(),
   fetchInventory(),
@@ -179,7 +179,7 @@ results.forEach(r => {
   if (r.status === 'rejected') logError(r.reason)
 })
 
-// race — timeout pattern
+// race: timeout pattern
 const data = await Promise.race([
   fetch('/api/data'),
   new Promise((_, reject) =>
@@ -193,12 +193,12 @@ const data = await Promise.race([
 ## How do you handle errors properly?
 
 ```javascript
-// ❌ Silent catch — error disappears
+// ❌ Silent catch: error disappears
 try {
   const data = await fetchData()
 } catch (e) {}
 
-// ❌ Log and continue — state may be inconsistent
+// ❌ Log and continue: state may be inconsistent
 try {
   const data = await fetchData()
 } catch (e) { console.log(e) }
@@ -240,14 +240,14 @@ console.log('D')
 **Q: What happens if you forget `await`?**
 **A:** The code continues without waiting. `const data = fetchData()` gives you a `Promise<Data>`, not `Data`. TypeScript will usually catch this if the types are correct.
 
-**Q: `Promise.all` vs `Promise.allSettled` — when to use each?**
-**A:** Use `.all` when all results are required and a single failure should abort everything. Use `.allSettled` when you want all results even if some fail — like loading multiple dashboard widgets independently.
+**Q: `Promise.all` vs `Promise.allSettled`: when to use each?**
+**A:** Use `.all` when all results are required and a single failure should abort everything. Use `.allSettled` when you want all results even if some fail, like loading multiple dashboard widgets independently.
 
 ---
 
 ## Common Mistakes
 
-**1. `async` inside `forEach`** — `forEach` doesn't await callbacks. Use `for...of` or `Promise.all` instead.
+**1. `async` inside `forEach`**: `forEach` doesn't await callbacks. Use `for...of` or `Promise.all` instead.
 ```javascript
 // ❌ These don't wait for each other
 items.forEach(async (item) => { await processItem(item) })
@@ -259,9 +259,9 @@ for (const item of items) { await processItem(item) }
 await Promise.all(items.map(item => processItem(item)))
 ```
 
-**2. Nested try/catch in Promise chains** — pick one style, don't mix.
+**2. Nested try/catch in Promise chains**: pick one style, don't mix.
 
-**3. Creating a Promise unnecessarily** — if a function already returns a Promise, don't wrap it.
+**3. Creating a Promise unnecessarily**: if a function already returns a Promise, don't wrap it.
 ```javascript
 // ❌
 return new Promise((resolve) => { resolve(fetch(url)) })
@@ -269,7 +269,7 @@ return new Promise((resolve) => { resolve(fetch(url)) })
 return fetch(url)
 ```
 
-**4. Unhandled rejection** — always attach a `.catch()` or use try/catch with `await`.
+**4. Unhandled rejection**: always attach a `.catch()` or use try/catch with `await`.
 
 ---
 

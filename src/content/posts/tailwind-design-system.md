@@ -1,7 +1,7 @@
 ---
 author: Ulises Gómez
 publishDate: 2026-04-08T10:00:00Z
-title: "Tailwind CSS Reference — Configuration, cn(), Dark Mode & Design System"
+title: "Tailwind CSS Reference: Configuration, cn(), Dark Mode & Design System"
 tags:
     - Tailwind CSS
     - CSS
@@ -9,13 +9,13 @@ tags:
     - Frontend
 description: Quick reference for Tailwind CSS. How tree-shaking works, CSS variables for theming, the cn() pattern (clsx + tailwind-merge), dark mode strategies, @layer, and responsive design. Interview Q&A included.
 cover:
-  src: './images/customizing-theme-color-schemes/cover.webp'
+  src: './images/covers/tailwind-design-system.webp'
   alt: 'Tailwind CSS design system'
 ---
 
 ## Quick Reference
 
-- Tailwind **scans your files at build time** and generates only the CSS for classes you use — no unused CSS ships
+- Tailwind **scans your files at build time** and generates only the CSS for classes you use, no unused CSS ships
 - Breakpoints are **min-width** (mobile-first): `sm:`, `md:`, `lg:`, `xl:` add styles from that size upward
 - `cn()` = `clsx` (conditional classes) + `tailwind-merge` (resolve conflicting utilities like `p-2 p-4`)
 - CSS variables in the config let you change themes at runtime without regenerating CSS
@@ -37,7 +37,7 @@ export default {
 }
 ```
 
-The result: a few kilobytes of CSS instead of megabytes. This is why you can't construct class names dynamically with string concatenation — the string won't be in the source file for Tailwind to detect.
+The result: a few kilobytes of CSS instead of megabytes. This is why you can't construct class names dynamically with string concatenation, the string won't be in the source file for Tailwind to detect.
 
 ```javascript
 // ❌ Tailwind won't find this class at build time
@@ -95,7 +95,7 @@ theme: {
 }
 ```
 
-When the `.dark` class is added to `<html>`, all variables update and every component that uses `bg-primary` or `text-foreground` updates automatically — no class changes needed in the components.
+When the `.dark` class is added to `<html>`, all variables update and every component that uses `bg-primary` or `text-foreground` updates automatically, no class changes needed in the components.
 
 ---
 
@@ -113,7 +113,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-### clsx — conditional class application
+### clsx, conditional class application
 
 ```typescript
 // Without clsx
@@ -127,17 +127,17 @@ const cls = clsx('base', {
 })
 ```
 
-### tailwind-merge — resolve utility conflicts
+### tailwind-merge, resolve utility conflicts
 
 ```typescript
-// Without twMerge — both classes apply, CSS order determines winner (unpredictable)
+// Without twMerge: both classes apply, CSS order determines winner (unpredictable)
 clsx('p-2 p-4')  // → 'p-2 p-4'
 
-// With twMerge — intelligently resolves conflicts
+// With twMerge: intelligently resolves conflicts
 twMerge('p-2 p-4')  // → 'p-4'
 ```
 
-### The real use case — overridable component defaults
+### The real use case, overridable component defaults
 
 ```typescript
 function Button({ className, ...props }: ButtonProps) {
@@ -149,7 +149,7 @@ function Button({ className, ...props }: ButtonProps) {
   )
 }
 
-// Without cn(): parent's bg-red-500 coexists with bg-blue-500 — bug
+// Without cn(): parent's bg-red-500 coexists with bg-blue-500: bug
 // With cn(): twMerge resolves → only bg-red-500 applies
 <Button className="bg-red-500" />
 ```
@@ -159,7 +159,7 @@ function Button({ className, ...props }: ButtonProps) {
 ## How does dark mode work?
 
 ```javascript
-// tailwind.config.mjs — choose one strategy
+// tailwind.config.mjs: choose one strategy
 darkMode: 'media'    // follows OS preference automatically
 darkMode: 'class'    // you control it by toggling .dark on <html>
 ```
@@ -209,7 +209,7 @@ With either strategy, dark variants work the same way in markup:
 
 ## How does responsive design work in Tailwind?
 
-Every breakpoint prefix is a `min-width` media query — styles apply from that size upward:
+Every breakpoint prefix is a `min-width` media query, styles apply from that size upward:
 
 ```
 No prefix  → all sizes (mobile base)
@@ -235,22 +235,22 @@ xl:        → 1280px and up
 ## Common Interview Questions
 
 **Q: What is tree-shaking in Tailwind?**
-**A:** Tailwind scans source files at build time and generates CSS only for the classes it finds. No unused utilities ship. That's why you can't build class names with string interpolation — the dynamic result won't be scanned.
+**A:** Tailwind scans source files at build time and generates CSS only for the classes it finds. No unused utilities ship. That's why you can't build class names with string interpolation, the dynamic result won't be scanned.
 
 **Q: What problem does `tailwind-merge` solve that `clsx` can't?**
-**A:** `clsx` only concatenates strings with conditional logic — it knows nothing about Tailwind semantics. `tailwind-merge` understands which Tailwind utilities are mutually exclusive (`p-2` vs `p-4`) and resolves conflicts by keeping the last one. Without it, both `p-2` and `p-4` would be in the class string and the browser would apply whichever appears later in the generated CSS — unpredictable.
+**A:** `clsx` only concatenates strings with conditional logic, it knows nothing about Tailwind semantics. `tailwind-merge` understands which Tailwind utilities are mutually exclusive (`p-2` vs `p-4`) and resolves conflicts by keeping the last one. Without it, both `p-2` and `p-4` would be in the class string and the browser would apply whichever appears later in the generated CSS, unpredictable.
 
-**Q: `darkMode: 'media'` vs `darkMode: 'class'` — what's the difference?**
+**Q: `darkMode: 'media'` vs `darkMode: 'class'`: what's the difference?**
 **A:** `media` uses the `prefers-color-scheme` CSS media query, automatic with no JavaScript. `class` requires adding/removing a `.dark` class on `<html>`, usually via JavaScript, which gives the user a manual toggle. Most production apps use `'class'`.
 
 **Q: When would you use `@apply` instead of direct utility classes?**
-**A:** When a combination of utilities is used in many places and deserves a semantic name for readability — like `.btn-primary` or `.card`. For one-off styles in a single component, direct utilities are clearer.
+**A:** When a combination of utilities is used in many places and deserves a semantic name for readability, like `.btn-primary` or `.card`. For one-off styles in a single component, direct utilities are clearer.
 
 ---
 
 ## Common Mistakes
 
-**1. Building class names dynamically** — Tailwind won't detect them at build time.
+**1. Building class names dynamically**: Tailwind won't detect them at build time.
 ```javascript
 // ❌
 `text-${color}-500`  // Tailwind doesn't scan interpolated strings
@@ -258,11 +258,11 @@ xl:        → 1280px and up
 color === 'blue' ? 'text-blue-500' : 'text-red-500'
 ```
 
-**2. Using `p-2 p-4` without tailwind-merge** — both classes exist in the string, browser wins based on CSS order (unpredictable). Always use `cn()`.
+**2. Using `p-2 p-4` without tailwind-merge**: both classes exist in the string, browser wins based on CSS order (unpredictable). Always use `cn()`.
 
-**3. Skipping the `content` config** — Tailwind won't scan files you don't list. New directories or file extensions need to be added.
+**3. Skipping the `content` config**: Tailwind won't scan files you don't list. New directories or file extensions need to be added.
 
-**4. `darkMode: 'media'` with a toggle button** — you can't override a CSS media query with a class toggle. If you want a user toggle, use `darkMode: 'class'`.
+**4. `darkMode: 'media'` with a toggle button**: you can't override a CSS media query with a class toggle. If you want a user toggle, use `darkMode: 'class'`.
 
 ---
 
