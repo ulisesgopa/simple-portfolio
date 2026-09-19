@@ -27,3 +27,6 @@ pnpm-debug.log*
 PORTFOLIO-BRIEF.md
 CV-2026-TEXT.md
 finish.md
+
+# CV build intermediate (final copy lives in public/Cv_2026.pdf)
+cv/cv.pdf

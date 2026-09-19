@@ -1,0 +1,133 @@
+% ATS-friendly CV — single column, plain text flow, no tables/graphics.
+% Build:  npm run cv   (or: tectonic cv/cv.tex && cp cv/cv.pdf public/Cv_2026.pdf)
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[margin=0.6in,top=0.55in,bottom=0.5in]{geometry}
+\usepackage{fontspec} % XeTeX: Latin Modern OTF, native Unicode (· — É)
+\usepackage{amssymb}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+\definecolor{navy}{HTML}{1B2440}
+\definecolor{accent}{HTML}{2F6FDB}
+\definecolor{muted}{HTML}{4A5878}
+
+\hypersetup{colorlinks=false,pdfborder={0 0 0},linkbordercolor=cyan,urlbordercolor=cyan}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\raggedbottom
+
+% Section headings: bold caps + rule
+\titleformat{\section}{\large\bfseries\color{navy}\MakeUppercase}{}{0pt}{}[\vspace{-0.6em}\rule{\linewidth}{0.4pt}]
+\titlespacing*{\section}{0pt}{1.1em}{0.5em}
+
+% Bullets
+\setlist[itemize]{label=\raisebox{0.2ex}{\tiny$\blacksquare$},leftmargin=1.1em,itemsep=0.15em,topsep=0.2em,parsep=0pt}
+
+% \entry{Company}{Location}{Role}{Dates}{Description}
+\newcommand{\entry}[5]{%
+  {\bfseries\color{accent}#1}\hfill{\itshape #2}\\
+  {\itshape #3}\hfill{\itshape #4}\if\relax\detokenize{#5}\relax\else\\\fi
+  \if\relax\detokenize{#5}\relax\else{\small\color{muted}#5}\fi\par\vspace{0.1em}}
+
+\begin{document}
+
+% ---------- Header ----------
+\begin{center}
+  {\fontsize{20}{24}\selectfont\bfseries\color{navy} ULISES S. GÓMEZ P.}\\[0.4em]
+  {\sffamily\bfseries\small\color{navy!80!accent}FRONTEND DEVELOPER \& FOUNDER — REACT · NEXT.JS · TYPESCRIPT}\\[0.45em]
+  {\small\color{muted}
+    Buenos Aires, Argentina (Remote) · \href{tel:+5491136588535}{+54 9 11 3658-8535} · \href{mailto:ulisesgopa@gmail.com}{ulisesgopa@gmail.com}\\
+    \href{https://whoisulisesgomez.vercel.app}{whoisulisesgomez.vercel.app} · \href{https://linkedin.com/in/whoisulisesgomez}{linkedin.com/in/whoisulisesgomez} · \href{https://github.com/ulisesgopa}{github.com/ulisesgopa}}
+\end{center}
+
+% ---------- Summary ----------
+\section{Professional Summary}
+\hspace{1.5em}Frontend Developer with 3+ years building SaaS platforms, admin dashboards, and landing pages with React, Next.js, and TypeScript. Founder and co-founder of two technology ventures, with extensive experience deploying production web services alongside high-availability live TV and radio broadcasting infrastructure. Strong technical background combining board-level diagnostics, network architecture, and professional audiovisual systems to deliver systematic, root-cause-first debugging and solid digital platforms. 10 years total in tech. Open to remote roles.
+
+% ---------- Skills ----------
+\section{Technical Skills}
+\begin{itemize}
+  \item \textbf{Languages:} JavaScript (ES6+), TypeScript, HTML5, CSS3
+  \item \textbf{Frameworks \& Libraries:} React (hooks, component architecture), Next.js (App Router, Server Components), Astro, React Native (Expo, Expo Router)
+  \item \textbf{State \& Data:} Zustand, TanStack Query, REST API integration, Zod schema validation
+  \item \textbf{Styling \& UI:} Tailwind CSS, shadcn/ui, Radix UI, Framer Motion, responsive mobile-first design, Figma-to-code
+  \item \textbf{Infrastructure \& DevOps:} Vercel, AWS, Linode, Cloudflare (DNS, SSL, routing), Git \& GitHub, Vite, Playwright (E2E testing), Supabase, Prisma, PostgreSQL
+  \item \textbf{Audiovisual \& Systems:} Live Streaming Servers, Blackmagic switchers, CCTV, network engineering, tech support infrastructure
+\end{itemize}
+
+% ---------- Experience ----------
+\section{Professional Experience}
+
+\entry{Santo Código}{Remote}{Frontend Developer}{October 2025 -- Present}{Software development agency delivering complex web applications for multiple clients.}
+\begin{itemize}
+  \item Develop and optimize user interfaces for multiple complex web applications using React, Next.js, and TypeScript, ensuring code modularity and maintainability.
+  \item Collaborate with design and product teams to translate Figma prototypes into highly interactive, accessible, and responsive components with Tailwind CSS.
+  \item Improve site performance and SEO through Server Components, efficient caching strategies, and Core Web Vitals optimization.
+\end{itemize}
+
+\entry{Escuela Perritos}{Buenos Aires, Argentina}{Founder \& Frontend Developer}{July 2026 -- Present}{Canine education and behavior-modification platform.}
+\begin{itemize}
+  \item Designed and deployed the platform's digital identity and technical architecture, including PeludoTag, a QR-based lost pet recovery product built with Next.js and Supabase.
+  \item Built a custom internal SaaS for end-to-end business management, automating tutor profiles, canine student history, premium service plan assignment, and financial flows.
+  \item Implemented an automated payment receipt module with monthly due-date tracking, reducing manual administration time and streamlining operational cash flow.
+\end{itemize}
+
+\entry{Stream Tech}{Remote}{Co-Founder \& Frontend Developer}{February 2024}{Technology company innovating in the events sector through streaming and ticketing products.}
+\begin{itemize}
+  \item Developed Ticketera MIES (ticketeramies.com), an event ticketing platform containing an admin dashboard, visual landing page builder, QR code check-in, and public event pages, built with Next.js and TypeScript over a NestJS REST API.
+  \item Operated live TV and radio streaming infrastructure (Ant Media Server) deployed across AWS, Linode, and DonWeb Cloud, ensuring uptime for active broadcast channels.
+  \item Built frontend interfaces and websites for streaming channel clients using React, Next.js, and Tailwind CSS.
+  \item Configured domains, DNS records, SSL layers, and traffic routing with Cloudflare across multiple production deployments.
+  \item Selected for Ruta de Emprendimiento 2024, a startup acceleration program focused on product and business model refinement.
+\end{itemize}
+
+\entry{TBS Wireless Services}{Remote}{Frontend Developer}{December 2023 -- December 2025}{Partnership building the digital products of a Colombian telecom company.}
+\begin{itemize}
+  \item Built the company's responsive public landing page (tbswireless.com) using React, Next.js, and Tailwind CSS.
+  \item Built an internal CRM that automated receipt generation, transforming a process that previously took 5 to 8 hours per day into an automatic issuance on payment confirmation, using Next.js 15, Prisma, and PostgreSQL.
+  \item Designed a real-time dashboard with per-collector audit trails, KPI visualization (revenue, overdue accounts, collection rates), and dual sales modes (cash and credit), validated with Playwright E2E tests.
+  \item Developed a point-of-sale system with DIAN electronic invoicing compliance (mipos.tbswireless.com) with a React + Zustand admin dashboard.
+\end{itemize}
+
+\entry{Freelance}{Remote}{Frontend Developer}{January 2024 -- January 2026}{Frontend and web solutions for startups and SMEs across B2B trade, payments, retail, media, and pet services.}
+\begin{itemize}
+  \item Built LatinBridge, a B2B international trade platform with trilingual routing (ES/EN/PT via next-intl), an admin lead pipeline dashboard, and an AI-powered lead qualification assistant.
+  \item Developed El Club Can, a premium dog training school web presence using TanStack Start, React 19, and Radix UI.
+  \item Built the Octopay landing page (octopay.com.ar) for a digital payments platform with Next.js 15 and Framer Motion.
+  \item Built Tienda Patitas, a complete e-commerce system: public storefront (React, Vite, TanStack Query), REST API (Bun, Prisma, PostgreSQL, MercadoPago), and admin dashboard with POS, inventory, and sales management (React, Zustand).
+\end{itemize}
+
+\entry{Freelance / Contract}{Colombia}{Audiovisual Infrastructure \& Real-Time Streaming Specialist}{2019 -- August 2025}{}
+\begin{itemize}
+  \item Designed and operated technical infrastructure, internet networks, and real-time streaming servers for television channels, digital media platforms, and live broadcasts.
+  \item Handled live multi-camera setups, CCTV operations, and high-fidelity video mapping to professional LED displays for massive corporate and entertainment events.
+  \item Expertly managed broadcast-grade hardware switchers (Blackmagic), professional audio interfaces, mixing consoles, and custom live-streaming encoder configurations.
+  \item Provided advanced IT technical support tailored specifically to broadcast environments, ensuring zero-downtime streaming transmission.
+\end{itemize}
+
+\entry{Self-Employed}{Venezuela}{Technical Support \& Microelectronics Specialist}{2016 -- 2018}{}
+\begin{itemize}
+  \item Diagnosed hardware failures in mobile devices and performed board-level component repair.
+  \item Applied systematic root cause analysis methodologies to resolve complex electronic issues, sharpening debugging habits now applied to software engineering.
+\end{itemize}
+
+% ---------- Education ----------
+\section{Education}
+{\bfseries Frontend Developer} — Platzi Web Development School\hfill{\itshape 2022 -- 2023}\\
+{\small\color{muted}Certifications in Frontend Development and Programming Fundamentals: HTML, CSS, JavaScript, Git \& GitHub, Mobile-First Design, Algorithms.}\\[0.35em]
+{\bfseries English for Beginners \& Intermediate} — Platzi English Academy\hfill{\itshape 2022}
+
+% ---------- Languages ----------
+\section{Languages}
+{\bfseries\color{navy}Spanish} — Native \quad — \quad {\bfseries\color{navy}English} — Intermediate {\small\color{muted}(professional reading, writing, and communication in tech environments)}
+
+% ---------- Projects ----------
+\section{Selected Projects}
+{\bfseries\color{navy}Ticketera MIES} {\small\color{muted}(ticketeramies.com)} · {\bfseries\color{navy}POS Colombia} {\small\color{muted}(mipos.tbswireless.com)} · {\bfseries\color{navy}LatinBridge} {\small\color{muted}(latinbridge.com.ar)}
+
+\end{document}

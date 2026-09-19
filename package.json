@@ -33,7 +33,8 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "cv": "tectonic cv/cv.tex && cp cv/cv.pdf public/Cv_2026.pdf"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
