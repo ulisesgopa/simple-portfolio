@@ -33,8 +33,9 @@ Both describe object shapes. The practical differences are:
 | Extends | `extends OtherInterface` | `& OtherType` (intersection) |
 | Declaration merging | Yes (same name = merged) | No |
 | Unions | No | Yes (`'a' \| 'b'`) |
-| Computed properties | Limited | Yes |
-| Primitives, tuples, functions | No | Yes |
+| Mapped and conditional types | No | Yes |
+| Aliasing primitives, tuples, unions | No | Yes |
+| Function types | Call signature only (`{ (x: number): string }`) | Concise `(x: number) => string` |
 
 ```typescript
 // interface: for object shapes and component props
@@ -132,8 +133,11 @@ type UserWithoutPassword = Omit<User, 'password'>
 // Record: typed object with dynamic keys
 type RolePermissions = Record<User['role'], string[]>
 
-// ReturnType: infer what a function returns
-type Products = ReturnType<typeof getProducts>
+// ReturnType: infer what a function returns (for an async function that's a Promise)
+type ProductsPromise = ReturnType<typeof getProducts>          // Promise<ApiResponse<Product[]>>
+
+// Awaited: unwrap the Promise to get the resolved value's type
+type ProductsResponse = Awaited<ReturnType<typeof getProducts>> // ApiResponse<Product[]>
 
 // Parameters: infer a function's argument types
 type LoginArgs = Parameters<typeof login>
@@ -222,17 +226,17 @@ TypeScript types are erased at compile time, the browser never sees them. Data f
 ```typescript
 import { z } from 'zod'
 
-// Define schema once
+// Define schema once (Zod 4: z.email() is top-level; z.string().email() still works but is deprecated)
 const loginSchema = z.object({
-  email: z.string().email('Invalid email'),
+  email: z.email('Invalid email'),
   password: z.string().min(8, 'Minimum 8 characters'),
 })
 
 // Infer TypeScript type from schema: no duplication
 type LoginForm = z.infer<typeof loginSchema>
 
-// Runtime validation
-const result = loginSchema.safeParse(formData)
+// Runtime validation: `input` is any unknown data (parsed JSON, Object.fromEntries(formData), ...)
+const result = loginSchema.safeParse(input)
 if (!result.success) {
   console.log(result.error.issues)  // field-level error list
 }
@@ -241,6 +245,9 @@ if (!result.success) {
 **With React Hook Form:**
 
 ```typescript
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
 const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
   resolver: zodResolver(loginSchema)
 })
@@ -294,8 +301,8 @@ const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
 let x: string | number | boolean | null | undefined | bigint | symbol
 
 // ── Object types ──────────────────────────────────────
-interface Obj { id: string; name?: string }    // optional with ?
-type Obj = { id: string } & { name: string }   // intersection
+interface Obj { id: string; name?: string }          // optional with ?
+type Merged = { id: string } & { name: string }      // intersection
 
 // ── Generics ──────────────────────────────────────────
 function identity<T>(x: T): T { return x }
@@ -309,6 +316,7 @@ Pick<T, 'a' | 'b'>  // select keys
 Omit<T, 'password'> // exclude keys
 Record<K, V>        // {[key: K]: V}
 ReturnType<typeof fn>
+Awaited<ReturnType<typeof asyncFn>>  // unwrap a Promise
 Parameters<typeof fn>
 NonNullable<T>
 
@@ -319,7 +327,7 @@ x instanceof Error
 // discriminated union: check shared literal field
 
 // ── Zod ───────────────────────────────────────────────
-const schema = z.object({ email: z.string().email() })
+const schema = z.object({ email: z.email() })  // Zod 4
 type T = z.infer<typeof schema>
 schema.parse(data)           // throws on failure
 schema.safeParse(data)       // returns { success, data/error }

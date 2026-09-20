@@ -1,6 +1,6 @@
 ---
 title: LatinBridge
-summary: "B2B platform connecting Latin American exporters with Chinese buyers. Next.js 15 with trilingual routing (ES/EN/PT), Supabase auth, an AI-powered lead qualification assistant, and an admin pipeline dashboard for the sales team."
+summary: "B2B platform connecting Latin American exporters with Chinese buyers. Next.js 16 with trilingual routing (ES/EN/PT), Supabase auth, an AI-powered lead qualification assistant, and an admin pipeline dashboard for the sales team."
 tags:
   - Next.js
   - TypeScript
@@ -35,14 +35,18 @@ B2B export platforms operate across languages and cultures. A landing page that 
 
 ### Tech Stack
 
+_Versions reflect the current production stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js (App Router) |
-| Language | TypeScript |
-| Auth + DB | Supabase (PostgreSQL + Row Level Security) |
-| i18n | next-intl (ES / EN / PT) |
-| Validation | Zod |
-| Animations | Framer Motion |
+| Framework | Next.js 16.2 (App Router) + React 19.2 |
+| Language | TypeScript 5.9 |
+| Styling | Tailwind CSS 4.2 |
+| Auth + DB | Supabase (PostgreSQL + Row Level Security), supabase-js 2.101 |
+| i18n | next-intl 4.8 (ES / EN / PT) |
+| Validation | Zod 4 |
+| Animations | Framer Motion 12 |
+| AI assistant | Provider-agnostic adapter layer (MiniMax and Ollama providers, mock provider for development) |
 | SEO | JSON-LD structured data (Organization, Service, WebSite schemas) |
 
 ---
@@ -51,13 +55,13 @@ B2B export platforms operate across languages and cultures. A landing page that 
 
 ### Multilingual Routing (ES / EN / PT)
 
-next-intl provides locale-aware URL structures (`/es`, `/en`, `/pt`) with automatic locale detection and validation. Each locale has its own message dictionary. The routing middleware redirects unlocalized URLs to the user's preferred locale based on the `Accept-Language` header.
+next-intl provides locale-aware URL structures (`/es`, `/en`, `/pt`) with automatic locale detection and validation. Each locale has its own message dictionary. The routing layer (`proxy.ts`, the Next.js 16 successor to middleware) redirects unlocalized URLs to the user's preferred locale based on the `Accept-Language` header.
 
 ### Lead Capture, Two Entry Points
 
 The landing offers two conversion paths:
 1. **Lead configurator modal**: a multi-step form where prospects define product category, volume, and target market
-2. **AI micro-assistant**: a conversational interface that qualifies leads through guided questions before routing to the configurator
+2. **AI micro-assistant**: a conversational interface, backed by a provider-agnostic adapter layer (MiniMax and Ollama), that qualifies leads through guided questions before routing to the configurator
 
 Both flows write to the same leads table in Supabase with a source tag, so the admin dashboard can compare conversion rates between entry points.
 
@@ -77,6 +81,6 @@ Each locale generates its own JSON-LD graph with Organization, WebSite, and Serv
 
 ## Final Thoughts
 
-International products have international problems. i18n is more than translation — it's locale detection in middleware, URL structure decisions, session cookie persistence across route prefixes, and content that actually resonates with each market. LatinBridge made those invisible complexities visible and concrete.
+International products have international problems. i18n is more than translation — it's locale detection in the proxy layer, URL structure decisions, session cookie persistence across route prefixes, and content that actually resonates with each market. LatinBridge made those invisible complexities visible and concrete.
 
 The AI qualification assistant also represents a different way of thinking about lead capture: some prospects won't fill a multi-step form on first contact, but they will have a conversation. Meeting users where they are — whether that's a structured form or a chat — is a product decision that affects conversion directly. Both paths land in the same database, which is how you measure which one works better.

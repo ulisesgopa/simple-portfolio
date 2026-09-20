@@ -6,7 +6,7 @@ tags:
   - NestJS
   - TypeScript
   - PostgreSQL
-  - TailwindCSS
+  - Tailwind CSS
 startDate: 2026-04-01
 endDate: 2026-05-02
 author: Ulises Gómez
@@ -47,14 +47,19 @@ A purpose-built platform with two separate concerns:
 
 ### Backend, REST API
 
+_Versions reflect the current production stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Framework | NestJS |
-| Language | TypeScript |
-| Database | PostgreSQL |
-| Auth | JWT with admin guards |
-| Payments | MercadoPago Checkout Pro |
+| Framework | NestJS 8.4 |
+| Language | TypeScript 4.9 |
+| Database | PostgreSQL via TypeORM 0.3 |
+| Auth | JWT (jsonwebtoken + bcryptjs) with admin guards |
+| Validation & security | class-validator / class-transformer, @nestjs/throttler rate limiting |
+| Payments | MercadoPago Checkout Pro (SDK 2.12) |
 | Email | Resend (QR code delivery) |
+| API docs | Swagger (OpenAPI) |
+| Deployment | Google Cloud App Engine |
 
 **API Modules:**
 - `/auth`, Admin login with JWT
@@ -68,10 +73,15 @@ A purpose-built platform with two separate concerns:
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js |
-| Language | TypeScript |
-| Styling | TailwindCSS + Shadcn |
+| Framework | Next.js 16.2 (App Router) + React 19.2 |
+| Language | TypeScript 5.9 |
+| Styling | Tailwind CSS 4.2 + shadcn/ui (Base UI 1.3 primitives) |
+| HTTP client | Axios |
+| QR | html5-qrcode (scanner) + react-qr-code (ticket QR) |
+| Drag & drop | dnd-kit (landing builder section ordering) |
+| Charts & export | Recharts 3, SheetJS (xlsx) attendee export |
 | Image storage | Vercel Blob |
+| Analytics | Vercel Analytics + Speed Insights |
 | Deployment | Vercel |
 
 **Admin modules:**

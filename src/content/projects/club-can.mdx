@@ -1,12 +1,13 @@
 ---
 title: El Club Can
-summary: Premium marketing website for a high-end dog training school in Buenos Aires. Built with TanStack Start + React 19 + TanStack Router for file-based routing, with Radix UI for accessible components and Motion animations. Deployed to Cloudflare Workers.
+summary: Premium marketing website for a high-end dog training school in Buenos Aires. Built with TanStack Start + React 19 + TanStack Router for file-based routing, Tailwind CSS 4, Radix UI for accessible components and Motion animations. Statically prerendered and deployed on Vercel.
 tags:
   - TanStack Start
   - React
   - TypeScript
   - Radix UI
-  - Cloudflare
+  - Tailwind CSS
+  - Vercel
 startDate: 2025-05-01
 endDate: 2025-08-01
 author: Ulises Gómez
@@ -22,7 +23,7 @@ ogImage: './images/elclubcan.webp'
 ---
 
 ## Role
-**Frontend Developer**: component architecture, routing setup, animation system, lead capture form, and deployment to Cloudflare Workers.
+**Frontend Developer**: component architecture, routing setup, animation system, lead capture form, and deployment to Vercel.
 
 ---
 
@@ -39,15 +40,22 @@ Premium service businesses live or die by first impressions. A generic template 
 
 ### Tech Stack
 
+_Versions reflect the current production stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Meta-framework | TanStack Start |
-| Language | TypeScript |
-| Routing | TanStack Router (file-based) |
-| Bundler | Vite |
-| UI | Tailwind CSS + Radix UI |
-| Animations | Motion |
-| Deployment | Cloudflare Workers |
+| Meta-framework | TanStack Start 1.167 (static prerender) |
+| UI library | React 19.2 |
+| Language | TypeScript 5.9 |
+| Routing | TanStack Router 1.168 (file-based) |
+| Bundler | Vite 7 |
+| Styling | Tailwind CSS 4.2 + tailwind-merge + class-variance-authority |
+| Components | Radix UI primitives (shadcn-style component library) |
+| Animations | Motion 12 (`motion/react`) |
+| Forms | React Hook Form 7 + Zod |
+| Server state | TanStack Query 5 |
+| Performance | Vercel Speed Insights |
+| Deployment | Vercel (static output) |
 
 ---
 
@@ -64,6 +72,6 @@ Premium service businesses live or die by first impressions. A generic template 
 
 ## Final Thoughts
 
-Premium clients don't pay just for functionality — they pay for how it makes their brand look. El Club Can pushed every frontend decision toward quality: motion that feels intentional, components built from Radix primitives with full visual control, deployment optimized for the actual geographic audience.
+Premium clients don't pay just for functionality — they pay for how it makes their brand look. El Club Can pushed every frontend decision toward quality: motion that feels intentional, components built from Radix primitives with full visual control, prerendered routes served straight from the CDN.
 
-The technical lesson is that the most popular tool isn't always the right one. TanStack Start + Cloudflare Workers is lighter, faster to the edge, and architecturally explicit for a scope like this. The broader lesson: a site that looks premium converts premium clients. Understanding that connection between visual execution and business outcome is what separates a developer from a product partner.
+The technical lesson is that the most popular tool isn't always the right one. TanStack Start with statically prerendered routes served from Vercel's CDN is lighter, faster, and architecturally explicit for a scope like this. The broader lesson: a site that looks premium converts premium clients. Understanding that connection between visual execution and business outcome is what separates a developer from a product partner.

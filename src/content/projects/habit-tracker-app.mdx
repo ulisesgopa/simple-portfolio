@@ -1,6 +1,6 @@
 ---
 title: Habit Flow
-summary: "A gamified habit tracker for neurodivergent users — with finances, calendar, and a Battle Mode focus session. Built with React Native, Expo Router, and a Bun + Prisma backend. Runs on web and on iOS/Android via Expo Go, with native app distribution in progress."
+summary: "A gamified habit tracker for neurodivergent users — with finances, calendar, and a Battle Mode focus session. Built with React Native, Expo Router, and a TypeScript serverless API with Prisma and Supabase. Runs on web and on iOS/Android via Expo Go, with native app distribution in progress."
 tags:
   - React Native
   - Expo
@@ -47,15 +47,20 @@ A unified productivity dashboard where completing habits earns XP, unlocks level
 
 ### Tech Stack
 
+_Versions reflect the current stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Mobile | React Native + Expo SDK |
-| Routing | Expo Router (file-based, same model as Next.js) |
-| Web | Expo web export, deployed to Vercel |
-| State | Zustand + persist middleware |
-| Backend | Bun + TypeScript REST API |
-| Database | PostgreSQL via Prisma ORM |
+| Mobile | React Native 0.81 + Expo SDK 54 (React 19.1) |
+| Language | TypeScript 5.9 |
+| Routing | Expo Router 6 (file-based, same model as Next.js) + React Navigation 7 (bottom tabs) |
+| Web | Expo web export (react-native-web 0.21), deployed to Vercel |
+| State | Zustand 5 + persist middleware |
+| Backend | TypeScript serverless API on Vercel (`/api`): JWT auth (jsonwebtoken + bcryptjs), rate limiting, Zod 4 validation |
+| Database | PostgreSQL via Prisma 7 (pg adapter) |
+| Remote sync | Supabase (supabase-js) with debounced state sync |
 | Local storage | Async Storage |
+| Charts & animation | react-native-chart-kit + react-native-svg, Reanimated 4 |
 
 ### Key Modules
 
@@ -76,10 +81,9 @@ A unified productivity dashboard where completing habits earns XP, unlocks level
 ### Accessibility — Built as Core Features
 
 Every accessibility option is a first-class feature, not a checkbox:
-- **Low-stim mode** — reduces animations and visual noise for high-sensitivity days
-- **Dyslexia-friendly font** — toggleable OpenDyslexic or similar
-- **High contrast mode** — for visual processing needs
-- Full keyboard navigation on web
+- **Low-stim mode** — a muted, low-stimulation color palette (light and dark) that reduces visual noise on high-sensitivity days
+- **Dyslexia-friendly mode** — wider letter spacing across text and inputs, toggleable from settings
+- **UI density presets** (compact / normal / comfortable) that scale spacing, font sizes, and touch-target sizes (40 / 44 / 48 px)
 
 ---
 

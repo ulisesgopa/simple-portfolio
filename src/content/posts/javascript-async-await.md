@@ -54,7 +54,7 @@ console.log('2')               // sync
 // Output: 1, 2, 3, 4
 ```
 
-This is a classic interview question. `setTimeout(..., 0)` does not mean "immediate", it means "after all microtasks."
+This is a classic interview question. `setTimeout(..., 0)` does not mean "immediate", it means "after the current call stack and all pending microtasks."
 
 ---
 
@@ -90,7 +90,7 @@ async function loadUserPosts(id) {
 }
 ```
 
-`async/await` is syntactic sugar over Promises. They compile to the same thing.
+`async/await` is syntactic sugar over Promises: same semantics, flatter syntax.
 
 ---
 
@@ -180,19 +180,25 @@ results.forEach(r => {
 })
 
 // race: timeout pattern
-const data = await Promise.race([
-  fetch('/api/data'),
-  new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout')), 5000)
-  ),
-])
+let timer
+const timeout = new Promise((_, reject) => {
+  timer = setTimeout(() => reject(new Error('Timeout')), 5000)
+})
+try {
+  const data = await Promise.race([fetch('/api/data'), timeout])
+} finally {
+  clearTimeout(timer)  // don't leave the timer running when the fetch wins
+}
+
+// Note: race() doesn't cancel the losing promise. For fetch, prefer a real abort signal:
+await fetch('/api/data', { signal: AbortSignal.timeout(5000) })
 ```
 
 ---
 
 ## How do you handle errors properly?
 
-```javascript
+```typescript
 // ❌ Silent catch: error disappears
 try {
   const data = await fetchData()

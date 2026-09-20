@@ -7,7 +7,7 @@ tags:
     - CSS
     - Design System
     - Frontend
-description: Quick reference for Tailwind CSS. How tree-shaking works, CSS variables for theming, the cn() pattern (clsx + tailwind-merge), dark mode strategies, @layer, and responsive design. Interview Q&A included.
+description: Quick reference for Tailwind CSS (v3 config with v4 equivalents). How tree-shaking works, CSS variables for theming, the cn() pattern (clsx + tailwind-merge), dark mode strategies, @layer, and responsive design. Interview Q&A included.
 cover:
   src: './images/covers/tailwind-design-system.webp'
   alt: 'Tailwind CSS design system'
@@ -19,8 +19,10 @@ cover:
 - Breakpoints are **min-width** (mobile-first): `sm:`, `md:`, `lg:`, `xl:` add styles from that size upward
 - `cn()` = `clsx` (conditional classes) + `tailwind-merge` (resolve conflicting utilities like `p-2 p-4`)
 - CSS variables in the config let you change themes at runtime without regenerating CSS
-- `darkMode: 'class'` → you control when dark mode activates. `darkMode: 'media'` → follows OS preference
+- `darkMode: 'selector'` (formerly `'class'`) → you control when dark mode activates. `darkMode: 'media'` → follows OS preference
 - `@layer components` is where you put repeated patterns that deserve a semantic name
+
+> **Version note:** the config examples use Tailwind **v3** (`tailwind.config.js`). Tailwind **v4** moved configuration into CSS (`@import "tailwindcss"`, `@theme`, `@custom-variant`), so each section shows the v4 equivalent where it differs.
 
 ---
 
@@ -37,6 +39,8 @@ export default {
 }
 ```
 
+> **v4:** there's no `content` array. Tailwind scans your project automatically (respecting `.gitignore`); add extra sources with `@source "../node_modules/some-ui-lib"` in your CSS.
+
 The result: a few kilobytes of CSS instead of megabytes. This is why you can't construct class names dynamically with string concatenation, the string won't be in the source file for Tailwind to detect.
 
 ```javascript
@@ -52,20 +56,22 @@ const color = 'blue'
 
 ## How do you build a design system with Tailwind?
 
-Define tokens in the config, reference them via CSS variables so they work with runtime theme switching:
+Define tokens in the config, reference them via CSS variables so they work with runtime theme switching. In v3 the variables must hold **color channels** (`30 136 229`) and the config wraps them with the `<alpha-value>` placeholder. If you use a full color instead (`var(--color-primary)` holding `#1E88E5`), Tailwind can't inject the alpha, and utilities like `bg-primary/90` or `hover:bg-primary/90` silently generate nothing.
 
 ```javascript
-// tailwind.config.mjs
+// tailwind.config.mjs (v3)
 theme: {
   extend: {
     colors: {
       primary: {
-        DEFAULT: 'var(--color-primary)',
-        hover: 'var(--color-primary-hover)',
-        foreground: 'var(--color-primary-fg)',
+        DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+        hover: 'rgb(var(--color-primary-hover) / <alpha-value>)',
+        foreground: 'rgb(var(--color-primary-fg) / <alpha-value>)',
       },
-      background: 'var(--color-background)',
-      foreground: 'var(--color-foreground)',
+      background: 'rgb(var(--color-background) / <alpha-value>)',
+      foreground: 'rgb(var(--color-foreground) / <alpha-value>)',
+      card: 'rgb(var(--color-card) / <alpha-value>)',
+      border: 'rgb(var(--color-border) / <alpha-value>)',
     },
     borderRadius: {
       lg: 'var(--radius)',
@@ -77,25 +83,66 @@ theme: {
 ```
 
 ```css
-/* globals.css */
+/* globals.css (v3): space-separated RGB channels */
 :root {
-  --color-primary: #1E88E5;
-  --color-primary-hover: #1565C0;
-  --color-primary-fg: #ffffff;
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
+  --color-primary: 30 136 229;        /* #1E88E5 */
+  --color-primary-hover: 21 101 192;  /* #1565C0 */
+  --color-primary-fg: 255 255 255;
+  --color-background: 255 255 255;
+  --color-foreground: 10 10 10;
+  --color-card: 250 250 250;
+  --color-border: 229 229 229;
   --radius: 0.5rem;
 }
 
 .dark {
-  --color-primary: #82B1FF;
-  --color-primary-hover: #448AFF;
-  --color-background: #0a0a0a;
-  --color-foreground: #fafafa;
+  --color-primary: 130 177 255;       /* #82B1FF */
+  --color-primary-hover: 68 138 255;  /* #448AFF */
+  --color-background: 10 10 10;
+  --color-foreground: 250 250 250;
+  --color-card: 23 23 23;
+  --color-border: 38 38 38;
 }
 ```
 
 When the `.dark` class is added to `<html>`, all variables update and every component that uses `bg-primary` or `text-foreground` updates automatically, no class changes needed in the components.
+
+**The same design tokens in Tailwind v4** live entirely in CSS, and opacity modifiers (`bg-primary/90`) work with plain colors, no channel tricks:
+
+```css
+/* app.css (v4): no tailwind.config file needed */
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --primary: #1E88E5;
+  --primary-hover: #1565C0;
+  --primary-foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --primary: #82B1FF;
+  --primary-hover: #448AFF;
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+}
+
+/* Map the variables to Tailwind tokens: bg-primary, text-foreground, rounded-lg… */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+```
 
 ---
 
@@ -130,7 +177,8 @@ const cls = clsx('base', {
 ### tailwind-merge, resolve utility conflicts
 
 ```typescript
-// Without twMerge: both classes apply, CSS order determines winner (unpredictable)
+// Without twMerge: both classes stay in the string; the winner is decided by their order
+// in the generated stylesheet, not by their order in your class string
 clsx('p-2 p-4')  // → 'p-2 p-4'
 
 // With twMerge: intelligently resolves conflicts
@@ -159,9 +207,14 @@ function Button({ className, ...props }: ButtonProps) {
 ## How does dark mode work?
 
 ```javascript
-// tailwind.config.mjs: choose one strategy
-darkMode: 'media'    // follows OS preference automatically
-darkMode: 'class'    // you control it by toggling .dark on <html>
+// tailwind.config.mjs (v3): choose one strategy
+darkMode: 'media'     // follows OS preference automatically
+darkMode: 'selector'  // you control it by toggling .dark on <html> (v3.4.1+; 'class' is the older name and still works)
+```
+
+```css
+/* v4: dark: follows the OS by default. For a manual toggle, redefine the variant: */
+@custom-variant dark (&:where(.dark, .dark *));
 ```
 
 With either strategy, dark variants work the same way in markup:
@@ -172,7 +225,7 @@ With either strategy, dark variants work the same way in markup:
 </div>
 ```
 
-**Which to choose:** use `'class'` for apps where the user should be able to toggle dark mode manually. Use `'media'` for sites where you just want to respect the OS setting without a toggle.
+**Which to choose:** use a class-based strategy (`'selector'`/`'class'` in v3, `@custom-variant` in v4) for apps where the user should be able to toggle dark mode manually. Use `'media'` (the v4 default) for sites where you just want to respect the OS setting without a toggle.
 
 ---
 
@@ -202,6 +255,8 @@ With either strategy, dark variants work the same way in markup:
   }
 }
 ```
+
+> **v4:** replace the three `@tailwind` lines with a single `@import "tailwindcss";`. `@layer base` and `@layer components` still work, and `@utility` lets you define custom utilities that support variants (`hover:`, `md:`) out of the box.
 
 **When to use `@apply` vs direct utilities:** use `@apply` for patterns that repeat in many places and deserve a name (`.btn-primary`, `.card`). Use direct utilities for one-off styles specific to a single component.
 
@@ -238,10 +293,10 @@ xl:        → 1280px and up
 **A:** Tailwind scans source files at build time and generates CSS only for the classes it finds. No unused utilities ship. That's why you can't build class names with string interpolation, the dynamic result won't be scanned.
 
 **Q: What problem does `tailwind-merge` solve that `clsx` can't?**
-**A:** `clsx` only concatenates strings with conditional logic, it knows nothing about Tailwind semantics. `tailwind-merge` understands which Tailwind utilities are mutually exclusive (`p-2` vs `p-4`) and resolves conflicts by keeping the last one. Without it, both `p-2` and `p-4` would be in the class string and the browser would apply whichever appears later in the generated CSS, unpredictable.
+**A:** `clsx` only concatenates strings with conditional logic, it knows nothing about Tailwind semantics. `tailwind-merge` understands which Tailwind utilities are mutually exclusive (`p-2` vs `p-4`) and resolves conflicts by keeping the last one. Without it, both `p-2` and `p-4` would be in the class string and the browser would apply whichever is defined later in the generated stylesheet (not the one you wrote last), which is hard to reason about.
 
 **Q: `darkMode: 'media'` vs `darkMode: 'class'`: what's the difference?**
-**A:** `media` uses the `prefers-color-scheme` CSS media query, automatic with no JavaScript. `class` requires adding/removing a `.dark` class on `<html>`, usually via JavaScript, which gives the user a manual toggle. Most production apps use `'class'`.
+**A:** `media` uses the `prefers-color-scheme` CSS media query, automatic with no JavaScript. `selector` (formerly `class`) requires adding/removing a `.dark` class on `<html>`, usually via JavaScript, which gives the user a manual toggle. Apps that offer a theme toggle use the class-based strategy (in v4, a `@custom-variant`).
 
 **Q: When would you use `@apply` instead of direct utility classes?**
 **A:** When a combination of utilities is used in many places and deserves a semantic name for readability, like `.btn-primary` or `.card`. For one-off styles in a single component, direct utilities are clearer.
@@ -258,34 +313,44 @@ xl:        → 1280px and up
 color === 'blue' ? 'text-blue-500' : 'text-red-500'
 ```
 
-**2. Using `p-2 p-4` without tailwind-merge**: both classes exist in the string, browser wins based on CSS order (unpredictable). Always use `cn()`.
+**2. Using `p-2 p-4` without tailwind-merge**: both classes exist in the string and the winner is decided by stylesheet order, not by the order in your class string. Always use `cn()`.
 
 **3. Skipping the `content` config**: Tailwind won't scan files you don't list. New directories or file extensions need to be added.
 
-**4. `darkMode: 'media'` with a toggle button**: you can't override a CSS media query with a class toggle. If you want a user toggle, use `darkMode: 'class'`.
+**4. `darkMode: 'media'` with a toggle button**: you can't override a CSS media query with a class toggle. If you want a user toggle, use a class-based strategy (`'selector'`/`'class'` in v3, `@custom-variant` in v4).
 
 ---
 
 ## Cheat Sheet
 
 ```javascript
-// ── Config ────────────────────────────────────────────
+// ── Config (v3) ───────────────────────────────────────
 // tailwind.config.mjs
 {
   content: ['./src/**/*.{astro,tsx,ts,html,mdx}'],
-  darkMode: 'class',  // or 'media'
+  darkMode: 'selector',  // or 'media' ('class' also works)
   theme: {
     extend: {
-      colors: { primary: 'var(--color-primary)' },
+      colors: { primary: 'rgb(var(--color-primary) / <alpha-value>)' },
       borderRadius: { lg: 'var(--radius)' },
     },
   },
 }
 ```
 
+```css
+/* ── Config (v4): CSS-first, no tailwind.config needed ── */
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@theme inline {
+  --color-primary: var(--primary);
+  --radius-lg: var(--radius);
+}
+```
+
 ```typescript
 // ── cn() utility ──────────────────────────────────────
-import { clsx } from 'clsx'
+import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -312,7 +377,7 @@ cn('p-2 text-sm', isActive && 'bg-blue-500', className)
 ```
 
 ```css
-/* ── @layer ──────────────────────────────────────────── */
+/* ── @layer (v3: after the three @tailwind lines; v4: after @import "tailwindcss") ── */
 @layer base {
   body { @apply bg-background text-foreground; }
 }

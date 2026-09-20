@@ -178,15 +178,18 @@ git reset --mixed HEAD~1   # (default)
 # Undo last commit, discard changes entirely, destructive
 git reset --hard HEAD~1
 
-# Undo a specific committed file, keep it unstaged
+# Discard uncommitted changes in one file (restores it from the last commit or the index)
 git restore src/components/Sidebar.tsx
+
+# Unstage a file but keep your changes in the working directory
+git restore --staged src/components/Sidebar.tsx
 
 # Undo a commit that was already pushed (safe: creates new commit)
 git revert <commit-hash>
 
 # Find lost commits after a bad reset
 git reflog
-git checkout <hash>
+git branch recovered <hash>   # anchor the lost commit to a branch (or: git reset --hard <hash>)
 ```
 
 ---
@@ -271,6 +274,7 @@ git reset --mixed HEAD~1  # undo commit, keep unstaged
 git reset --hard HEAD~1   # undo commit, discard changes
 git revert <hash>         # safe undo (creates new commit)
 git restore <file>        # discard working dir changes
+git restore --staged <file>  # unstage, keep changes
 git reflog                # find lost commits
 
 # ── Stash ──────────────────────────────────────────────

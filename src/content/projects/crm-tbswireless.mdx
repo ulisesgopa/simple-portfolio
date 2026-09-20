@@ -19,7 +19,7 @@ ogImage: './images/crm-tbswireless.webp'
 
 **CRM TBS Wireless** is an internal operations system for TBS Wireless Services, a Colombian telecom company. It covers the full customer and revenue lifecycle: onboarding, service plan assignment, invoice generation, payment tracking, collections management, and real-time KPI reporting for operations teams.
 
-It replaced a workflow that was partially manual and spread across disconnected tools, spreadsheets, WhatsApp, and disconnected billing records.
+It replaced a workflow that was run by hand across disconnected tools: spreadsheets, WhatsApp, and separate billing records.
 
 ---
 
@@ -43,18 +43,23 @@ The operations team was managing billing entirely by hand. Receipt generation al
 
 ### Tech Stack
 
+_Versions reflect the current production stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js (App Router) |
-| Language | TypeScript |
+| Framework | Next.js 15.5 (App Router) + React 19.1 |
+| Language | TypeScript 5.9 |
 | Database | PostgreSQL |
-| ORM | Prisma with Accelerate |
-| UI | Tailwind CSS + Radix UI |
-| Forms | React Hook Form + Zod |
-| Charts | Recharts |
-| Animations | Framer Motion |
-| Auth | JWT with role-based access (admin / collector) |
-| Testing | Playwright E2E |
+| ORM | Prisma 6.16 with Accelerate |
+| Styling | Tailwind CSS 4.1 + tailwind-merge + class-variance-authority |
+| Components | Radix UI |
+| Forms | React Hook Form 7 + Zod 4 |
+| Charts | Recharts 3 |
+| Animations | Framer Motion 12 |
+| Auth | JWT (jsonwebtoken + bcryptjs) with role-based access (admin / collector) |
+| PDF | @react-pdf/renderer 4 (invoice and receipt PDFs) |
+| Notifications | Sonner |
+| Testing | Playwright 1.59 E2E |
 
 ---
 

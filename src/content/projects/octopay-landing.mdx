@@ -1,6 +1,6 @@
 ---
 title: Octopay Landing Page
-summary: A modern, animated landing page for a digital payments platform. Built with Next.js 15, React 19, and Framer Motion, featuring 15+ sections including services, security, partner integrations, FAQ, and contact forms.
+summary: A modern, animated, bilingual (ES/EN) landing page for a digital payments platform. Built with Next.js 15, React 19, and Framer Motion, featuring 15+ sections including services, security, partner integrations, FAQ, and contact forms.
 tags:
   - Next.js
   - TypeScript
@@ -41,29 +41,35 @@ A multi-section landing with distinct content layers per audience, business sect
 
 ### Tech Stack
 
+_Versions reflect the current production stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js (App Router) |
-| Animations | Framer Motion |
-| UI components | shadcn/ui + Radix UI |
-| Styling | TailwindCSS |
-| Language | TypeScript |
+| Framework | Next.js 15.5 (App Router) + React 19.1 |
+| Language | TypeScript 5.9 |
+| Styling | Tailwind CSS 3.4 |
+| UI components | Custom component library built with class-variance-authority, clsx, and tailwind-merge |
+| Animations | Framer Motion 12 + canvas particle background |
+| i18n | Custom locale-based routing (`/[locale]`) with ES / EN dictionaries and a language selector (react-country-flag) |
 | Icons | Lucide React |
 
 ### Sections Built
 
 1. **Hero**: Primary CTA with animated entrance
-2. **Services**: Core product offerings with detail pages
-3. **Features**: Capability grid with icons
-4. **Partners**: Logo carousel of integrations
-5. **Integration**: How to connect Octopay to existing systems
-6. **Security**: Trust signals, certifications, data handling
-7. **Team**: Key people behind the platform
-8. **News**: Latest updates with detail pages
-9. **FAQ**: Accordion with categorized questions
-10. **Help Center**: Support pathways
-11. **Contact Methods**: Multiple contact channels
-12. **Contact Form**: Validated form with Zod
+2. **About**: Company story and positioning
+3. **Services**: Core product offerings with detail pages
+4. **Features**: Capability grid with icons
+5. **Partners**: Logo carousel of integrations
+6. **Integration**: How to connect Octopay to existing systems
+7. **Security**: Trust signals, certifications, data handling
+8. **Team**: Key people behind the platform
+9. **News**: Latest updates with detail pages
+10. **FAQ**: Accordion with categorized questions
+11. **Help Center**: Support pathways
+12. **Contact Methods**: Multiple contact channels
+13. **Contact Form**: Client-side validated form with localized (ES / EN) error messages
+
+Plus an in-page chat widget and a bilingual experience driven by a custom translation layer.
 
 ---
 

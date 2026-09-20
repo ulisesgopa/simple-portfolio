@@ -1,6 +1,6 @@
 ---
 title: Tienda Patitas
-summary: "Full e-commerce system for a pet products retailer. Three independent services: a public storefront, a Bun + Prisma backend API with MercadoPago and Resend, and an admin dashboard with POS, inventory, customer, and sales management. Built with React, Vite, TypeScript, and TailwindCSS."
+summary: "Full e-commerce system for a pet products retailer. Three independent services: a public storefront, a Bun + Prisma backend API with MercadoPago and Resend, and an admin dashboard with POS, inventory, customer, and sales management. Built with React, Vite, TypeScript, and Tailwind CSS."
 tags:
   - React
   - Vite
@@ -37,20 +37,24 @@ The client ran an active pet products business with no digital infrastructure be
 
 ### 1. Backend API
 
+_Versions reflect the current production stack._
+
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Bun |
-| Language | TypeScript |
+| Runtime | Bun 1.3 |
+| Language | TypeScript 5.9 |
 | HTTP | Bun.serve |
-| Database | PostgreSQL |
-| ORM | Prisma |
-| Auth | JWT via jose (access 15min + refresh 7d) |
+| Database | PostgreSQL (pg driver) |
+| ORM | Prisma 7.4 with the pg adapter |
+| Validation | Zod 4 |
+| Auth | JWT via jose 6 (access 15min + refresh 7d) |
 | Payments | MercadoPago (checkout + webhooks) |
 | Email | Resend (order confirmations, receipts) |
 | File storage | Vercel Blob (product images) |
 | Error tracking | Sentry |
 | Logging | Pino (structured logs) |
 | API Docs | OpenAPI + Swagger at `/docs` |
+| Deployment | Docker on Koyeb |
 
 **Modules:** auth, products, categories, customers, sales, purchases, cash register, discount codes, business config, payments, health check.
 
@@ -63,17 +67,19 @@ The client ran an active pet products business with no digital infrastructure be
 
 | Layer | Technology |
 |-------|-----------|
-| Build tool | Vite |
-| Framework | React |
-| Language | TypeScript |
+| Build tool | Vite 5.4 |
+| Framework | React 18.3 |
+| Language | TypeScript 5.8 |
 | UI | shadcn/ui + Radix UI |
-| Styling | TailwindCSS |
-| Routing | React Router |
-| Server state | TanStack Query |
-| Forms | React Hook Form + Zod |
+| Styling | Tailwind CSS 3.4 |
+| Routing | React Router 6.30 |
+| Server state | TanStack Query 5 |
+| Forms | React Hook Form 7 + Zod 3 |
+| Animations | Framer Motion 12 |
 | Auth | JWT with automatic token refresh |
 | Analytics | Vercel Analytics + Speed Insights |
-| Testing | Vitest + Testing Library |
+| Testing | Vitest 4 |
+| Deployment | Vercel |
 
 **Customer-facing features:**
 - Product catalog with category filtering (client-side, instant)
@@ -87,17 +93,18 @@ The client ran an active pet products business with no digital infrastructure be
 
 | Layer | Technology |
 |-------|-----------|
-| Build tool | Vite |
-| Framework | React |
-| Language | TypeScript |
+| Build tool | Vite 5.4 |
+| Framework | React 18.3 |
+| Language | TypeScript 5.9 |
 | UI | shadcn/ui + Radix UI |
-| Styling | TailwindCSS |
-| Routing | React Router |
-| Server state | TanStack Query |
-| Local state | Zustand |
-| Forms | React Hook Form + Zod |
-| Animations | Framer Motion |
-| Testing | Vitest |
+| Styling | Tailwind CSS 3.4 |
+| Routing | React Router 6.30 |
+| Server state | TanStack Query 5 |
+| Local state | Zustand 5 |
+| Forms | React Hook Form 7 + Zod 3 |
+| Charts | Recharts 2.15 |
+| Testing | Vitest 3 + Testing Library |
+| Deployment | Vercel |
 
 **Admin modules:**
 - **POS**: counter sales with mixed payment methods (cash, transfer, card, MercadoPago), cash register sessions (open/close), change calculation

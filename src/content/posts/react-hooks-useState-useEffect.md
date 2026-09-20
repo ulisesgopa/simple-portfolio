@@ -113,6 +113,8 @@ useEffect(() => {
 | `[id]` | On mount and every time `id` changes |
 | *(omitted)* | After every render, almost never what you want |
 
+In development, **React Strict Mode** mounts every component twice (mount → cleanup → mount) to surface missing cleanups. Effects must be safe to run, clean up, and run again.
+
 **Pattern: fetching data with cancellation**
 
 ```typescript
@@ -164,7 +166,7 @@ Both exist to avoid re-computing or re-creating things on every render. Use them
 ```javascript
 // useMemo: memoizes a computed value
 const total = useMemo(
-  () => cartItems.reduce((sum, item) => sum + item.subtotal, 0),
+  () => cartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0),
   [cartItems]
 )
 
@@ -192,7 +194,11 @@ function useFetch<T>(url: string) {
   useEffect(() => {
     let cancelled = false
     fetch(url)
-      .then(r => r.json())
+      .then(r => {
+        // fetch only rejects on network errors: HTTP 404/500 still resolve, so check r.ok
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
       .then(d => { if (!cancelled) setData(d) })
       .catch(() => { if (!cancelled) setError('Fetch failed') })
       .finally(() => { if (!cancelled) setLoading(false) })
@@ -238,7 +244,8 @@ setUser(prev => ({ ...prev, name: 'Ulises' }))
 ```javascript
 // ❌ data changes → effect runs → data changes → ...
 useEffect(() => { setData([...data, item]) }, [data])
-// ✅ use functional update or restructure
+// ✅ functional update: `data` is no longer a dependency
+useEffect(() => { setData(prev => [...prev, item]) }, [item])
 ```
 
 **3. Missing cleanup on subscriptions**: listeners survive component unmount, causing memory leaks.

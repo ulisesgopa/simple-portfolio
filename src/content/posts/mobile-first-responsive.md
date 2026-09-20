@@ -17,9 +17,9 @@ cover:
 
 - **Mobile-first** means base styles target the smallest viewport. Breakpoints **add** styles for larger screens, they never remove
 - Tailwind breakpoints are **min-width**: `md:` = "768px and up". Unprefixed classes apply to all sizes
-- Start designing at **375px** (smallest common phone). Desktop is the enhancement, not the default
+- Start designing at **375px** (a small common phone; also check 320px). Desktop is the enhancement, not the default
 - `max-width` + `mx-auto` on containers prevents content from stretching too wide on large screens
-- Touch targets need a minimum of **44×44px** (WCAG guideline)
+- Touch targets should be at least **44×44px** (WCAG 2.5.5, Level AAA; WCAG 2.2's AA floor, 2.5.8, is 24×24px, so aim for 44)
 - The viewport meta tag is **required**, without it, mobile devices render at desktop width
 
 ---
@@ -80,58 +80,59 @@ Every Tailwind breakpoint prefix applies **from that width upward**:
 
 ### Navbar
 
-```html
-<!-- Mobile: logo + hamburger -->
-<!-- Desktop: logo + links + CTA -->
-<header class="flex items-center justify-between px-4 py-3 md:px-8">
+```tsx
+// Mobile: logo + hamburger
+// Desktop: logo + links + CTA
+<header className="flex items-center justify-between px-4 py-3 md:px-8">
   <Logo />
 
-  <!-- Hamburger, mobile only -->
-  <button class="block md:hidden" onClick={toggleMenu}>
+  {/* Hamburger, mobile only */}
+  <button className="block md:hidden" onClick={toggleMenu}>
     <MenuIcon />
   </button>
 
-  <!-- Links, desktop only -->
-  <nav class="hidden md:flex items-center gap-6">
+  {/* Links, desktop only */}
+  <nav className="hidden md:flex items-center gap-6">
     <a href="/about">About</a>
     <a href="/projects">Projects</a>
     <Button>Contact</Button>
   </nav>
 </header>
 
-<!-- Mobile drawer -->
+{/* Mobile drawer */}
 {isOpen && (
-  <div class="block md:hidden border-t px-4 py-3 space-y-2">
-    <a class="block py-2" href="/about">About</a>
-    <a class="block py-2" href="/projects">Projects</a>
+  <div className="block md:hidden border-t px-4 py-3 space-y-2">
+    <a className="block py-2" href="/about">About</a>
+    <a className="block py-2" href="/projects">Projects</a>
   </div>
 )}
 ```
 
 ### Hero with image
 
-```html
-<!-- Mobile: stack (image top, text bottom) -->
-<!-- Desktop: split (text left, image right) -->
-<section class="flex flex-col gap-8 px-4 py-12 lg:flex-row lg:items-center lg:px-16 lg:py-24">
-  <div class="text-center lg:text-left lg:flex-1">
-    <h1 class="text-3xl font-bold md:text-4xl lg:text-5xl">Headline</h1>
-    <p class="mt-4 text-gray-600 md:text-lg">Supporting copy</p>
-    <Button class="mt-6">CTA</Button>
+```tsx
+// Mobile: stack (text on top, image below, source order)
+// Desktop: split (text left, image right)
+// Want the image first on mobile? Put it first in the markup, or use flex-col-reverse.
+<section className="flex flex-col gap-8 px-4 py-12 lg:flex-row lg:items-center lg:px-16 lg:py-24">
+  <div className="text-center lg:text-left lg:flex-1">
+    <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl">Headline</h1>
+    <p className="mt-4 text-gray-600 md:text-lg">Supporting copy</p>
+    <Button className="mt-6">CTA</Button>
   </div>
 
-  <div class="w-full max-w-sm mx-auto lg:flex-1 lg:max-w-none">
-    <img src="/hero.png" class="w-full" alt="Hero" />
+  <div className="w-full max-w-sm mx-auto lg:flex-1 lg:max-w-none">
+    <img src="/hero.png" className="w-full" alt="Hero" />
   </div>
 </section>
 ```
 
 ### Card grid
 
-```html
-<!-- 1 col mobile → 2 col tablet → 3 col desktop -->
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-  {items.map(item => <Card item={item} />)}
+```tsx
+// 1 col mobile → 2 cols from sm (640px) → 3 cols from lg (1024px)
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  {items.map(item => <Card key={item.id} item={item} />)}
 </div>
 ```
 
@@ -180,7 +181,7 @@ This tells the browser to use the device's actual width as the viewport width.
 **Viewports to test at:**
 
 ```
-375px  → smallest common phone (iPhone SE)
+375px  → small common phone (iPhone SE; also check 320px)
 430px  → iPhone 15 Pro Max
 768px  → iPad portrait
 1024px → iPad landscape / small laptop
@@ -215,13 +216,13 @@ This tells the browser to use the device's actual width as the viewport width.
 **A:** A CSS strategy where base styles target the smallest viewport and `min-width` media queries add complexity for larger screens. It matters because most web traffic is mobile, and progressive enhancement (adding capabilities) produces simpler, more maintainable code than graceful degradation (removing them).
 
 **Q: What's the difference between `max-width` and `min-width` in media queries?**
-**A:** `max-width` applies the style up to that width, desktop-first. `min-width` applies from that width upward, mobile-first. Tailwind uses `min-width` exclusively for all breakpoint prefixes.
+**A:** `max-width` applies the style up to that width, desktop-first. `min-width` applies from that width upward, mobile-first. Tailwind's breakpoint prefixes (`sm:`, `md:`, `lg:`…) are all `min-width`; it also offers `max-*` variants (like `max-md:`) for targeting a range, but the mobile-first workflow sticks to the plain prefixes.
 
 **Q: Why is Tailwind inherently mobile-first?**
 **A:** Because unprefixed classes apply to all screen sizes, and breakpoint prefixes (`md:`, `lg:`) are `min-width`, they add styles to larger screens but never remove styles from smaller ones.
 
 **Q: What is a touch target and what's the minimum size?**
-**A:** The tappable area on a touchscreen. WCAG 2.5.5 recommends a minimum of 44×44px so it's comfortable to activate with a fingertip. Buttons that are too small cause accidental taps and accessibility failures.
+**A:** The tappable area on a touchscreen. WCAG 2.5.5 (Level AAA) recommends at least 44×44px so it's comfortable to activate with a fingertip; WCAG 2.2's AA criterion (2.5.8) sets a 24×24px floor. Buttons that are too small cause accidental taps and accessibility failures.
 
 ---
 

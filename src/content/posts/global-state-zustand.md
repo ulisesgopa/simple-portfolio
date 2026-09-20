@@ -19,7 +19,7 @@ cover:
 - **No Provider, no boilerplate**, `create()` returns a hook you call directly in any component
 - `set()` merges by default, no need to spread the entire state manually
 - Use **selectors** `useStore(s => s.value)` to avoid re-renders when unrelated parts of the store change
-- The `persist` middleware serializes state to `localStorage` automatically
+- The `persist` middleware serializes state to `localStorage` automatically (by default; any Storage-like backend works, e.g. AsyncStorage in React Native)
 - **Zustand ≠ TanStack Query**: Zustand is for client state, TanStack Query is for server state
 
 ---
@@ -60,9 +60,10 @@ const useCounterStore = create<CounterState>((set) => ({
   reset: () => set({ count: 0 }),
 }))
 
-// In any component: no Provider needed
+// In any component: no Provider needed (use selectors, more on that below)
 function Counter() {
-  const { count, increment } = useCounterStore()
+  const count = useCounterStore((state) => state.count)
+  const increment = useCounterStore((state) => state.increment)
   return <button onClick={increment}>{count}</button>
 }
 ```
@@ -88,7 +89,7 @@ interface POSStore {
   clearCart: () => void
 }
 
-const usePOSStore = create<POSStore>((set, get) => ({
+const usePOSStore = create<POSStore>((set) => ({
   cashSession: null,
   cartItems: [],
   selectedCustomer: null,
@@ -115,7 +116,6 @@ const usePOSStore = create<POSStore>((set, get) => ({
           name: product.name,
           unitPrice: product.price,
           quantity: qty,
-          subtotal: product.price * qty,
         }],
       }
     }),
@@ -128,6 +128,8 @@ const usePOSStore = create<POSStore>((set, get) => ({
   clearCart: () => set({ cartItems: [], selectedCustomer: null }),
 }))
 ```
+
+Notice the cart items have no `subtotal` or `total` field. Those are derived from `unitPrice * quantity`, so they're computed where they're needed instead of being stored (stored derived values go stale the moment `quantity` changes, see Common Mistakes).
 
 ---
 
@@ -183,8 +185,8 @@ const usePreferencesStore = create<PreferencesStore>()(
     }),
     {
       name: 'user-preferences',  // localStorage key
-      // Optional: only persist a subset of the state
-      partialize: (state) => ({ theme: state.theme }),
+      // Optional: only persist a subset of the state (here: both preferences, never the setters)
+      partialize: (state) => ({ theme: state.theme, lowStimMode: state.lowStimMode }),
     }
   )
 )
@@ -222,7 +224,8 @@ const { data: products, isLoading } = useQuery({
 })
 
 // Zustand: for data that lives in the client
-const { cartItems, addToCart } = usePOSStore()
+const cartItems = usePOSStore((state) => state.cartItems)
+const addToCart = usePOSStore((state) => state.addToCart)
 ```
 
 TanStack Query handles caching, background refetch, loading states, and server synchronization. Zustand handles none of that, it's pure in-memory local state. In POS Colombia, both are used together because they solve different things.
@@ -255,7 +258,9 @@ TanStack Query handles caching, background refetch, loading states, and server s
 ```typescript
 // ❌ Keep cartTotal in store
 // ✅ Derive it:
-const total = usePOSStore(state => state.cartItems.reduce((s, i) => s + i.subtotal, 0))
+const total = usePOSStore(state =>
+  state.cartItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
+)
 ```
 
 **4. Not using `set` with a function for updates that depend on current state**: can read stale values.

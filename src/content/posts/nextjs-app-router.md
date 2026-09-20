@@ -19,7 +19,7 @@ cover:
 - `'use client'` marks a **boundary**, not a single component, everything it imports becomes client code too
 - Server Components can be `async` and fetch data directly, no `useEffect`, no loading state juggling
 - Rendering is **per route**: static (default), dynamic (on request), or ISR (static + revalidation)
-- `fetch` in Server Components is extended with caching: `{ cache: 'force-cache' }`, `{ next: { revalidate: 60 } }`, `{ cache: 'no-store' }`
+- `fetch` in Server Components is extended with caching options: `{ cache: 'force-cache' }`, `{ next: { revalidate: 60 } }`, `{ cache: 'no-store' }`. Since Next.js 15, `fetch` is **not cached by default**, you opt in
 - Server Actions (`'use server'`) let forms mutate data without writing API routes
 
 ---
@@ -84,15 +84,17 @@ Next.js decides **per route** at build time:
 
 ```
 Static (default)     → HTML generated at build, served from CDN
-Dynamic              → HTML generated per request (uses cookies(), headers(), searchParams)
+Dynamic              → HTML generated per request (uses await cookies(), await headers(), searchParams)
 ISR                  → static + regenerated in background after a revalidate window
 Client-side          → 'use client' + fetch in the browser (for user-specific widgets)
 ```
 
 ```tsx
 // Static: event landing pages, generated at build
-export default async function EventPage({ params }) {
-  const event = await getEventBySlug(params.slug)
+// In Next.js 15+, params is a Promise: you must await it
+export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const event = await getEventBySlug(slug)
   return <EventLanding event={event} />
 }
 
@@ -115,10 +117,10 @@ export const dynamic = 'force-dynamic'
 
 ## How does data fetching and caching work?
 
-`fetch` in Server Components is extended with cache controls:
+`fetch` in Server Components is extended with cache controls. **Next.js 15 changed the default:** a plain `fetch(url)` is no longer cached (Next.js 14 cached by default), and GET Route Handlers aren't cached either. Caching is opt-in:
 
 ```tsx
-// Cached indefinitely (static data)
+// Cached indefinitely (static data): opt in explicitly
 const res = await fetch(url, { cache: 'force-cache' })
 
 // Revalidated every 60 seconds (ISR per-request)
@@ -129,9 +131,14 @@ const res = await fetch(url, { cache: 'no-store' })
 
 // Tag-based invalidation
 const res = await fetch(url, { next: { tags: ['events'] } })
-// later, in a Server Action:
-revalidateTag('events')  // purges every fetch tagged 'events'
+
+// later, in a Server Action (Next.js 16):
+updateTag('events')             // expires the tag immediately: the next render reads fresh data
+// or, from a Server Action / Route Handler such as a payment webhook:
+revalidateTag('events', 'max')  // stale-while-revalidate; the 2nd argument (cache profile) is required in Next.js 16
 ```
+
+Tags only invalidate data that was **cached with that tag** (`fetch` with `next.tags`, or `'use cache'` + `cacheTag`). If a page reads straight from a database, use `revalidatePath('/route')` instead. Next.js 16 also adds Cache Components (`'use cache'`) as an opt-in caching model, the options above remain valid in the default model.
 
 **Request deduplication:** identical `fetch` calls in the same render pass are automatically deduped, a layout and a page can both request the same data without a double hit.
 
@@ -170,15 +177,20 @@ Functions that run on the server, callable directly from forms or client compone
 // app/actions/tickets.ts
 'use server'
 
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
+import { requireAdmin } from '@/lib/auth'  // your own session/role check
 
 export async function approveTicket(formData: FormData) {
-  const ticketId = formData.get('ticketId') as string
+  // Server Actions are public HTTP endpoints: always authorize INSIDE the action,
+  // hiding the button in the UI is not access control
+  await requireAdmin()
+
+  const ticketId = String(formData.get('ticketId'))
   await db.ticket.update({
     where: { id: ticketId },
     data: { status: 'APPROVED' },
   })
-  revalidateTag('tickets')  // refresh every list that shows tickets
+  revalidatePath('/admin/tickets')  // this list reads from the DB, so invalidate by path
 }
 ```
 
@@ -205,9 +217,14 @@ The server sends HTML; React then attaches event listeners and state on the clie
 function Clock() {
   return <span>{new Date().toLocaleTimeString()}</span>
 }
+```
 
+```tsx
 // ✅ Render after mount, when only the client is involved
 'use client'
+
+import { useState, useEffect } from 'react'
+
 function Clock() {
   const [time, setTime] = useState<string | null>(null)
   useEffect(() => { setTime(new Date().toLocaleTimeString()) }, [])
@@ -228,10 +245,10 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 // next/image: automatic webp/avif, lazy loading, no layout shift
-<Image src={event.coverUrl} alt={event.name} width={1200} height={630} priority />
+<Image src={event.coverUrl} alt={event.name} width={1200} height={630} preload />
 ```
 
-- `priority` on above-the-fold images (hero, LCP element), disables lazy loading for them
+- `preload` on above-the-fold images (hero, LCP element) disables lazy loading and preloads them. It replaces `priority`, which is deprecated in Next.js 16 (use `priority` on 15 and earlier)
 - `next/font` self-hosts fonts at build time, no external request to Google, no FOUT
 
 ---
@@ -261,7 +278,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 **2. Fetching in `useEffect` when a Server Component could do it**: extra round trip, loading spinners, and client JS for data that was available at render time on the server.
 
-**3. Passing non-serializable props across the boundary**: functions, class instances, and Dates can't cross from Server to Client Components (except Server Actions). Pass plain data.
+**3. Passing non-serializable props across the boundary**: functions (except Server Actions) and class instances can't cross from Server to Client Components. Pass plain data; React 19 also serializes `Date`, `Map`, `Set`, and Promises, but plain objects and strings are the safest default.
 
 **4. Using `cache: 'no-store'` everywhere "to be safe"**: disables the entire caching layer and makes every page dynamic. Choose per data source.
 
@@ -277,6 +294,7 @@ export default async function Page() {
   const data = await getData()          // direct async fetch
   return <List data={data} />
 }
+// Next.js 15+: params, searchParams, cookies(), headers() are async → await them
 
 // ── Client Component ───────────────────────────────────
 'use client'
@@ -293,9 +311,10 @@ fetch(url, { next: { revalidate: 60 } })    // ISR
 fetch(url, { cache: 'no-store' })           // always fresh
 fetch(url, { next: { tags: ['events'] } })  // tag for invalidation
 
-// ── Invalidation (in Server Actions) ───────────────────
-revalidateTag('events')
-revalidatePath('/eventos')
+// ── Invalidation ───────────────────────────────────────
+updateTag('events')              // Server Actions only (Next.js 16): read-your-own-writes
+revalidateTag('events', 'max')   // Actions / Route Handlers (Next.js 16: 2nd arg required)
+revalidatePath('/eventos')       // for data read straight from a DB
 
 // ── Server Action ──────────────────────────────────────
 'use server'

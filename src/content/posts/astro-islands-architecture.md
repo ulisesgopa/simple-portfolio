@@ -17,10 +17,10 @@ cover:
 
 - Astro generates **pure HTML by default**, zero JavaScript sent to the browser unless you explicitly opt in
 - An "island" is an interactive component that hydrates on the client, isolated from surrounding static content
-- `.astro` files run **only on the server** at build time, no access to `window`, `localStorage`, or browser APIs
+- `.astro` files run **only on the server** (at build time for static output, at request time for SSR), no access to `window`, `localStorage`, or browser APIs
 - `.tsx`/`.jsx` components become islands when given a `client:*` directive
 - Content Collections validate `.md`/`.mdx` frontmatter with **Zod at build time**, build fails on schema errors
-- View Transitions are native browser API exposed as a component, no React Router, no extra JS bundle
+- View Transitions use the browser's View Transitions API through the `<ClientRouter />` component: no React Router needed, but it does add a small client-side router script
 
 ---
 
@@ -31,7 +31,7 @@ Modern JS frameworks (React, Vue) ship the entire runtime to every user, even fo
 ```
 React SPA flow:
 1. Download mostly-empty HTML
-2. Download JS bundle (~200–500KB)
+2. Download JS bundle (often hundreds of KB)
 3. Parse + execute JS
 4. Make API calls
 5. Render content  ← user sees something here
@@ -91,7 +91,7 @@ Each island is independent. Their JavaScript loads and executes in isolation.
 
 ```astro
 ---
-// .astro files run at build time (server/Node)
+// .astro files run on the server (build time or request time)
 // Cannot use window, localStorage, or browser events here
 import ProjectCard from './ProjectCard.astro'
 import TabsButtons from './TabsButtons.tsx'  // React component
@@ -117,7 +117,7 @@ The separation is explicit and enforced: Astro components are always server-side
 A built-in system for managing local content files (`.md`, `.mdx`) with full type safety:
 
 ```typescript
-// src/content/config.ts
+// src/content.config.ts  (Astro 5; the older src/content/config.ts location is still detected but is legacy)
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
@@ -170,7 +170,7 @@ const { Content } = await render(project)
 
 ## How do View Transitions work?
 
-The browser's View Transitions API interpolates visually between the HTML of one page and the next. Astro exposes it as a single component:
+The browser's View Transitions API interpolates visually between the HTML of one page and the next. Astro exposes it through a single component, `<ClientRouter />` (formerly `<ViewTransitions />`):
 
 ```astro
 ---
@@ -182,17 +182,19 @@ import { ClientRouter } from 'astro:transitions'
 </head>
 ```
 
-No React Router, no SPA routing state, no additional JavaScript bundle. It's a native browser feature.
+No React Router and no routing state to manage. It is **not** zero-JS though: `ClientRouter` adds a small client-side script (it intercepts navigation and swaps the DOM) and falls back gracefully in browsers without native support. If a page must ship strictly zero JavaScript, don't include it.
 
 ---
 
 ## Performance comparison
 
-| Metric | React SPA | Astro |
-|--------|-----------|-------|
-| JS sent to client | ~200–500KB | ~5–20KB |
-| Time to First Byte | Server dependent | Instant (static) |
-| First Contentful Paint | 1–3 seconds | < 0.5 seconds |
+| Metric | Typical React SPA | Typical Astro static page |
+|--------|-------------------|---------------------------|
+| JavaScript sent to client | Framework runtime + app bundle (often hundreds of KB) | None by default, only the islands you opt into |
+| First HTML response | Mostly empty shell, content rendered client-side | Complete content |
+| First paint | After the JS downloads and executes | As soon as HTML and CSS arrive |
+
+Real numbers vary per app and hosting. Measure your own pages with Lighthouse or WebPageTest before quoting figures.
 
 ---
 
@@ -201,7 +203,7 @@ No React Router, no SPA routing state, no additional JavaScript bundle. It's a n
 Astro excels for content-heavy sites. It's not the right tool for:
 
 - **Complex global state**, dashboards with real-time updates, optimistic UI, complex filters
-- **Auth-heavy apps**, Next.js has a better ecosystem (NextAuth, Clerk, middleware)
+- **Auth-heavy apps**, Astro supports SSR and middleware, but the ecosystem around auth-gated apps (Auth.js, Clerk, Server Actions) is larger in Next.js
 - **Apps where most pages are interactive**, if 80%+ of the app needs React, the island model adds overhead without benefit
 
 **Decision rule:** content/marketing/portfolio/blog → Astro. Auth-gated dashboards, SPAs → Next.js.
@@ -220,13 +222,13 @@ Astro excels for content-heavy sites. It's not the right tool for:
 **A:** `client:load` hydrates the component as soon as the page HTML loads, may compete with other critical resources. `client:idle` waits until the browser has finished its initial work and has free time on the main thread, better for non-critical interactive components.
 
 **Q: How does Astro validate Content Collections?**
-**A:** Using Zod schemas defined in `src/content/config.ts`. The build fails with a clear field-level error if any content file doesn't match the schema. This is build-time validation, errors surface before deployment, not in production.
+**A:** Using Zod schemas defined in `src/content.config.ts`. The build fails with a clear field-level error if any content file doesn't match the schema. This is build-time validation, errors surface before deployment, not in production.
 
 ---
 
 ## Common Mistakes
 
-**1. Using browser APIs in `.astro` files**: `.astro` runs at build time (Node environment). `window`, `document`, `localStorage` are not available. Move browser-specific logic to a `client:only` island.
+**1. Using browser APIs in `.astro` files**: `.astro` runs on the server (Node, at build time or request time). `window`, `document`, `localStorage` are not available. Move browser-specific logic to a `client:only` island.
 
 **2. Missing the Zod schema**: without a schema, Content Collections are untyped. Add the schema and type-check your MDX frontmatter.
 
@@ -259,7 +261,7 @@ const { title, description } = Astro.props
 ```
 
 ```typescript
-// Content Collection schema (src/content/config.ts)
+// Content Collection schema (src/content.config.ts)
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
   schema: z.object({
