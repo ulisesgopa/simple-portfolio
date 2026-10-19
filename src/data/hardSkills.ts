@@ -8,19 +8,19 @@ const hardSkills: HardSkill[] = [
   {
     name: "Agentic Workflows",
     description:
-      "Claude Code and the Claude Agent SDK: spec-driven development, project rules in CLAUDE.md/AGENTS.md, custom skills, and agents with scoped tools and explicit permission allowlists",
+      "Claude Code and the Claude Agent SDK, spec-driven development, and agents with scoped tools and permissions",
     icon: "agent",
   },
   {
     name: "LLM Applications",
     description:
-      "Provider-agnostic LLM adapters (MiniMax, Ollama, mock for development), guided conversational flows for lead qualification, and AI script generation inside a video pipeline",
+      "Provider-agnostic LLM integrations, conversational flows, and content generation",
     icon: "sparkles",
   },
   {
     name: "Process Automation",
     description:
-      "Replacing manual operations with crons, webhooks, payment integrations (Mercado Pago), PDF generation and electronic invoicing (DIAN via Factus)",
+      "Crons, webhooks, payments, PDF generation and electronic invoicing that replace manual work",
     icon: "flow",
   },
   {
@@ -62,7 +62,7 @@ const hardSkills: HardSkill[] = [
   {
     name: "Astro",
     description:
-      "Static site generation with island architecture, this portfolio is built with it",
+      "Static site generation with island architecture",
     icon: "astro_dark",
   },
   {
@@ -80,7 +80,7 @@ const hardSkills: HardSkill[] = [
   {
     name: "Node.js & Bun",
     description:
-      "Backend runtimes for REST APIs Bun for high performance services (Tienda Patitas, POS Colombia), Node.js for serverless functions",
+      "Backend runtimes for REST APIs and serverless functions",
     icon: "nodejs",
   },
 ];

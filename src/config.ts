@@ -1,7 +1,7 @@
 export const SITE = {
   website: "https://whoisulisesgomez.vercel.app",
   title: "Ulises Gómez | AI Engineer",
-  description: "Portfolio of Ulises Gomez, AI Engineer and founder. I build production systems that fix real processes, using LLMs, agentic workflows, Next.js and TypeScript. Products running real businesses in Argentina and Colombia.",
+  description: "Portfolio of Ulises Gomez, AI Engineer and founder building production systems with LLMs, agentic workflows, Next.js and TypeScript.",
   tags: ["portfolio", "AI engineer", "LLM", "agentic workflows", "Next.js", "TypeScript"],
   ogImage: "/og-image.webp",
   logo: "logo",
@@ -38,19 +38,19 @@ export const ME = {
     resumeDoc: "Cv_2026.pdf",
   },
   aboutMe:
-    "AI Engineer and founder. I build systems that fix real processes, and I put AI where it removes work rather than where it looks good. I ship production software with AI agents in the loop: spec-driven development with Claude Code guarded by unit and E2E tests, a provider-agnostic LLM lead-qualification assistant (LatinBridge), and a Claude Agent SDK pipeline with scoped permissions that turns scripts into finished videos for my own brand. My software runs real businesses. MiPOS issues DIAN electronic invoices for its first paying client in Colombia, and Escuela Perritos, my canine education company, runs on a CRM I built that automates billing, payments, routes and certifications. I apply the same thinking to my own life, treating my habits, finances, nutrition and way of working as systems I can measure and improve. Ten years in tech, from board-level electronics to live broadcast infrastructure, taught me to find the root cause before writing code. Based in Buenos Aires, open to remote.",
+    "AI Engineer and founder building production systems with LLMs and agentic workflows. Co-founder of Stream Tech, founder of Escuela Perritos, and frontend developer at Santo Código. 10 years in tech, from board-level electronics to live broadcast infrastructure, which taught me to find the root cause before writing code. Based in Buenos Aires, open to remote.",
 };
 
 export const CURRENTLY_BUILDING = [
   {
     name: "Personal OS",
     description:
-      "My own dashboard for the person I want to become: daily habits, a meals-on-target check, work blocks, weekly review and progress, plus personal finances with categorized transactions and an expense breakdown. Next.js 16, Prisma and PostgreSQL, installable as a PWA.",
+      "A dashboard for my habits, nutrition, work blocks, weekly review and personal finances.",
   },
   {
     name: "MIOS",
     description:
-      "A personal operating system that brings agenda, habits and money into one panel. Google Calendar is the source of truth for time and PostgreSQL for money, so how I spend my hours and my pesos can be reviewed side by side. Next.js 16, Auth.js and the Google Calendar API.",
+      "A personal operating system that brings my agenda, habits and money into one panel.",
   },
 ];
 
