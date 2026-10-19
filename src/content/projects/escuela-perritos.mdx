@@ -1,0 +1,121 @@
+---
+title: Escuela Perritos — Landing + Integrated CRM
+summary: My own canine education business, run end to end on one Next.js 16 app. The public site captures leads by service and the CRM behind it handles clients, students, subscriptions, automatic monthly billing, Mercado Pago payments, walker routes, certifications with QR verification and monthly accounting. Built through a spec-driven, AI-assisted workflow with Vitest and Playwright as guardrails.
+tags:
+  - Next.js
+  - TypeScript
+  - Prisma
+  - PostgreSQL
+  - Mercado Pago
+  - AI-Assisted Development
+startDate: 2025-08-29
+endDate: 2026-10-18
+author: Ulises Gómez
+url: https://www.escuelaperritos.com.ar/
+cover: './images/escuelaperritos.webp'
+ogImage: './images/escuelaperritos.webp'
+---
+
+## Overview
+
+**Escuela Perritos** is my own canine education business in Buenos Aires: pedagogical walks, private training sessions, home pet care and a welcome kit for new puppies. I built the software that runs it.
+
+There is no stack of SaaS tools behind it. It's **one Next.js application**: the public landing page that brings clients in, and an integrated CRM where every lead, client, dog, payment and receipt lives. Everything a form on the site captures lands in the panel right away. No copy-paste, no spreadsheets, no WhatsApp threads to dig through.
+
+---
+
+## Role
+**Founder & sole engineer**: product design, data model, landing page, CRM, payments integration, security, tests and production operations. I'm also the main user, so I find the bottlenecks myself every day.
+
+---
+
+## The Problem
+
+A service business with recurring clients drowns in admin work long before it runs out of clients:
+
+- Leads arrived through Instagram, WhatsApp and forms with no way to see which service each one wanted
+- Monthly renewals, receipts and overdue payments were tracked by memory
+- Each dog's progress (behavior evaluations, training level) lived in notes
+- Daily walks needed a pickup and drop-off order per walker, rebuilt by hand every morning
+- There was no clear monthly picture of income against expenses
+
+---
+
+## Solution
+
+### Public site (lead capture)
+
+- Service pages for **sessions, home care (with a live camera), night walks and the welcome kit**, each with a short two-step form
+- A free **behavioral diagnostic** form that becomes the student's starting point inside the CRM
+- Leads are tagged by service (`EDUCACION`, `SESIONES`, `CUIDADO`, `KIT`, `NOCTURNO`) and origin, so I know what sells and where it comes from
+- **Prices are calculated on the server**, never trusted from the client. Mercado Pago checkout charges whatever the person actually picked
+- Blog, testimonials and videos are managed from the CRM, not hardcoded
+
+### Integrated CRM (operations)
+
+| Module | What it does |
+|--------|-------------|
+| Leads & requests | Pipeline by service and origin, converted to clients in one step |
+| Clients & pets | Student file with behavior evaluations, PDF progress report and ID card with embroidery-ready patches |
+| Plans & subscriptions | Walks, training, care and custom packages, with renewal rules |
+| Receipts & payments | Sequential receipts in PDF, cash, transfer, card and Mercado Pago |
+| Automatic billing | Daily Vercel cron: issues monthly renewal receipts, closes expired packages, flags overdue receipts |
+| Mercado Pago | OAuth account connection from the panel, verified webhooks, token renewal before its 180-day expiry |
+| Walkers & daily route | Builds each walker's pickup and drop-off sequence from every dog's routine and opens the route in Google Maps |
+| Certification | Level-based exams, PDF certificate with code + QR and a public verification page |
+| Accounting | Income vs. expenses by month, breakdown by category and payment method, CSV ledger export for the accountant |
+| Content | Blog articles, testimonials and videos for the public site |
+
+---
+
+## Tech Stack
+
+_Versions reflect the current production stack._
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16.2 (App Router, Server Actions) + React 19.1 |
+| Language | TypeScript 5 |
+| Database | PostgreSQL on Prisma Postgres |
+| ORM | Prisma 8 (Composer + contract-based migrations) |
+| Styling | Tailwind CSS 4 + Framer Motion 12 + Lenis |
+| Forms & validation | React Hook Form 7 + Zod 4 |
+| Auth | JWT via jose 6 + bcryptjs, role-based permissions per page and action |
+| Payments | Mercado Pago (OAuth, Checkout, webhooks) |
+| PDFs | @react-pdf/renderer 4 (receipts, report cards, certificates, ID cards) |
+| Email | Resend |
+| Charts | Recharts 3 |
+| Testing | Vitest 3 (unit) + Playwright 1.55 (E2E) |
+| Deployment | Vercel (cron, Analytics, Speed Insights) |
+
+---
+
+## Key Technical Decisions
+
+### Security as a feature, not an afterthought
+
+The app handles real client data and real money, so security is part of the product:
+
+- **Permission checks on every server action**, tested one by one for anonymous visitors, deactivated admins, `ADMIN` and `SUPER_ADMIN`
+- **Rate limiting by IP and action type** on public forms, login (brute force) and the proxy
+- **AES-256-GCM encryption** for the connected Mercado Pago credentials
+- **Cron protected by a secret** with constant-time comparison
+- SSRF guards on public URLs and a data deletion request flow under Argentina's Ley 25.326
+
+### Tests that refuse to touch production
+
+E2E tests build the app and run it against a **local** Postgres. The seed script refuses to run unless the database is `localhost`, and every sensitive variable is overridden in the Playwright config, so `.env.local` is never used.
+
+### Spec-driven, AI-assisted development
+
+I built this as a solo founder with AI coding agents (Claude Code) using a spec-first workflow: each phase starts as a written plan with clear success criteria, gets executed in small atomic commits, and only merges once it passes typecheck, unit and E2E tests. The project's `CLAUDE.md`/`AGENTS.md` files hold the conventions and domain rules (Argentine dates and currency, voseo in the copy, permission rules) so the agents work inside the system instead of guessing.
+
+The agents speed up implementation. Design, data model, security review and the decision about what to build next stay with me.
+
+---
+
+## Final Thoughts
+
+This is the project that best shows how I work: start from a real operational bottleneck, model the domain properly, automate the repetitive part (billing, receipts, routes, certificates) and keep a human in the loop where judgment matters.
+
+It's also living software. I use it every day to run the business, so every rough edge becomes the next commit.

@@ -1,0 +1,94 @@
+---
+title: Reel Studio — AI Video Pipeline (In Progress)
+summary: "Work in progress. An AI production pipeline that takes an idea to a finished Instagram reel: Claude agents write the script, pick clips per sentence and design the motion; ElevenLabs generates the voice; Remotion renders. Every stage needs human approval. Agents run through the Claude Agent SDK with scoped tools and explicit permission allowlists. It's evolving into a multi-user web product (Next.js + Supabase) with a local render worker."
+tags:
+  - Claude Agent SDK
+  - LLM
+  - Next.js
+  - Supabase
+  - Remotion
+  - In Progress
+startDate: 2026-09-01
+endDate: 2026-10-18
+author: Ulises Gómez
+url: ""
+cover: './images/reel-studio.webp'
+ogImage: './images/reel-studio.webp'
+---
+
+> **Status: in construction.** I use it every week to produce content for Escuela Perritos and my personal channel. It isn't public yet.
+
+## Overview
+
+**Reel Studio** is my answer to a very practical problem: making consistent video content takes hours I don't have. Instead of editing every reel by hand, I built a production pipeline where AI agents do the repetitive work and I approve each stage.
+
+It started as a set of Claude Code skills and Python scripts. It became a local studio app, and it's now turning into a multi-user web product.
+
+---
+
+## Role
+**Sole engineer and main user**: pipeline design, agent orchestration, prompts, studio app, render worker and data model.
+
+---
+
+## How it works
+
+The pipeline has six stages. Each one unlocks only after the previous one is approved, and if the script changes, everything after it is marked stale.
+
+| Stage | Who does the work | What I approve |
+|-------|------------------|----------------|
+| 1. Script | Claude agent with a brand-aware script-writing skill (hook in 2 seconds, spoken CTA) | The text |
+| 2. Voice | ElevenLabs TTS, two takes (script, no agent) | I listen and pick one |
+| 3. Clips per sentence | Claude agent picks footage from a tagged clip library and writes timed scenes | A contact sheet with 3 frames per scene |
+| 4. Motion & captions | Claude agent designs motion blocks and word-level captions | Live preview in the browser |
+| 5. Render | Remotion renders the reel: clips, motion, transitions, voice, music with ducking | The final cut |
+| 6. Finishing (optional) | DaVinci Resolve timeline built by script, never rendered automatically | Color and manual touches |
+
+---
+
+## AI engineering decisions
+
+### Agents with a short leash
+
+Heavy work is handed to a **bounded Claude Code agent through the Claude Agent SDK** (`query()`), not run inside the web app:
+
+- The agent runs with the repo as its working directory, so it loads the project rules (`CLAUDE.md`) and skills automatically
+- **Tools are restricted per task type** (script, scenes, motion, adjustments)
+- `permissionMode: "dontAsk"` plus an **explicit allowlist of command patterns**, never `bypassPermissions`. Anything not on the list is denied on its own, without hanging
+- **No agent can render.** The build script is only allowed with `--no-render`, and the motion tooling only with check, lint, snapshot and preview
+- Each dispatch is logged with status, cost and output on an Activity screen
+
+### Deterministic work doesn't use an agent
+
+Voice generation, music, sound effects and layer building are plain scripts. LLMs are used where judgment helps (writing, choosing clips, designing motion), not where a script is cheaper and more predictable.
+
+### One source of truth
+
+The studio reads and writes the same files and scripts the agents use, instead of reimplementing their logic. In the web version, the database becomes the source of truth and the worker writes scene files to disk right before rendering.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Agents | Claude Agent SDK, Claude Code skills |
+| Voice, music, SFX | ElevenLabs |
+| Transcription | Whisper (local) |
+| Video rendering | Remotion, HyperFrames (motion graphics), ffmpeg |
+| Studio | Next.js |
+| Web product (in progress) | Supabase (Postgres, auth, job queue) on Vercel |
+| Render worker | Node service on macOS claiming jobs from the queue (scan library, transcribe, voice, preview, render) |
+| Scripts | Python |
+
+---
+
+## What's next
+
+Multi-user workspaces (account → members → projects with their own brand, strategy, style and voice), the job queue running against Supabase, and cost tracking per production.
+
+---
+
+## Final Thoughts
+
+This project is where I test how I think AI should be used in real work: agents that do the heavy lifting inside clear boundaries, deterministic code wherever it's enough, and a human approval gate at every step that matters.

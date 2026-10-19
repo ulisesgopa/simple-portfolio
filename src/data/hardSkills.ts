@@ -6,6 +6,24 @@ interface HardSkill {
 
 const hardSkills: HardSkill[] = [
   {
+    name: "Agentic Workflows",
+    description:
+      "Claude Code and the Claude Agent SDK: spec-driven development, project rules in CLAUDE.md/AGENTS.md, custom skills, and agents with scoped tools and explicit permission allowlists",
+    icon: "agent",
+  },
+  {
+    name: "LLM Applications",
+    description:
+      "Provider-agnostic LLM adapters (MiniMax, Ollama, mock for development), guided conversational flows for lead qualification, and AI script generation inside a video pipeline",
+    icon: "sparkles",
+  },
+  {
+    name: "Process Automation",
+    description:
+      "Replacing manual operations with crons, webhooks, payment integrations (Mercado Pago), PDF generation and electronic invoicing (DIAN via Factus)",
+    icon: "flow",
+  },
+  {
     name: "JavaScript ES6+",
     description:
       "My primary language, async/await, destructuring, modules, and modern DOM patterns",

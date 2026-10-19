@@ -11,16 +11,17 @@ interface WorkExperience {
 
 const workExperience: WorkExperience[] = [
   {
-    title: "Founder & Frontend Developer",
+    title: "Founder & AI Engineer",
     startDate: "2026-07-01",
     company: "Escuela Perritos",
     location: "Buenos Aires, Argentina",
     description:
-      "Founded a canine education and behavior-modification platform, designing its digital identity and building its technology stack end to end.",
+      "Founded a canine education business and built the software that runs it: one Next.js application combining the public site and an integrated CRM.",
     goals: [
-      "Designed and deployed the platform's digital identity and technical architecture, including PeludoTag, a QR-based lost pet recovery product built with Next.js and Supabase.",
-      "Built a custom internal SaaS for business management, automating tutor profiles, canine student history, premium service plan assignment (Advanced Accompaniment Plans), and financial flows.",
-      "Implemented an automated payment receipt module with monthly due-date tracking, reducing manual administration time and streamlining operational cash flow.",
+      "Built the landing page and integrated CRM (Next.js 16, Prisma, PostgreSQL) covering leads by service, clients, student files, subscriptions, receipts, walkers, accounting and content.",
+      "Automated monthly billing with a daily cron that issues renewal receipts, closes expired packages and flags overdue payments, plus Mercado Pago OAuth, verified webhooks and server-side pricing.",
+      "Shipped level-based certifications with PDF certificates, QR codes and public verification, and a daily route builder that orders each walker's pickups and drop-offs.",
+      "Developed with a spec-driven, AI-assisted workflow (Claude Code with CLAUDE.md/AGENTS.md project rules), guarded by Vitest permission tests per server action and Playwright E2E runs against an isolated database.",
     ],
     currentJob: true,
   },
@@ -39,16 +40,18 @@ const workExperience: WorkExperience[] = [
     currentJob: true,
   },
   {
-    title: "Co-Founder & Frontend Developer",
+    title: "Co-Founder & Lead Engineer",
     startDate: "2024-02-14",
     company: "Stream Tech",
     location: "Remote | Colombia",
     description:
-      "Co-founded a technology company innovating in the events sector through streaming and ticketing products, leading frontend development and technical operations.",
+      "Co-founded a technology company building SaaS products for LatAm businesses (point of sale with electronic invoicing, event management and streaming), leading engineering and technical operations.",
     goals: [
       "Operated live TV and radio streaming infrastructure using Ant Media Server, deployed across AWS, Linode, and DonWeb Cloud, ensuring uptime for active broadcast channels.",
       "Built frontend interfaces and websites for streaming channel clients using React, Next.js, and Tailwind CSS.",
-      "Developed Ticketera MIES, the admin dashboard and public event pages, as the frontend layer integrated with an existing NestJS backend API.",
+      "Took MiPOS, a DIAN-compliant POS SaaS, to production with its first paying client in Colombia, after a pre-go-live audit that fixed duplicate sales and invoices under concurrency, token rotation and subscription enforcement.",
+      "Built MiPOS desktop registers (Electron + embedded PostgreSQL) that sell offline and sync to the cloud seconds after each sale, with Ed25519-signed licenses, serial scales and ESC/POS printing.",
+      "Developed Ticketera MIES (5,200+ guests accredited) and evolved it into Event Hub BA, a SaaS for institutions, including the marketing site, dashboard rebrand and a multi-tenant white-label architecture audit.",
       "Configured domains, DNS records, SSL layers, and traffic routing with Cloudflare across multiple production deployments.",
       "Participated in Ruta de Emprendimiento 2024, a startup acceleration program focused on product and business model refinement.",
     ],

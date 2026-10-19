@@ -1,0 +1,86 @@
+---
+title: Event Hub BA
+summary: The SaaS evolution of Ticketera MIES. An event management platform for institutions and companies covering registration, ticket approval, QR accreditation, private streaming rooms and Excel reporting, with 5,200+ guests accredited. Includes a TanStack Start marketing site, a Next.js 16 product dashboard and a multi-tenant white-label architecture audit.
+tags:
+  - Next.js
+  - TanStack Start
+  - NestJS
+  - TypeScript
+  - SaaS
+startDate: 2026-07-16
+endDate: 2026-07-23
+author: Ulises Gómez
+url: https://event-hub-ba.vercel.app/
+cover: './images/eventhubba.webp'
+ogImage: './images/eventhubba.webp'
+---
+
+## Overview
+
+**Event Hub BA** is what happened when [Ticketera MIES](/projects/ticketera-mies) proved itself in production. The platform had already accredited **more than 5,200 guests** for a single organization, so the next step was to turn it into a product any institution could use.
+
+It's an event management SaaS for institutions, companies and producers of corporate and academic events in Buenos Aires: in-person, virtual and hybrid. The commercial launch runs through a **"Pioneer Entities" program** with 10 slots.
+
+---
+
+## Role
+**Product & Frontend Lead** (Stream Tech): product repositioning, marketing site, rebrand of the product dashboard, new dashboard features, and the architecture audit for the multi-tenant evolution. Built on the existing NestJS backend from Ticketera MIES.
+
+---
+
+## The Problem
+
+Ticketera MIES worked, but it was built for one client:
+
+- The brand, copy and vocabulary were tied to a church organization
+- The data model had a single global pool of admins, with no concept of "this admin belongs to this organization"
+- Only the public event page used dynamic branding. Everything else used a fixed palette
+- Institutions (the new audience) are not technical. They buy "no lines at the entrance", not "QR check-in"
+
+---
+
+## Solution
+
+### 1. Marketing site
+
+A B2B landing page written for directors of institutions: benefit-first copy, real product screenshots, an autoplay demo video, FAQ and the Pioneer Entities program as the main call to action.
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | TanStack Start 1.168 + React 19 |
+| Build | Vite 8 |
+| Styling | Tailwind CSS 4 + Radix UI |
+| Forms | React Hook Form 7 + Zod |
+| Deployment | Vercel |
+
+### 2. Product dashboard
+
+A complete rebrand of the Ticketera MIES dashboard into Event Hub BA, plus the features institutions asked for:
+
+- **Visual landing page editor** per event: split panel with drag-and-drop section ordering and live preview
+- **Ticket approval queue** and Mercado Pago payments
+- **QR accreditation** that stays stable on mobile and after a page refresh, with manual guest search as fallback
+- **Private streaming room** with per-event credentials, device limits, streaming channel management, Vimeo live support and a light/dark theme
+- **Server-side pagination** and fewer DB operations on home and event pages. A naive join had broken the app at 1,093 participants, so the queries were reworked
+- **Excel exports** with a filter modal and a **geographic report** of participants
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16.2 (App Router) + React 19.2 |
+| Styling | Tailwind CSS 4 + shadcn/ui |
+| Charts | Recharts 3 |
+| QR scanning | html5-qrcode |
+| Exports | SheetJS (xlsx) |
+| Backend | NestJS + TypeORM + PostgreSQL (shared with Ticketera MIES) |
+
+### 3. Multi-tenant white-label audit
+
+Before selling to several organizations at once, I audited the frontend and backend against two goals: **white-label per organization** (subdomain or custom domain, dynamic branding) and **one common API** ready for web and future React Native apps (accreditation, e-tickets, QR).
+
+The audit found that the tenant anchor already existed (`Enterprise` with slug, colors and logo, linked to events), but admins weren't scoped to any organization. It mapped the concrete data isolation gaps and prioritized them into a migration plan: unguarded routes, ticket approvals and dashboard stats across tenants, and missing FK indexes. It also checked that the auth layer (stateless JWT, no server actions) can be reused from mobile.
+
+---
+
+## Final Thoughts
+
+Event Hub BA is a lesson in turning a client project into a product. Most of the work wasn't new code. It was repositioning the value for a new buyer, finding what the architecture assumed about "one client", and writing down exactly what has to change before a second tenant can safely share the platform.

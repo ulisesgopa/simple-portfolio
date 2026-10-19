@@ -1,96 +1,137 @@
 ---
-title: POS Colombia
-summary: A point-of-sale system for the Colombian market with electronic invoicing integration (DIAN/Factus). Built with a Bun + TypeScript REST API backend and a React + Zustand admin dashboard, covering sales, cash register management, and fiscal compliance.
+title: MiPOS — POS Colombia
+summary: A cloud and desktop point-of-sale SaaS for Colombian SMEs with DIAN electronic invoicing through Factus. Now in production with its first paying client in Colombia. Multi-branch, offline-capable desktop registers (Electron + embedded PostgreSQL), restaurant tables, credit accounts, thermal printing and a platform superadmin, all hardened by a pre-go-live concurrency and security audit.
 tags:
   - React
   - TypeScript
   - Bun
   - Prisma
-  - PostgreSQL
+  - Electron
+  - SaaS
 startDate: 2025-02-01
-endDate: 2026-03-01
+endDate: 2026-10-13
 author: Ulises Gómez
 url: https://mipos.tbswireless.com/
-cover: './images/pos.png'
-ogImage: './images/pos.png'
+cover: './images/mipos.webp'
+ogImage: './images/mipos.webp'
 ---
 
 ## Overview
 
-**POS Colombia** is a point-of-sale system designed for small and medium businesses in Colombia that need to comply with DIAN's mandatory electronic invoicing requirements. Most existing POS software is either too expensive, too complex, or not integrated with the Colombian fiscal ecosystem.
+**MiPOS** is a point-of-sale SaaS for small and medium businesses in Colombia: sell, invoice and control the business from one place, valid before the DIAN (Colombia's tax authority).
 
-This project includes a REST API backend and a web admin dashboard, built to be deployed to production infrastructure.
+It started as a POS with an admin dashboard. In 2026 it became a multi-tenant product with subscriptions, branches, installable desktop registers that work without internet, and a platform panel to run every client business. In October 2026 it went live with its **first paying client in Colombia**, issuing real electronic invoices in production.
 
 ---
 
 ## Role
-**Solo Developer**: backend architecture, database schema, REST API, admin frontend, electronic invoicing integration, and production deployment.
+**Lead Developer** (Stream Tech): product strategy, backend architecture, web POS, desktop app, electronic invoicing integration, security audit and production go-live.
 
 ---
 
 ## The Problem
 
-Colombian SMEs face a specific challenge:
-- DIAN (Colombia's tax authority) requires electronic invoicing for all registered businesses
-- Most affordable POS systems either lack this integration or require expensive monthly plans
-- Businesses need: product management, sales tracking, cash register sessions, and legal invoices, all in one system
+Colombian SMEs (grocery stores, butchers, restaurants) are legally required to issue electronic invoices, but:
+
+- Affordable POS systems either skip the DIAN integration or lock it behind expensive plans
+- Many shops have unstable internet. A cloud-only POS that stops selling when the connection drops is not an option
+- Invoicing mistakes aren't cosmetic. A duplicated sale can mean a duplicated **legal invoice**
 
 ---
 
-## Solution
+## What's new in 2026
 
-A self-hostable POS system with two separate parts:
+### From MVP to production SaaS
 
-### Backend, REST API
+- **Zero-friction onboarding**: sign up with email and password, try it in sandbox, configure taxes later
+- **Subscriptions with hard-lock**: an expired plan blocks every write endpoint (reading stays open, so the business never loses access to its data)
+- **Platform superadmin**: businesses operating, blocked or about to expire; per-business e-invoicing checklist, numbering ranges, monthly signed/rejected documents; explicit confirmation before switching a business from **sandbox to production**
+- **Roles**: admin, cashier and a read-only **accountant** role with a reports screen and accounting PDF export
+
+### Point of sale for real shops
+
+- **Restaurant tables** (Horeca): open tabs, progressive orders, non-fiscal pre-bill and close-to-sale
+- **Credit and accounts receivable** with installment payments
+- **Sales on hold**: save the cart and resume it from any register; drafts can be printed
+- **VAT only applies when the sale carries an electronic invoice**
+- **Direct USB thermal printing** from the browser (ESC/POS via WebUSB), 80mm tickets with the invoice QR, X/Z cash reports
+- **Branches and register codes** in sale numbers and cash closings
+
+### Desktop registers that work offline
+
+An **Electron app** that bundles an embedded PostgreSQL, the backend and the POS UI on `127.0.0.1`. It sells without internet and syncs to the cloud a few seconds after each sale, cash opening or closing. Rejected records are retried, and each register shows its version, connection and last sync.
+
+- Register linking with superadmin approval and an **Ed25519-signed license**
+- Installation secrets encrypted with the OS keychain
+- System printer without dialog and **serial-port scales** for products sold by weight
+- Builds for macOS (DMG) and Windows (NSIS)
+
+---
+
+## Pre-go-live audit
+
+Before the first client went live, I audited sales, tables, invoicing, subscriptions and the superadmin against a disposable PostgreSQL database. Some of the critical fixes:
+
+| Issue | Fix | Verified with |
+|-------|-----|---------------|
+| Duplicate sales under concurrency (double stock, double cash, double DIAN invoice) | Idempotency key `create` + catch `P2002` inside the transaction → 409 `SALE_DUPLICATE` | 5 simultaneous requests → 1 sale |
+| Retries generated a new idempotency key on each attempt | Key persists while the cart is unchanged | Typecheck |
+| Factus rejection left the cart full, so the cashier charged again | Sale is saved and returns 201 with `invoiceStatus: rejected` | Failed invoice → 201 + error stored |
+| Double payment of a restaurant tab | Atomic `OPEN → PAID` at the start of the transaction | 4 simultaneous payments → 1 sale |
+| Race condition on credit payments | `SELECT … FOR UPDATE` on the sale | 5 simultaneous 60% payments → 1 accepted |
+| Cashier could sell at any price (even $0 with an invoice) | Only admins override prices | Cashier → 403 |
+| Refresh tokens without rotation | Rotation on every refresh + reuse detection revokes all sessions | Rotation, multi-tab and stolen-token cases |
+| Legal invoice retries in production with a new reference | Retry queries Factus by reference first; no new references in production | Typecheck |
+
+The backend went from **12 TypeScript errors to 0**, and every Factus call got a timeout so a slow provider can't freeze a sale.
+
+---
+
+## Tech Stack
 
 _Versions reflect the current production stack._
 
+### Backend, REST API
+
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Bun 1.3 |
+| Runtime | Bun (cloud) · Node (desktop registers) |
 | Language | TypeScript 5.9 |
+| HTTP | Custom `fetch` router, modular monolith |
 | Database | PostgreSQL |
-| ORM | Prisma 6.19 with Accelerate |
-| Auth | JWT via jose 6 (access token 15min + refresh token 7d) |
+| ORM | Prisma 6.16 |
+| Auth | JWT via jose 6 (access + rotating refresh tokens) |
 | Validation | Zod 4 |
-| Logging & monitoring | Pino (structured logs) + Sentry |
-| File storage | Vercel Blob |
+| E-invoicing | Factus API (DIAN): catalogs, numbering ranges, CUFE |
+| Security | AES-256-GCM for third-party credentials, Ed25519 licenses |
+| Logging & monitoring | Pino + Sentry |
 | Email | Resend |
 | API Docs | OpenAPI + Swagger UI at `/docs` |
 | Deployment | Docker on Koyeb |
 
-**API Modules:**
-- `/auth`, JWT login with role-based guards (admin / cashier)
-- `/products`, CRUD with category filtering
-- `/categories`, Product taxonomy
-- `/customers`, Customer database
-- `/sales`, Create, list, and view sale details
-- `/cash`, Open/close cash register sessions, session history
-- `/business`, Business profile and fiscal settings
-- `/billing/electronic-invoicing`, Factus integration config
-- `/billing/factus/catalogs`, Sync DIAN catalogs (municipalities, measurement units, tributes, numbering ranges)
-
-### Frontend, Admin Dashboard
+### Web POS & admin
 
 | Layer | Technology |
 |-------|-----------|
-| Build tool | Vite 5.4 |
-| Framework | React 18.3 + TypeScript 5.8 |
-| Routing | React Router 6.30 |
-| State | Zustand 5 |
-| Server state | TanStack Query 5 |
-| Forms | React Hook Form 7 + Zod 3 |
-| Charts | Recharts 2.15 |
-| UI | shadcn/ui + Radix UI |
-| Styling | Tailwind CSS 3.4 |
-| QR codes | qrcode |
+| Framework | React 18.3 + TypeScript 5.8 + Vite 5.4 |
+| State | Zustand 5 + TanStack Query 5 |
+| Forms | React Hook Form 7 + Zod |
+| UI | shadcn/ui + Radix UI + Tailwind CSS 3.4 |
+| Charts & PDFs | Recharts + @react-pdf/renderer |
+| Printing | ESC/POS over WebUSB |
 | Testing | Vitest 3 + Testing Library |
 | Deployment | Vercel |
+
+### Desktop
+
+| Layer | Technology |
+|-------|-----------|
+| Shell | Electron 44 + electron-builder |
+| Local database | embedded-postgres |
+| Hardware | serialport (scales), system printer |
 
 ---
 
 ## Final Thoughts
 
-Most POS software sold in Colombia either ignores the DIAN requirement entirely or charges a monthly subscription that makes no financial sense for a small business. Building one that gets fiscal compliance right required understanding the regulatory landscape as deeply as the technical one — cataloguing DIAN municipalities, measurement units, tributes, and numbering ranges as domain knowledge, not just API calls.
-
-POS Colombia demonstrates end-to-end product ownership with real business domain knowledge: a production-ready backend with documented API, a data-rich admin frontend with charts and role management, and an integration that solves a real market-specific problem that generic software skips.
+Getting a POS to production isn't about the happy path. It's about what happens when two cashiers press "charge" at the same time, when the tax provider is slow, or when the internet goes down mid-sale. MiPOS went from a working demo to software a real business trusts with its legal invoices, and that gap was closed with concurrency tests, audits and paying attention to how the shop actually operates.
